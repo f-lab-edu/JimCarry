@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.study.jimcarry.mapper.ReqQuotationMapper">
+	<select id="selectAllReqQuotations" resultType="ReqQuotationEntity">
+	
+	</select>
+	<select id="selectReqQuotationByUser" resultType="ReqQuotationEntity">
+	
+	</select>
+	<select id="selectReqQuotationMaxId" resultType="ReqQuotationEntity">
+	
+	</select>
+	<select id="selectReqQuotation" resultType="ReqQuotationEntity">
+	
+	</select>
+    <insert id="insertReqQuotation">
+
+    </insert>
+    <delete id="deleteReqQuotation">
+
+    </delete>
+
+    <update id="updateReqQuotation">
+  
+    </update>
+    <update id="updateReqQuotationIsAccepted">
+  
+    </update>
+</mapper>
