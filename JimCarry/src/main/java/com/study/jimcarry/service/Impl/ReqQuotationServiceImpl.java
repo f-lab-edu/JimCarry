@@ -42,7 +42,10 @@ public class ReqQuotationServiceImpl implements ReqQuotationService {
 	    // 조합된 문자열을 ID로 설정
 	    String generatedId = generatedIdBuilder.toString();
 	    reqQuotationEntity.setReqQuotationId(generatedId);
-
+	    
+	    //TODO 이삿 짐 정보 저장 로직 추가 예정
+	    //request에서 이상 짐 정보를 List로 받아와서 for문을 돌릴지 고민중..
+	    
 	    // 레코드 저장
 	    return reqQuotationMapper.insertReqQuotation(reqQuotationEntity);
 	}

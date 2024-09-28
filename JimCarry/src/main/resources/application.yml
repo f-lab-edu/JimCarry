@@ -1,5 +1,12 @@
 #logging 설정
-      
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: /log
+  level:
+    "[org.springframework]": DEBUG
+    "[org.mybatis]": DEBUG
+    root: DEBUG    
 # 서버 포트
 server:
   port: 8090
