@@ -3,6 +3,7 @@ package com.study.jimcarry.api;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -102,4 +103,10 @@ public class ReqQuotationRequest {
 	@NotBlank(message="생성자는 필수입니다.")
     private String ctr;
 	
+	//TODO 이사짐 관련 필드 추가..
+	//이사 짐 정보 리스트
+	private List<Integer> moveItemList;
+	
+	//이사 짐 정보 상세리스트
+	private List<Integer> moveItemDetailList;
 }

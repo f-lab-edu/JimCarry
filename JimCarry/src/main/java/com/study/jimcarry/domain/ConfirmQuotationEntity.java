@@ -4,6 +4,9 @@ import java.time.LocalDateTime;
 
 import lombok.Data;
 
+/**
+ * 견적확정 테이블
+ */
 @Data
 public class ConfirmQuotationEntity {
 	
