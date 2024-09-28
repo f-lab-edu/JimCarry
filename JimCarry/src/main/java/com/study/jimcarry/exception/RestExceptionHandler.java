@@ -30,24 +30,24 @@ public class RestExceptionHandler {
 	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
 	private static final Logger apilog = LoggerFactory.getLogger("API");
 	
-	@ExceptionHandler({BindException.class}) 
-	public ResponseEntity<CommonResponse> handleBindException(HttpServletRequest request, BindException ex){ 	
-
-    	log.debug("BindException : {}", ex);		
-		String message = ex.getMessage();
-		BindingResult bindingResult = ex.getBindingResult();
-		List<FieldError> errors = bindingResult.getFieldErrors();
-		if (errors.size() > 0 && StringUtils.isNotBlank(errors.get(0).getDefaultMessage())) {
-			message = errors.get(0).getDefaultMessage();
-		}
-		apilog.info("{} {} {} ", 
-				request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/'))
-				,HttpStatus.BAD_REQUEST
-				, message);
-		
-		return new ResponseEntity<>(new CommonResponse(HttpStatus.BAD_REQUEST.value(), message), 
-				HttpStatus.OK);
-    } 
+//	@ExceptionHandler({BindException.class}) 
+//	public ResponseEntity<CommonResponse> handleBindException(HttpServletRequest request, BindException ex){ 	
+//
+//    	log.debug("BindException : {}", ex);		
+//		String message = ex.getMessage();
+//		BindingResult bindingResult = ex.getBindingResult();
+//		List<FieldError> errors = bindingResult.getFieldErrors();
+//		if (errors.size() > 0 && StringUtils.isNotBlank(errors.get(0).getDefaultMessage())) {
+//			message = errors.get(0).getDefaultMessage();
+//		}
+//		apilog.info("{} {} {} ", 
+//				request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/'))
+//				,HttpStatus.BAD_REQUEST
+//				, message);
+//		
+//		return new ResponseEntity<>(new CommonResponse(HttpStatus.BAD_REQUEST.value(), message), 
+//				HttpStatus.OK);
+//    } 
 	
 	@ExceptionHandler({MethodArgumentNotValidException.class}) 
 	public ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException ex){ 	

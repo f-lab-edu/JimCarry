@@ -23,6 +23,7 @@ import com.study.jimcarry.service.ConfirmQuotationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,7 @@ public class ConfirmQuotationController {
     @PostMapping(value = "/save")
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "Insert ConfirmQuotation", description="견적확정 정보 저장")
-	public ResponseEntity<ConfirmQuotaionResponse> saveConfirmQuotation(@RequestBody ConfirmQuotationRequest reqeust, ConfirmQuotaionResponse response) throws Exception {
+	public ResponseEntity<ConfirmQuotaionResponse> saveConfirmQuotation(@RequestBody @Valid ConfirmQuotationRequest reqeust, ConfirmQuotaionResponse response) throws Exception {
     	ConfirmQuotationEntity confirmQuotationEntity = modelMapper.map(reqeust, ConfirmQuotationEntity.class);
     	confirmQuotationService.saveConfirmQuotation(confirmQuotationEntity);
 		return new ResponseEntity<ConfirmQuotaionResponse>(response, HttpStatus.OK);
@@ -67,7 +68,7 @@ public class ConfirmQuotationController {
     @PostMapping(value = "/modify")
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "Modify ConfirmQuotation", description="견적확정 정보 수정")
-	public ResponseEntity<ConfirmQuotaionResponse> modifyConfirmQuotation(@RequestBody ConfirmQuotationRequest reqeust, ConfirmQuotaionResponse response) throws Exception {
+	public ResponseEntity<ConfirmQuotaionResponse> modifyConfirmQuotation(@RequestBody @Valid ConfirmQuotationRequest reqeust, ConfirmQuotaionResponse response) throws Exception {
     	ConfirmQuotationEntity confirmQuotationEntity = modelMapper.map(reqeust, ConfirmQuotationEntity.class);
     	confirmQuotationService.modifyConfrimQuotation(confirmQuotationEntity);
 		return new ResponseEntity<ConfirmQuotaionResponse>(response, HttpStatus.OK);
