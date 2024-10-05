@@ -1,1 +1,1 @@
-접근 제어자(private, protected, public)가 없는 이유는 무엇인가요?
+private ModelMapper modelMapper = new ModelMapper(); 중복 코드가 존재합니다. 개선할 방법이 있을까요?
