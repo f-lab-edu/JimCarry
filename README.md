@@ -1,1 +1,1 @@
-private ModelMapper modelMapper = new ModelMapper(); 중복 코드가 존재합니다. 개선할 방법이 있을까요?
+테스트 클래스 단위가 너무 넓습니다. 테스트 코드는 Mock을 활용한 단순 API Spec에 대한 단위 테스트로 보입니다. @WebMvcTest를 활용하는 단위 테스트 형태로 수정되면 좋겠습니다.
