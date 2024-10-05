@@ -73,7 +73,7 @@ public class RestExceptionHandler {
 	//TO-BE
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException ex) {
-	    log.debug("MethodArgumentNotValidException : {}", ex);
+	    log.info("MethodArgumentNotValidException : {}", ex);
 
 	    List<String> errorMessages = ex.getBindingResult().getFieldErrors().stream()
 	            .map(FieldError::getDefaultMessage)
@@ -93,7 +93,7 @@ public class RestExceptionHandler {
 	public ResponseEntity<CommonResponse> handleTaException(HttpServletRequest request, CustomException ex){ 
 
     	log.error("GatewayException : {}", ex.getMessage());		
-    	log.debug("GatewayException : {}", ex);		
+    	log.info("GatewayException : {}", ex);		
     	apilog.info("{} {} {} ", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')), 
 				ex.getCode(), ex.getMessage());
 		return new ResponseEntity<>(new CommonResponse(ex.getCode(), ex.getMessage()), 
@@ -104,7 +104,7 @@ public class RestExceptionHandler {
     public ResponseEntity<CommonResponse> handleOtherException(HttpServletRequest request, Exception ex){
     	
     	log.error("Exception : {}", ex.getMessage());		
-    	log.debug("Exception : {}", ex);		
+    	log.info("Exception : {}", ex);		
     	apilog.info("{} {} {}", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')), 
 				HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 		return new ResponseEntity<>(new CommonResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
