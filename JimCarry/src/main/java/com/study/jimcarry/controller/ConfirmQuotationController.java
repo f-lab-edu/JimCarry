@@ -52,7 +52,7 @@ public class ConfirmQuotationController {
     @PostMapping(value = "") //행위(method)는 URL에 포함하지 않는다.
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "Insert ConfirmQuotation", description="견적확정 정보 저장")
-	public ResponseEntity<ConfirmQuotaionResponse> saveConfirmQuotation(@RequestBody @Valid ConfirmQuotationRequest reqeust, ConfirmQuotaionResponse response) throws Exception {
+	public ResponseEntity<ConfirmQuotaionResponse> saveConfirmQuotation(@RequestBody @Valid ConfirmQuotationRequest reqeust, ConfirmQuotaionResponse response) {
     	ConfirmQuotationEntity confirmQuotationEntity = modelMapper.map(reqeust, ConfirmQuotationEntity.class);
     	confirmQuotationService.saveConfirmQuotation(confirmQuotationEntity);
 		return new ResponseEntity<ConfirmQuotaionResponse>(response, HttpStatus.OK);
@@ -90,7 +90,7 @@ public class ConfirmQuotationController {
     @DeleteMapping(value = "/{quotationid}")
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "Delete ConfirmQuotation", description="견적 확정정보 삭제(철회)")
-    public ResponseEntity<ConfirmQuotaionResponse> deleteReqQuotation(@PathVariable("quotationid") String quotationId, ConfirmQuotaionResponse response) throws Exception {
+    public ResponseEntity<ConfirmQuotaionResponse> deleteReqQuotation(@PathVariable("quotationid") String quotationId, ConfirmQuotaionResponse response) {
     	confirmQuotationService.deleteConfirmQuotation(quotationId);
 		return new ResponseEntity<ConfirmQuotaionResponse>(response, HttpStatus.OK);
     }
@@ -106,7 +106,7 @@ public class ConfirmQuotationController {
     @GetMapping(value = "/drivers/{driverid}")
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "get ConfirmQuotationList", description="기사님별 견적확정 정보 조회")
-    public ResponseEntity<ConfirmQuotaionResponse> getConfirmQuotationList(@PathVariable("driverid") String driverId, ConfirmQuotaionResponse response) throws Exception {
+    public ResponseEntity<ConfirmQuotaionResponse> getConfirmQuotationList(@PathVariable("driverid") String driverId, ConfirmQuotaionResponse response) {
     	List<ConfirmQuotation> ConfirmQuotationList = confirmQuotationService.getConfirmQuotationListByDriver(driverId);
     	response.setConfrimQuotationList(ConfirmQuotationList);
 		return new ResponseEntity<ConfirmQuotaionResponse>(response, HttpStatus.OK);
@@ -123,7 +123,7 @@ public class ConfirmQuotationController {
     @GetMapping(value = "/customers/{customerid}")
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "get ConfirmQuotation", description="사용자별 견적 확정정보 조회")
-    public ResponseEntity<ConfirmQuotaionResponse> getConfirmQuotation(@PathVariable("customerid") String customerId, ConfirmQuotaionResponse response) throws Exception {
+    public ResponseEntity<ConfirmQuotaionResponse> getConfirmQuotation(@PathVariable("customerid") String customerId, ConfirmQuotaionResponse response) {
     	ConfirmQuotation confirmQuotation = confirmQuotationService.getConfirmQuotationByUser(customerId);
     	response.setConfrimQuotation(confirmQuotation);
 		return new ResponseEntity<ConfirmQuotaionResponse>(response, HttpStatus.OK);
