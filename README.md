@@ -1,1 +1,2 @@
-API 설계 기준이 있습니까? RESTful API 규칙을 위배하지 않도록 API 스펙을 조정해 주세요. #12
+## JimCarry ERD
+![JimCarry drawio](https://github.com/user-attachments/assets/b15e39b0-3bf3-4626-ade4-45b3a69455cb)
