@@ -36,11 +36,13 @@ import lombok.extern.slf4j.Slf4j;
 public class ConfirmQuotationController {
 	
 	@Autowired
-	ConfirmQuotationService confirmQuotationService;
+	private ConfirmQuotationService confirmQuotationService;
 
+	@Autowired
+	private ModelMapper modelMapper;
+	
 	Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-	private ModelMapper modelMapper = new ModelMapper();
-
+	
 	/**
 	 * 견적 확정 정보 저장
 	 * @param reqeust

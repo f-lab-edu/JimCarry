@@ -38,12 +38,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ReqQuotationController {
 	
 	@Autowired
-	ReqQuotationService reqQuotationService;
-
-	Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+	private ReqQuotationService reqQuotationService;
 	
-	//TODO Java @Bean으로 등록하기
-	private ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 	
 	/**
 	 * 견적요청서 저장
