@@ -10,7 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class ConfirmQuotationRequest {
+public class MovingInfoRequest {
 	
 	//견적요청_ID
 	@JsonProperty("ReqQuotationId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
@@ -18,11 +18,11 @@ public class ConfirmQuotationRequest {
 	@NotBlank(message="견적 요청 ID는 필수입니다.")
 	private String ReqQuotationId;
 	
-	//견적확정일시
-	@JsonProperty("ConfirmQuotationDt") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
-	@Schema(name="ConfirmQuotationDt", description="견적확정일시") //Swagger/OpenAPI 문서를 자동 생성
-	@NotNull(message="견적 요청 일시는 필수입니다.")
-	private LocalDateTime ConfirmQuotationDt;
+	//견적채택일시
+	@JsonProperty("AcceptQuotationDt") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+	@Schema(name="AcceptQuotationDt", description="견적채택일시") //Swagger/OpenAPI 문서를 자동 생성
+	@NotNull(message="견적 채택 일시는 필수입니다.")
+	private LocalDateTime AcceptQuotationDt;
 	
 	//고객 아이디
 	@JsonProperty("customerId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
@@ -36,10 +36,18 @@ public class ConfirmQuotationRequest {
 	@NotBlank(message="기사님 ID는 필수입니다.")
 	private String driverId;
 
+	//이사상태
+	/**
+	 * InProgress(이사중), Complete(이사완료)
+	 */
+	@JsonProperty("movingState") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+	@Schema(name="movingState", description="이사상태") //Swagger/OpenAPI 문서를 자동 생성
+	@NotBlank(message="이사상태는 필수입니다.")
+	private String movingState;
+	
     // 생성자
 	@JsonProperty("ctr") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
 	@Schema(name="ctr", description="생성자") //Swagger/OpenAPI 문서를 자동 생성
 	@NotBlank(message="생성자는 필수입니다.")
     private String ctr;
-	
 }

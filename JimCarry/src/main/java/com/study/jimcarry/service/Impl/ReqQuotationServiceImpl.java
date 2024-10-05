@@ -22,7 +22,8 @@ public class ReqQuotationServiceImpl implements ReqQuotationService {
 	@Autowired
 	ReqQuotationMapper reqQuotationMapper;
 	
-	private ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	private ModelMapper modelMapper;
 	
 	@Override
 	public int saveReqQuotation(ReqQuotationEntity reqQuotationEntity) {

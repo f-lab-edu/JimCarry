@@ -20,7 +20,8 @@ public class ConfirmQuotationServiceImpl implements ConfirmQuotationService {
 	@Autowired
 	ConfirmQuotationMapper confirmQuotationMapper;
 	
-	private ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	private ModelMapper modelMapper;
 
 	@Override
 	public int saveConfirmQuotation(ConfirmQuotationEntity confirmQuotationEntity) {
