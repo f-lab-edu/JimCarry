@@ -1,18 +1,24 @@
 package com.study.jimcarry.controller;
 
+import java.util.List;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.study.jimcarry.api.ConfirmQuotaionResponse;
 import com.study.jimcarry.api.MovingInfoRequest;
 import com.study.jimcarry.api.MovingInfoResponse;
+import com.study.jimcarry.api.ReqQuotaionResponse;
 import com.study.jimcarry.domain.MovingInfoEntity;
+import com.study.jimcarry.model.MovingInfo;
+import com.study.jimcarry.model.ReqQuotation;
 import com.study.jimcarry.service.MovingInfoService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -47,4 +53,57 @@ public class MovinfInfoController {
     	movingInfoService.saveMovingInfo(movingInfoEntity);
 		return new ResponseEntity<MovingInfoResponse>(response, HttpStatus.OK);
 	}
+    
+    /**
+     * 이사정보 전체 조회
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @GetMapping("/list")
+    @Tag(name="MovingInfomation")
+    @Operation(summary = "get MovingInfomationList", description="이사정보 전체 조회")
+    public ResponseEntity<MovingInfoResponse> getReqQuotaionList() {
+    	MovingInfoResponse response = new MovingInfoResponse();
+    	List<MovingInfo> movingInfoList = movingInfoService.getMovingInfoList();
+    	response.setMovingInfoList(movingInfoList);
+    	return new ResponseEntity<MovingInfoResponse>(response, HttpStatus.OK);
+    }
+    
+    /**
+     * 사용자별 이사정보 조회
+     * @param customerId
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @GetMapping(value = "/customers/{customerid}")
+    @Tag(name="MovingInfomation")
+    @Operation(summary = "get MovingInfomation", description="사용자별 이사정보 조회")
+    public ResponseEntity<MovingInfoResponse> getMovingInfoBycustomer(@PathVariable("customerid") String customerId) {
+    	MovingInfoResponse response = new MovingInfoResponse();
+    	MovingInfo movingInfo = movingInfoService.getMovingInfoByCustomers(customerId);
+    	response.setMovingInfo(movingInfo);
+		return new ResponseEntity<MovingInfoResponse>(response, HttpStatus.OK);
+    }
+    
+    /**
+     * 기사님별 이사정보 조회
+     * @param driversId
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @GetMapping(value = "/drivers/{driverid}")
+    @Tag(name="MovingInfomation")
+    @Operation(summary = "get MovingInfomation", description="기사님별 이사정보 조회")
+    public ResponseEntity<MovingInfoResponse> getMovingInfoBydriver(@PathVariable("driverid") String driverId) {
+    	MovingInfoResponse response = new MovingInfoResponse();
+    	MovingInfo movingInfo = movingInfoService.getMovingInfoByDrivers(driverId);
+    	response.setMovingInfo(movingInfo);
+		return new ResponseEntity<MovingInfoResponse>(response, HttpStatus.OK);
+    }
 }

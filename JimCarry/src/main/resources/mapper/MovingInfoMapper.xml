@@ -8,5 +8,13 @@
     <insert id="insertMovingInfo">
 
     </insert>
-
+    <select id="selectMovingInfoList">
+    
+    </select>
+    <select id="selectMovingInfoByCustomers">
+    
+    </select>
+    <select id="selectMovingInfoByDrivers">
+    
+    </select>
 </mapper>
