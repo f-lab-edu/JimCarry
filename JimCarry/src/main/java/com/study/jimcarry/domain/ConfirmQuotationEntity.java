@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * 견적확정 테이블
  */
-@Data
+@Data //Lombok에서 @Getter, @Setter를 설정
 public class ConfirmQuotationEntity {
 	
 	// 견적요청_ID

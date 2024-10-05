@@ -30,12 +30,12 @@ import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Tag(name="ConfirmQuotation", description="ConfirmQuotation API")
-@Controller
-@RequestMapping(value = "/api/confirm-quotation")
+@Tag(name="ConfirmQuotation", description="ConfirmQuotation API") //OpenAPI/Swagger에서 API를 그룹화하는데 사용
+@Controller//해당 클래스가 웹 어플리케이션의 컨트롤러 임을 나타냄.
+@RequestMapping(value = "/api/confirm-quotation")//해당 Controller의 URL을 지정
 public class ConfirmQuotationController {
 	
-	@Autowired
+	@Autowired//@Service를 통행 등록 된 Bean을 Controller에서 사용 할 수 있게 자동 주입
 	private ConfirmQuotationService confirmQuotationService;
 
 	@Autowired
@@ -50,10 +50,10 @@ public class ConfirmQuotationController {
 	 * @return
 	 * @throws Exception
 	 */
-    @ResponseBody
+    @ResponseBody //응답 결과를 응답 몸체에 직접 작성함. 메소드의 return타입에 따라 String, Json으로 반환 됨
     @PostMapping(value = "") //행위(method)는 URL에 포함하지 않는다.
     @Tag(name="ConfirmQuotation")
-    @Operation(summary = "Insert ConfirmQuotation", description="견적확정 정보 저장")
+    @Operation(summary = "Insert ConfirmQuotation", description="견적확정 정보 저장")//OpenAPI/Swagger 사양에서 요약, 설명, 매개변수, 응답 코드 등과 같은 특정 API 엔드포인트에 대한 메타데이터를 제공하는 데 사용
 	public ResponseEntity<ConfirmQuotaionResponse> saveConfirmQuotation(@RequestBody @Valid ConfirmQuotationRequest reqeust) {
     	ConfirmQuotaionResponse response = new ConfirmQuotaionResponse();
     	ConfirmQuotationEntity confirmQuotationEntity = modelMapper.map(reqeust, ConfirmQuotationEntity.class);

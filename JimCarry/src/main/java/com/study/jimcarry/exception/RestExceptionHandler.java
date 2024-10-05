@@ -22,8 +22,8 @@ import jakarta.servlet.http.HttpServletRequest;
 /**
  * Exception handle
  */
-@ControllerAdvice
-@Order(Ordered.HIGHEST_PRECEDENCE)
+@ControllerAdvice //애플리케이션 내의 모든 컨트롤러에서 발생한 예외를 처리하는 메서드를 정의
+@Order(Ordered.HIGHEST_PRECEDENCE)//실행 순서를 가장 높은 우선순위로 지정함
 public class RestExceptionHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
@@ -71,7 +71,7 @@ public class RestExceptionHandler {
 //    } 
 	
 	//TO-BE
-	@ExceptionHandler(MethodArgumentNotValidException.class)
+	@ExceptionHandler(MethodArgumentNotValidException.class)//@ExceptionHandler(Exception.class) 해당 예외에 대해서 처리를 진행
 	public ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException ex) {
 	    log.debug("MethodArgumentNotValidException : {}", ex);
 

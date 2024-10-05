@@ -2,7 +2,7 @@ package com.study.jimcarry.exception;
 
 import org.springframework.http.HttpStatus;
 
-@SuppressWarnings("serial")
+@SuppressWarnings("serial")//직렬화에 대한 경고를 무시 함 
 public class CustomException extends RuntimeException {
 
 	//private static final long serialVersionUID = 1L;

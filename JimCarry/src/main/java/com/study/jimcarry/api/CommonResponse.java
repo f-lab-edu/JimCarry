@@ -19,10 +19,10 @@ public class CommonResponse {
 	/**
 	 * 응답코드
 	 */
-	@Schema(name="resultCode", description = "응답코드")
-	@JsonProperty("resultCode")
-    @Expose
-    @SerializedName("resultCode")
+	@Schema(name="resultCode", description = "응답코드") //Swagger/OpenAPI 주석 의 일부이며 API 모델을 설명하는 데 사용
+	@JsonProperty("resultCode") //Jackson 라이브러리에서 사용 하는 것으로 Json에서 Java객체를 직렬화/역직렬화 할때 사용
+    @Expose //Gson 라이브러리로 Java에서 Json을 처리 하기 위해 사용
+    @SerializedName("resultCode") //Gson 라이브러리로 객체가 직렬화 되거나 역직렬화 할 때 사용
 	private int resultCode = 0;
 	
 	/**

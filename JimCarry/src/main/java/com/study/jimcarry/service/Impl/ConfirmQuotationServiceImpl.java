@@ -14,7 +14,7 @@ import com.study.jimcarry.mapper.ConfirmQuotationMapper;
 import com.study.jimcarry.model.ConfirmQuotation;
 import com.study.jimcarry.service.ConfirmQuotationService;
 
-@Service
+@Service //해당 클래스를 Service로 Bean 컨터네이너(IoC)에 등록함
 public class ConfirmQuotationServiceImpl implements ConfirmQuotationService {
 
 	@Autowired
