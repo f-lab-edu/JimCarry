@@ -1,1 +1,1 @@
-파라미터에 ConfirmQuotaionResponse response 를 받고 있습니다. 인자로 받는 이유가 있을까요?
+운영 환경에서는 debug 레벨이 아닐 가능성이 높습니다. 적절한 로그 레벨로 변경해 주세요.
