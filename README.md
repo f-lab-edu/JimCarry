@@ -1,1 +1,2 @@
-HttpStatus.BAD_REQUEST상태 코드로 응답하면 되는데, HttpStatus.OK가 사용되는 이유는 무엇인가요?
+## JimCarry ERD
+![JimCarry drawio](https://github.com/user-attachments/assets/b15e39b0-3bf3-4626-ade4-45b3a69455cb)
