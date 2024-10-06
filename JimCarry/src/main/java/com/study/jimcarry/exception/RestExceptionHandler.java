@@ -67,7 +67,7 @@ public class RestExceptionHandler {
 				, message);
 		
 		return new ResponseEntity<>(new CommonResponse(HttpStatus.BAD_REQUEST.value(), message), 
-				HttpStatus.OK);
+				HttpStatus.BAD_REQUEST);
     } 
 	
 	@ExceptionHandler({CustomException.class}) 
@@ -78,7 +78,7 @@ public class RestExceptionHandler {
     	apilog.info("{} {} {} ", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')), 
 				ex.getCode(), ex.getMessage());
 		return new ResponseEntity<>(new CommonResponse(ex.getCode(), ex.getMessage()), 
-				HttpStatus.OK);
+				HttpStatus.BAD_REQUEST);
     }
 
 	@ExceptionHandler(Exception.class)
@@ -89,7 +89,7 @@ public class RestExceptionHandler {
     	apilog.info("{} {} {}", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')), 
 				HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 		return new ResponseEntity<>(new CommonResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
-				ex.getMessage()), HttpStatus.OK);
+				ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }  
 
 }
