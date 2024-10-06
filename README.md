@@ -1,1 +1,2 @@
-Http의 상태 코드는 해당 클래스에서 이미 표준화된 변수가 있기 때문에 이를 사용하도록 수정해 주세요. #21
+ ## JimCarry ERD
+![JimCarry drawio](https://github.com/user-attachments/assets/b15e39b0-3bf3-4626-ade4-45b3a69455cb)
