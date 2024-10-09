@@ -5,10 +5,10 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
- * 견적확정 테이블
+ * 이사정보 테이블
  */
-@Data //Lombok에서 @Getter, @Setter를 설정
-public class ConfirmQuotationEntity {
+@Data
+public class MovingInfoEntity {
 	
 	// 견적요청_ID
 	private String reqQuotationId;
@@ -21,7 +21,10 @@ public class ConfirmQuotationEntity {
 	
 	// 기사님 아이디
 	private String driverId;
-
+	
+	//이사 상태
+	private String movingState;
+	
 	// 생성자
 	private String ctr;
 }

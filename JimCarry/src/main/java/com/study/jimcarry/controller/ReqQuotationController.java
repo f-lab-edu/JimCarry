@@ -38,12 +38,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ReqQuotationController {
 	
 	@Autowired
-	ReqQuotationService reqQuotationService;
-
-	Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+	private ReqQuotationService reqQuotationService;
 	
-	//TODO Java @Bean으로 등록하기
-	private ModelMapper modelMapper = new ModelMapper();
+	@Autowired
+	private ModelMapper modelMapper;
+	
+	Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 	
 	/**
 	 * 견적요청서 저장
@@ -56,7 +56,8 @@ public class ReqQuotationController {
     @PostMapping(value = "")//행위(method)는 URL에 포함하지 않는다.
     @Tag(name="ReqQuotaion")
     @Operation(summary = "Insert ReqQuotaion", description="견적요청서 저장")
-	public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest reqeust, ReqQuotaionResponse response) throws Exception {
+	public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest reqeust) {
+    	ReqQuotaionResponse response = new ReqQuotaionResponse();
     	
     	//TODO 메소드 시그니처 측면에서 고민해볼 내용
     	//TODO Response
@@ -95,8 +96,8 @@ public class ReqQuotationController {
     @Tag(name="ReqQuotaion")
     @Operation(summary = "Modify ReqQuotaion", description="견적요청서 수정")
 	public ResponseEntity<ReqQuotaionResponse> modifyReqQuotation(@RequestBody @Valid ReqQuotationRequest reqeust, 
-			@PathVariable("quotationid") String quotationId,
-			ReqQuotaionResponse response) throws Exception {
+			@PathVariable("quotationid") String quotationId) {
+    	ReqQuotaionResponse response = new ReqQuotaionResponse();
 		ReqQuotationEntity reqQuotationEntity = modelMapper.map(reqeust, ReqQuotationEntity.class);
 		reqQuotationEntity.setReqQuotationId(quotationId);
 		reqQuotationService.modifyReqQuotation(reqQuotationEntity);
@@ -114,7 +115,8 @@ public class ReqQuotationController {
     @DeleteMapping(value = "/{quotationid}")
     @Tag(name="ReqQuotaion")
     @Operation(summary = "Delete ReqQuotaion", description="견적요청서 삭제")
-    public ResponseEntity<ReqQuotaionResponse> deleteReqQuotation(@PathVariable("quotationid") String quotationId, ReqQuotaionResponse response) throws Exception {
+    public ResponseEntity<ReqQuotaionResponse> deleteReqQuotation(@PathVariable("quotationid") String quotationId) {
+    	ReqQuotaionResponse response = new ReqQuotaionResponse();
     	reqQuotationService.deleteReqQuotation(quotationId);
 		return new ResponseEntity<ReqQuotaionResponse>(response, HttpStatus.OK);
     }
@@ -129,7 +131,8 @@ public class ReqQuotationController {
     @GetMapping("/list")
     @Tag(name="ReqQuotaion")
     @Operation(summary = "get ReqQuotaionList", description="견적요청서 전체 조회")
-    public ResponseEntity<ReqQuotaionResponse> getReqQuotaionList(ReqQuotaionResponse response) throws Exception {
+    public ResponseEntity<ReqQuotaionResponse> getReqQuotaionList() {
+    	ReqQuotaionResponse response = new ReqQuotaionResponse();
     	List<ReqQuotation> reqQuotationList = reqQuotationService.getReqQuotationList();
     	response.setReqQuotationList(reqQuotationList);
     	return new ResponseEntity<ReqQuotaionResponse>(response, HttpStatus.OK);
@@ -146,7 +149,8 @@ public class ReqQuotationController {
     @GetMapping(value = "/customers/{customerid}")
     @Tag(name="ReqQuotaion")
     @Operation(summary = "get ReqQuotaion", description="사용자별 견적요청서 조회")
-    public ResponseEntity<ReqQuotaionResponse> getReqQuotation(@PathVariable("customerid") String customerId, ReqQuotaionResponse response) throws Exception {
+    public ResponseEntity<ReqQuotaionResponse> getReqQuotation(@PathVariable("customerid") String customerId) {
+    	ReqQuotaionResponse response = new ReqQuotaionResponse();
     	ReqQuotation reqQuotation = reqQuotationService.getReqQuotationByUser(customerId);
     	response.setReqQuotation(reqQuotation);
 		return new ResponseEntity<ReqQuotaionResponse>(response, HttpStatus.OK);
@@ -164,7 +168,8 @@ public class ReqQuotationController {
     @PatchMapping(value = "/{reqquotationid}/{isaccepted}")
     @Tag(name="ReqQuotaion")
     @Operation(summary = "update ReqQuotaion isAccepted", description="견적요청 채택 상태 갱신")
-    public ResponseEntity<ReqQuotaionResponse> patchQuotationIsAccepted(@PathVariable("reqquotationid") String reqQuotationId, @PathVariable("isaccepted") Boolean isAccepted, ReqQuotaionResponse response) throws Exception {
+    public ResponseEntity<ReqQuotaionResponse> patchQuotationIsAccepted(@PathVariable("reqquotationid") String reqQuotationId, @PathVariable("isaccepted") Boolean isAccepted) {
+    	ReqQuotaionResponse response = new ReqQuotaionResponse();
     	reqQuotationService.updateReqQuotationIsAccepted(reqQuotationId, isAccepted);
     	return new ResponseEntity<ReqQuotaionResponse>(response, HttpStatus.OK);
     }
