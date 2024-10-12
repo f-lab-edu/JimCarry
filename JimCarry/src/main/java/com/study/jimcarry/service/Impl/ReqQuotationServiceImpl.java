@@ -19,11 +19,13 @@ import com.study.jimcarry.service.ReqQuotationService;
 @Service
 public class ReqQuotationServiceImpl implements ReqQuotationService {
 
-	@Autowired
-	ReqQuotationMapper reqQuotationMapper;
-	
-	@Autowired
-	private ModelMapper modelMapper;
+    private final ReqQuotationMapper reqQuotationMapper;
+    private final ModelMapper modelMapper;
+
+    public ReqQuotationServiceImpl(ReqQuotationMapper reqQuotationMapper, ModelMapper modelMapper) {
+        this.reqQuotationMapper = reqQuotationMapper;
+        this.modelMapper = modelMapper;
+    }
 	
 	@Override
 	public int saveReqQuotation(ReqQuotationEntity reqQuotationEntity) {
@@ -42,7 +44,11 @@ public class ReqQuotationServiceImpl implements ReqQuotationService {
 
 	    // 조합된 문자열을 ID로 설정
 	    String generatedId = generatedIdBuilder.toString();
-	    reqQuotationEntity.setReqQuotationId(generatedId);
+	    
+	    // 빌더 패턴을 사용하여 reqQuotationEntity 생성
+	    reqQuotationEntity = reqQuotationEntity.toBuilder()
+				            .reqQuotationId(generatedId)
+				            .build();
 	    
 	    //TODO 이삿 짐 정보 저장 로직 추가 예정
 	    //request에서 이상 짐 정보를 List로 받아와서 for문을 돌릴지 고민중..
