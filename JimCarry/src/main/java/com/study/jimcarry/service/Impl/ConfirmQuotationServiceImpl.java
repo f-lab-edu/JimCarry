@@ -17,12 +17,14 @@ import com.study.jimcarry.service.ConfirmQuotationService;
 @Service //해당 클래스를 Service로 Bean 컨터네이너(IoC)에 등록함
 public class ConfirmQuotationServiceImpl implements ConfirmQuotationService {
 
-	@Autowired
-	ConfirmQuotationMapper confirmQuotationMapper;
-	
-	@Autowired
-	private ModelMapper modelMapper;
+    private final ConfirmQuotationMapper confirmQuotationMapper;
+    private final ModelMapper modelMapper;
 
+    public ConfirmQuotationServiceImpl(ConfirmQuotationMapper confirmQuotationMapper, ModelMapper modelMapper) {
+        this.confirmQuotationMapper = confirmQuotationMapper;
+        this.modelMapper = modelMapper;
+    }
+    
 	@Override
 	public int saveConfirmQuotation(ConfirmQuotationEntity confirmQuotationEntity) {
 		return confirmQuotationMapper.insertConfirmQuotation(confirmQuotationEntity);

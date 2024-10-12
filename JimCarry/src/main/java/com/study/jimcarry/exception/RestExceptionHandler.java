@@ -74,15 +74,23 @@ public class RestExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)//@ExceptionHandler(Exception.class) 해당 예외에 대해서 처리를 진행
 	public ResponseEntity<CommonResponse> handleMethodArgumentNotValidException(HttpServletRequest request, MethodArgumentNotValidException ex) {
 	    log.debug("MethodArgumentNotValidException : {}", ex);
-
-	    List<String> errorMessages = ex.getBindingResult().getFieldErrors().stream()
+	    //AS-IS
+//	    List<String> errorMessages = ex.getBindingResult().getFieldErrors().stream()
+//	            .map(FieldError::getDefaultMessage)
+//	            .filter(StringUtils::isNotBlank)
+//	            .collect(Collectors.toList());
+//
+//	    String message = errorMessages.isEmpty() ? ex.getMessage() : errorMessages.get(0);
+//	    log.error("message: {}", message);
+	    
+	    //TO-BE
+	    String message = ex.getBindingResult().getFieldErrors().stream()
 	            .map(FieldError::getDefaultMessage)
 	            .filter(StringUtils::isNotBlank)
-	            .collect(Collectors.toList());
+	            .findFirst()
+	            .orElse(ex.getMessage());
 
-	    String message = errorMessages.isEmpty() ? ex.getMessage() : errorMessages.get(0);
 	    log.error("message: {}", message);
-
 	    apilog.info("{} {} {}", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')),
 	            HttpStatus.BAD_REQUEST, message);
 
