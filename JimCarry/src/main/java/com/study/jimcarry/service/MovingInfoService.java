@@ -2,10 +2,13 @@ package com.study.jimcarry.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.study.jimcarry.domain.MovingInfoEntity;
 import com.study.jimcarry.model.MovingInfo;
 
-public interface MovingInfoService {
+@Service
+public class MovingInfoService {
 	
 	/**
 	 * 이사정보 저장(견적 채택)

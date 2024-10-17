@@ -13,7 +13,7 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
-public class ConfirmQuotaionResponse extends CommonResponse {
+public class ConfirmQuotationResponse extends CommonResponse {
 	
 	//견적요청서
 	@Schema(name="confrimQuotation", description = "견적확정 정보")
