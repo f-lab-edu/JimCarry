@@ -5,7 +5,7 @@ import java.util.List;
 import com.study.jimcarry.domain.ConfirmQuotationEntity;
 import com.study.jimcarry.model.ConfirmQuotation;
 
-public interface ConfirmQuotationService {
+public class ConfirmQuotationService {
 	
 	/**
 	 * 견적확정 정보 저장 

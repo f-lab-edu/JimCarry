@@ -53,7 +53,6 @@ public class ConfirmQuotationController {
 	 * @return
 	 * @throws Exception
 	 */
-    @ResponseBody //응답 결과를 응답 몸체에 직접 작성함. 메소드의 return타입에 따라 String, Json으로 반환 됨
     @PostMapping(value = "") //행위(method)는 URL에 포함하지 않는다.
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "Insert ConfirmQuotation", description="견적확정 정보 저장")//OpenAPI/Swagger 사양에서 요약, 설명, 매개변수, 응답 코드 등과 같은 특정 API 엔드포인트에 대한 메타데이터를 제공하는 데 사용
@@ -73,18 +72,18 @@ public class ConfirmQuotationController {
      * @return
      * @throws Exception
      */
-    @ResponseBody
     @PutMapping(value = "/{quotationid}") //PUT방식은 전체의 리소스를 교체 할 때 사용하고, PATCH는 리소스의 일부분을 교체 할 때 사용.
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "Modify ConfirmQuotation", description="견적확정 정보 수정")
 	public ResponseEntity<ConfirmQuotationResponse> modifyConfirmQuotation(
 			@PathVariable("quotationid") String quotationId,
-			@RequestBody @Valid ConfirmQuotationRequest reqeust) {
-       	ConfirmQuotationResponse response = new ConfirmQuotationResponse();
-    	ConfirmQuotationEntity confirmQuotationEntity = modelMapper.map(reqeust, ConfirmQuotationEntity.class);
-    	confirmQuotationEntity.setReqQuotationId(quotationId);
-    	confirmQuotationService.modifyConfrimQuotation(confirmQuotationEntity);
-		return new ResponseEntity<ConfirmQuotationResponse>(response, HttpStatus.OK);
+			@RequestBody @Valid ConfirmQuotationRequest request) {
+    	confirmQuotationService.modifyConfrimQuotation(modelMapper.map(request, ConfirmQuotationEntity.class)
+    		    .toBuilder()
+    		    .reqQuotationId(quotationId)
+    		    .build()
+    		);
+		return ResponseEntity.ok(new ConfirmQuotationResponse());
 	}
     
     /**
@@ -94,7 +93,6 @@ public class ConfirmQuotationController {
      * @return
      * @throws Exception
      */
-    @ResponseBody
     @DeleteMapping(value = "/{quotationid}")
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "Delete ConfirmQuotation", description="견적 확정정보 삭제(철회)")
@@ -111,7 +109,6 @@ public class ConfirmQuotationController {
      * @return
      * @throws Exception
      */
-    @ResponseBody
     @GetMapping(value = "/drivers/{driverid}")
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "get ConfirmQuotationList", description="기사님별 견적확정 정보 조회")
@@ -129,7 +126,6 @@ public class ConfirmQuotationController {
      * @return
      * @throws Exception
      */
-    @ResponseBody
     @GetMapping(value = "/customers/{customerid}")
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "get ConfirmQuotation", description="사용자별 견적 확정정보 조회")

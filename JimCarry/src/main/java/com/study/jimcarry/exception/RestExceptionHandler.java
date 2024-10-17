@@ -27,7 +27,7 @@ import jakarta.servlet.http.HttpServletRequest;
 public class RestExceptionHandler {
 
 	private static final Logger log = LoggerFactory.getLogger(RestExceptionHandler.class);
-	private static final Logger apilog = LoggerFactory.getLogger("API");
+	//private static final Logger apilog = LoggerFactory.getLogger("API");
 	
 //	@ExceptionHandler({BindException.class}) 
 //	public ResponseEntity<CommonResponse> handleBindException(HttpServletRequest request, BindException ex){ 	
@@ -91,7 +91,7 @@ public class RestExceptionHandler {
 	            .orElse(ex.getMessage());
 
 	    log.error("message: {}", message);
-	    apilog.info("{} {} {}", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')),
+	    log.info("{} {} {}", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')),
 	            HttpStatus.BAD_REQUEST, message);
 
 	    return new ResponseEntity<>(new CommonResponse(HttpStatus.BAD_REQUEST.value(), message), HttpStatus.BAD_REQUEST);
@@ -102,7 +102,7 @@ public class RestExceptionHandler {
 
     	log.error("GatewayException : {}", ex.getMessage());		
     	log.debug("GatewayException : {}", ex);		
-    	apilog.info("{} {} {} ", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')), 
+    	log.info("{} {} {} ", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')), 
 				ex.getCode(), ex.getMessage());
 		return new ResponseEntity<>(new CommonResponse(ex.getCode(), ex.getMessage()), 
 				HttpStatus.BAD_REQUEST);
@@ -113,7 +113,7 @@ public class RestExceptionHandler {
     	
     	log.error("Exception : {}", ex.getMessage());		
     	log.debug("Exception : {}", ex);		
-    	apilog.info("{} {} {}", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')), 
+    	log.info("{} {} {}", request.getRequestURI().substring(request.getRequestURI().lastIndexOf('/')), 
 				HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
 		return new ResponseEntity<>(new CommonResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), 
 				ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
