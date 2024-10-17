@@ -2,10 +2,13 @@ package com.study.jimcarry.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.study.jimcarry.domain.ReqQuotationEntity;
 import com.study.jimcarry.model.ReqQuotation;
 
-public interface ReqQuotationService {
+@Service
+public class ReqQuotationService {
 	
 	/**
 	 * 견적요청서 작성

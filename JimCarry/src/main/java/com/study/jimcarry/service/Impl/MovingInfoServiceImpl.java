@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.study.jimcarry.domain.MovingInfoEntity;
@@ -13,6 +14,7 @@ import com.study.jimcarry.mapper.ReqQuotationMapper;
 import com.study.jimcarry.model.MovingInfo;
 import com.study.jimcarry.service.MovingInfoService;
 
+@Service
 public class MovingInfoServiceImpl implements MovingInfoService {
 	
     private final MovingInfoMapper movingMapper;
