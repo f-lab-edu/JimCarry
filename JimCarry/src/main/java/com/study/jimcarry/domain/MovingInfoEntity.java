@@ -1,20 +1,25 @@
 package com.study.jimcarry.domain;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * 이사정보 테이블
  */
-@Data
+@Getter
+@Builder
 public class MovingInfoEntity {
 	
 	// 견적요청_ID
 	private String reqQuotationId;
 
-	// 견적확정일시
-	private LocalDateTime confirmQuotationDt;
+	// 견적채택일시
+	private LocalDateTime acceptQuotationDt;
 
 	// 고객 아이디
 	private String customerId;

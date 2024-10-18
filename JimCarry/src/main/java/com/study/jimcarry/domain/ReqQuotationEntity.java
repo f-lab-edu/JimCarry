@@ -4,12 +4,14 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
 /**
  * 견적요청 테이블
  */
-@Data
+@Getter
+@Builder
 public class ReqQuotationEntity {
 	
 	// 견적요청_ID
@@ -54,4 +56,8 @@ public class ReqQuotationEntity {
 	// 채택 여부
 	private boolean isAccepted;
 
+	public ReqQuotationEntityBuilder toBuilder() {
+	    return ReqQuotationEntity.builder()
+	            .reqQuotationId(this.reqQuotationId);
+	}
 }

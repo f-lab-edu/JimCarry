@@ -13,16 +13,16 @@ import lombok.Data;
 public class MovingInfoRequest {
 	
 	//견적요청_ID
-	@JsonProperty("ReqQuotationId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
-	@Schema(name="ReqQuotationId", description="견적요청_ID") //Swagger/OpenAPI 문서를 자동 생성
+	@JsonProperty("reqQuotationId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+	@Schema(name="reqQuotationId", description="견적요청_ID") //Swagger/OpenAPI 문서를 자동 생성
 	@NotBlank(message="견적 요청 ID는 필수입니다.")
-	private String ReqQuotationId;
+	private String reqQuotationId;
 	
 	//견적채택일시
-	@JsonProperty("AcceptQuotationDt") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
-	@Schema(name="AcceptQuotationDt", description="견적채택일시") //Swagger/OpenAPI 문서를 자동 생성
+	@JsonProperty("acceptQuotationDt") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+	@Schema(name="acceptQuotationDt", description="견적채택일시") //Swagger/OpenAPI 문서를 자동 생성
 	@NotNull(message="견적 채택 일시는 필수입니다.")
-	private LocalDateTime AcceptQuotationDt;
+	private LocalDateTime acceptQuotationDt;
 	
 	//고객 아이디
 	@JsonProperty("customerId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑

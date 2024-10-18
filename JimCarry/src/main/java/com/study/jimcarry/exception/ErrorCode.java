@@ -8,7 +8,8 @@ public enum ErrorCode {
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "권한이 없음"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "접근이 금지됨"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "내부 서버 오류"),
-    BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청");
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청"),
+    CONFLICT(HttpStatus.CONFLICT, "이미 존재하는 자원입니다.");
 
     private final HttpStatus status;
     private final String message;
