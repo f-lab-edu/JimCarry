@@ -1,11 +1,23 @@
 package com.study.jimcarry.security;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.study.jimcarry.model.ReqQuotation;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
 @SuppressWarnings("serial")
+@Getter
+@Builder
+@AllArgsConstructor
 public class CustomUserDetail implements UserDetails {
 	
 	private String userId;

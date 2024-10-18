@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.study.jimcarry.domain.RoleEntity;
 import com.study.jimcarry.domain.UserEntity;
-import com.study.jimcarry.service.AuthService;
+import com.study.jimcarry.service.UserService;
 import com.study.jimcarry.type.UserType;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AuthTest {
 	
-   private final AuthService authService; // 필드 정의
+   private final UserService authService; // 필드 정의
 
    @Autowired
-   public AuthTest(AuthService authService) { // 생성자 주입
+   public AuthTest(UserService authService) { // 생성자 주입
        this.authService = authService;
    }
 

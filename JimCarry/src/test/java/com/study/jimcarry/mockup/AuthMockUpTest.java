@@ -18,14 +18,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.study.jimcarry.api.AuthRequest;
-import com.study.jimcarry.controller.AuthController;
-import com.study.jimcarry.service.AuthService;
+import com.study.jimcarry.api.UserRequest;
+import com.study.jimcarry.controller.UserController;
+import com.study.jimcarry.service.UserService;
 import com.study.jimcarry.type.UserType;
 
 import lombok.extern.slf4j.Slf4j;
 
-@WebMvcTest(AuthController.class) 
+@WebMvcTest(UserController.class) 
 @Slf4j
 public class AuthMockUpTest {
 
@@ -33,7 +33,7 @@ public class AuthMockUpTest {
     private MockMvc mockMvc;
 
     @MockBean 
-    private AuthService authService;
+    private UserService authService;
     
     @MockBean
     private ModelMapper modelMapper; // ModelMapper를 Mock으로 설정
@@ -42,7 +42,7 @@ public class AuthMockUpTest {
     public void saveUserTest() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        AuthRequest request = new AuthRequest();
+        UserRequest request = new UserRequest();
         request.setUserName("TEST_USER");
         request.setPassword("12345");
         request.setPhoneNumber("010-9999-8888");

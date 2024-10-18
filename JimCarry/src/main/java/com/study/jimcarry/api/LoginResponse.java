@@ -20,7 +20,7 @@ public class LoginResponse extends CommonResponse {
 	@JsonProperty("userInfo")
     @Expose
     @SerializedName("userInfo")
-	UserInfo userInfo;
+	private UserInfo userInfo;
 
 	public LoginResponse() {}
 	

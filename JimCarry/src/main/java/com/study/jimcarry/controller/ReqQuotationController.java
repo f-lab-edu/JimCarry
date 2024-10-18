@@ -22,6 +22,7 @@ import com.study.jimcarry.domain.ReqQuotationEntity;
 import com.study.jimcarry.exception.CustomException;
 import com.study.jimcarry.exception.ErrorCode;
 import com.study.jimcarry.model.ReqQuotation;
+import com.study.jimcarry.service.MovingInfoService;
 import com.study.jimcarry.service.ReqQuotationService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,24 +31,26 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Tag(name="ReqQuotation", description="ReqQuotation API")
 @RestController
 @RequestMapping(value = "/api/req-quotation")
+@RequiredArgsConstructor
 public class ReqQuotationController {
 	
-    private final Validator validator;
+//    private final Validator validator;
     private final ReqQuotationService reqQuotationService;
-    private final ModelMapper modelMapper;
+//    private final ModelMapper modelMapper;
 
     // 생성자 주입 방식
-    public ReqQuotationController(Validator validator, ReqQuotationService reqQuotationService, ModelMapper modelMapper) {
-        this.validator = validator;
-        this.reqQuotationService = reqQuotationService;
-        this.modelMapper = modelMapper;
-    }
+//    public ReqQuotationController(Validator validator, ReqQuotationService reqQuotationService, ModelMapper modelMapper) {
+//        this.validator = validator;
+//        this.reqQuotationService = reqQuotationService;
+//        this.modelMapper = modelMapper;
+//    }
     
 	/**
 	 * 견적요청서 저장
@@ -59,13 +62,28 @@ public class ReqQuotationController {
     @PostMapping
     @Tag(name="ReqQuotaion")
     @Operation(summary = "Insert ReqQuotaion", description="견적요청서 저장")
-	public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest reqeust) {
-        return ResponseEntity.ok(
-            modelMapper.map(
-                reqQuotationService.saveReqQuotation(modelMapper.map(reqeust, ReqQuotationEntity.class)),
-                ReqQuotaionResponse.class
-            )
-        );
+	public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest request) {
+    	
+		ReqQuotation reqQuotation = ReqQuotation.builder()
+	    		.reqQuotationDt(request.getReqQuotationDt())
+	    		.customerId(request.getCustomerId())
+	    		.departureAddress(request.getDepartureAddress())
+	    		.destinationAddress(request.getDestinationAddress())
+	    		.movingDate(request.getMovingDate())
+	    		.buildingType(request.getBuildingType())
+	    		.roomStructure(request.getRoomStructure())
+	    		.houseArea(request.getHouseArea())
+	    		.hasElevator(request.isHasElevator())
+	    		.hasParking(request.isHasParking())
+	    		.boxCount(request.getBoxCount())
+	    		.requestedEstimate(request.getRequestedEstimate())
+	    		.isAccepted(request.isAccepted())
+	    		.build();
+    	
+		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
+				.resultRow(reqQuotationService.saveReqQuotation(reqQuotation))
+				.build();
+        return ResponseEntity.ok(response);
 	}
     
     /**
@@ -80,12 +98,29 @@ public class ReqQuotationController {
     @Operation(summary = "Modify ReqQuotaion", description="견적요청서 수정")
 	public ResponseEntity<ReqQuotaionResponse> modifyReqQuotation(@RequestBody @Valid ReqQuotationRequest request, 
 			@PathVariable("quotationid") String quotationId) {
-    		reqQuotationService.modifyReqQuotation(modelMapper.map(request, ReqQuotationEntity.class)
-    		    .toBuilder()
-    		    .reqQuotationId(quotationId)
-    		    .build()
-    		);
-		return ResponseEntity.ok(new ReqQuotaionResponse());
+    	
+		ReqQuotation reqQuotation = ReqQuotation.builder()
+				.reqQuotationId(quotationId)
+	    		.reqQuotationDt(request.getReqQuotationDt())
+	    		.customerId(request.getCustomerId())
+	    		.departureAddress(request.getDepartureAddress())
+	    		.destinationAddress(request.getDestinationAddress())
+	    		.movingDate(request.getMovingDate())
+	    		.buildingType(request.getBuildingType())
+	    		.roomStructure(request.getRoomStructure())
+	    		.houseArea(request.getHouseArea())
+	    		.hasElevator(request.isHasElevator())
+	    		.hasParking(request.isHasParking())
+	    		.boxCount(request.getBoxCount())
+	    		.requestedEstimate(request.getRequestedEstimate())
+	    		.isAccepted(request.isAccepted())
+	    		.build();
+		
+		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
+				.resultRow(reqQuotationService.modifyReqQuotation(reqQuotation))
+				.build();
+
+		return ResponseEntity.ok(response);
 	}
     
     /**
@@ -99,9 +134,10 @@ public class ReqQuotationController {
     @Tag(name="ReqQuotaion")
     @Operation(summary = "Delete ReqQuotaion", description="견적요청서 삭제")
     public ResponseEntity<ReqQuotaionResponse> deleteReqQuotation(@PathVariable("quotationid") String quotationId) {
-    	ReqQuotaionResponse response = new ReqQuotaionResponse();
-    	reqQuotationService.deleteReqQuotation(quotationId);
-		return new ResponseEntity<ReqQuotaionResponse>(response, HttpStatus.OK);
+		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
+				.resultRow(reqQuotationService.deleteReqQuotation(quotationId))
+				.build();
+		return ResponseEntity.ok(response);
     }
     
     /**
@@ -114,10 +150,10 @@ public class ReqQuotationController {
     @Tag(name="ReqQuotaion")
     @Operation(summary = "get ReqQuotaionList", description="견적요청서 전체 조회")
     public ResponseEntity<ReqQuotaionResponse> getReqQuotaionList() {
-    	ReqQuotaionResponse response = new ReqQuotaionResponse();
-    	List<ReqQuotation> reqQuotationList = reqQuotationService.getReqQuotationList();
-    	response.setReqQuotationList(reqQuotationList);
-    	return new ResponseEntity<ReqQuotaionResponse>(response, HttpStatus.OK);
+		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
+				.reqQuotationList(reqQuotationService.getReqQuotationList())
+				.build();
+		return ResponseEntity.ok(response);
     }
     
     /**
@@ -131,10 +167,11 @@ public class ReqQuotationController {
     @Tag(name="ReqQuotaion")
     @Operation(summary = "get ReqQuotaion", description="사용자별 견적요청서 조회")
     public ResponseEntity<ReqQuotaionResponse> getReqQuotation(@PathVariable("customerid") String customerId) {
-    	ReqQuotaionResponse response = new ReqQuotaionResponse();
-    	ReqQuotation reqQuotation = reqQuotationService.getReqQuotationByUser(customerId);
-    	response.setReqQuotation(reqQuotation);
-		return new ResponseEntity<ReqQuotaionResponse>(response, HttpStatus.OK);
+		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
+				.reqQuotation(reqQuotationService.getReqQuotationByUser(customerId))
+				.reqQuotationList(reqQuotationService.getReqQuotationList())
+				.build();
+		return ResponseEntity.ok(response);
     }
     
     /**
@@ -150,8 +187,10 @@ public class ReqQuotationController {
     @Tag(name="ReqQuotaion")
     @Operation(summary = "update ReqQuotaion isAccepted", description="견적요청 채택 상태 갱신")
     public ResponseEntity<ReqQuotaionResponse> patchQuotationIsAccepted(@RequestBody @Valid ReqQuotationRequest reqeust) {
-    	ReqQuotaionResponse response = new ReqQuotaionResponse();
-    	reqQuotationService.updateReqQuotationIsAccepted(reqeust.getReqQuotationId(), reqeust.isAccepted());
-    	return new ResponseEntity<ReqQuotaionResponse>(response, HttpStatus.OK);
+    	
+		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
+				.resultRow(reqQuotationService.updateReqQuotationIsAccepted(reqeust.getReqQuotationId(), reqeust.isAccepted()))
+				.build();
+		return ResponseEntity.ok(response);
     }
 }

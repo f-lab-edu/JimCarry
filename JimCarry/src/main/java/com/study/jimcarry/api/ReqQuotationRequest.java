@@ -68,7 +68,7 @@ public class ReqQuotationRequest {
 	@JsonProperty("houseArea") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
 	@Schema(name="houseArea", description="집 평수") //Swagger/OpenAPI 문서를 자동 생성
 	@NotBlank(message="집 평수는 필수입니다.")
-    private String houseArea;
+    private double houseArea;
 
     // 엘리베이터 여부
 	@JsonProperty("hasElevator") //클라이언트에서 requestBody에 json으로 보낼 때 매핑

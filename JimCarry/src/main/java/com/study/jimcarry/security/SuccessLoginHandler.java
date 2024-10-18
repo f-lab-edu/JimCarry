@@ -27,13 +27,14 @@ public class SuccessLoginHandler implements AuthenticationSuccessHandler {
 			CustomUserDetail loginUser = (CustomUserDetail)authentication.getPrincipal();
 	        
 	        //사용자 정보
-	        UserInfo userInfo = new UserInfo();
-	        userInfo.setUserId(loginUser.getUserId());
-	        userInfo.setUserName(loginUser.getUserName());
-	        userInfo.setPassword(loginUser.getPassword());
-	        userInfo.setEmail(loginUser.getEmail());
-	        userInfo.setUserType(loginUser.getUserType());
-	        
+			UserInfo userInfo = UserInfo.builder()
+					.userId(loginUser.getUserId())
+					.userName(loginUser.getUserName())
+					.userType(loginUser.getUserType())
+					.password(loginUser.getPassword())
+					.email(loginUser.getEmail())
+					.build();
+		
 	        // LoginResponse 객체를 JSON으로 변환
 	        ObjectMapper objectMapper = new ObjectMapper();
 	        String jsonResponse = objectMapper.writeValueAsString(new LoginResponse(userInfo));

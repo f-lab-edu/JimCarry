@@ -18,8 +18,8 @@ public class MovingInfoEntity {
 	// 견적요청_ID
 	private String reqQuotationId;
 
-	// 견적확정일시
-	private LocalDateTime confirmQuotationDt;
+	// 견적채택일시
+	private LocalDateTime acceptQuotationDt;
 
 	// 고객 아이디
 	private String customerId;

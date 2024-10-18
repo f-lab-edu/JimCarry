@@ -23,5 +23,5 @@ public class LogoutResponse extends CommonResponse {
 	@JsonProperty("logOutUrl")
     @Expose
     @SerializedName("logOutUrl")
-	String logOutUrl = "/login";;
+	private String logOutUrl = "/login";;
 }

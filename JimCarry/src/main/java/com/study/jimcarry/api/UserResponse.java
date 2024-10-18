@@ -14,7 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
-public class AuthResponse extends CommonResponse {
+public class UserResponse extends CommonResponse {
 	
 	@Schema(name="resultRow", description = "저장/수정 시 행 결과")
 	@JsonProperty("resultRow")

@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 @RequiredArgsConstructor //Lombok에서 제공하는 어노테이션으로, final이나 @NonNull이 붙은 필드에 대해 생성자를 자동으로 생성해주는 역할
-public class AuthService {
+public class UserService {
 	
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
@@ -49,10 +49,10 @@ public class AuthService {
 	public String findUserId(UserInfo userInfo) {
 		
 		//Builder 패턴으로 컨트롤러에서 넘겨 받은 UserInfo를 UserEntity로 변환
-				UserEntity userEntity = UserEntity.builder()
-						.userName(userInfo.getUserName())
-						.email(userInfo.getEmail())
-						.build();
+		UserEntity userEntity = UserEntity.builder()
+				.userName(userInfo.getUserName())
+				.email(userInfo.getEmail())
+				.build();
 				
 		UserEntity findUser = userMapper.findUserId(userEntity);
 		if(findUser.getUserId() == null) {
