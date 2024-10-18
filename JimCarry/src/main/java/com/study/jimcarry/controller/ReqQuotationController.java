@@ -53,7 +53,7 @@ public class ReqQuotationController {
     @Operation(summary = "Insert ReqQuotaion", description="견적요청서 저장")
     //2.Control에서 유효성 검증을 책임하는 객체의 외존성을 제외합시다. AOP를 활용하여 코드를 개선해 보세요.
     @ValidateFields({"reqQuotationDt", "customerId", "departureAddress", "destinationAddress", "movingDate"})
-    public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest request) {
+    public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody ReqQuotationRequest request) {
     	
 		ReqQuotation reqQuotation = ReqQuotation.builder()
 	    		.reqQuotationDt(request.getReqQuotationDt())

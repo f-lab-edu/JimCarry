@@ -4,11 +4,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
@@ -31,10 +31,7 @@ public class ReqQuotationMockUpTest {
 
     @MockBean // ReqQuotationService를 Mock으로 설정
     private ReqQuotationService reqQuotationService;
-    
-    @MockBean
-    private ModelMapper modelMapper; // ModelMapper를 Mock으로 설정
-    
+     
     @Test
     public void saveReqQuotationTest() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();

@@ -49,10 +49,10 @@ public class ConfirmQuotationController {
 	 * @return
 	 * @throws Exception
 	 */
-    @PostMapping(value = "") //행위(method)는 URL에 포함하지 않는다.
+    @PostMapping //행위(method)는 URL에 포함하지 않는다.
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "Insert ConfirmQuotation", description="견적확정 정보 저장")//OpenAPI/Swagger 사양에서 요약, 설명, 매개변수, 응답 코드 등과 같은 특정 API 엔드포인트에 대한 메타데이터를 제공하는 데 사용
-	public ResponseEntity<ConfirmQuotationResponse> saveConfirmQuotation(@RequestBody @Valid ConfirmQuotationRequest request) {
+	public ResponseEntity<ConfirmQuotationResponse> saveConfirmQuotation(@RequestBody ConfirmQuotationRequest request) {
        
     	/**
     	 * 1. 유효성 검증을 책임하는 객체를 사용하도록 관련 비즈니스 로직을 리팩토링하세요.

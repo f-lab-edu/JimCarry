@@ -51,6 +51,7 @@ public class MovingInfoController {
     	//3.Spring 컨텍스트 내에서 유효성 검증을 지원합니다. BindingResult 방식으로 개선하세요.
         if (bindingResult.hasErrors()) {
             FieldError fieldError = bindingResult.getFieldError();
+            log.info("fieldError => {}", fieldError);
             if (fieldError != null) {
                 throw new CustomException(ErrorCode.BAD_REQUEST.getCode(), fieldError.getDefaultMessage());
             }

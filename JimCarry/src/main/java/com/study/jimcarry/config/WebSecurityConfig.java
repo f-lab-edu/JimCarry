@@ -27,9 +27,9 @@ public class WebSecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         //.cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(authorize -> authorize
-        	    .requestMatchers("/api/auth/**").permitAll()
+        	    //.requestMatchers("/api/auth/**").permitAll()
         	    //.requestMatchers("/static/**").permitAll()
-                .requestMatchers(AntPathRequestMatcher.antMatcher("/api/**")).authenticated()
+                //.requestMatchers(AntPathRequestMatcher.antMatcher("/api/**")).authenticated()
                 .anyRequest().permitAll()
                 )
         	.formLogin(login -> login.loginPage("/login.html")

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.study.jimcarry.domain.RoleEntity;
 import com.study.jimcarry.domain.UserEntity;
+import com.study.jimcarry.model.UserInfo;
 import com.study.jimcarry.service.UserService;
 import com.study.jimcarry.type.UserType;
 
@@ -51,7 +52,7 @@ public class AuthTest {
 	void saveUserTest() {
 		
 	    // given
-		UserEntity user = UserEntity.builder()
+		UserInfo user = UserInfo.builder()
 //						.userName("USER_1")
 //						.password("12345")
 //						.phoneNumber("010-1111-2222")
