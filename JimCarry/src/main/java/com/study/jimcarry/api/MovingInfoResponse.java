@@ -9,9 +9,14 @@ import com.google.gson.annotations.SerializedName;
 import com.study.jimcarry.model.MovingInfo;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
+@AllArgsConstructor
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
 public class MovingInfoResponse extends CommonResponse {
 	
@@ -20,12 +25,18 @@ public class MovingInfoResponse extends CommonResponse {
 	@JsonProperty("movingInfo")
     @Expose
     @SerializedName("movingInfo")
-	MovingInfo movingInfo;
+	private MovingInfo movingInfo;
 	
 	//이사정보 리스트
 	@Schema(name="movingInfoList", description = "이사정보 리스트")
 	@JsonProperty("movingInfoList")
     @Expose
     @SerializedName("movingInfoList")
-	List<MovingInfo> movingInfoList;
+	private List<MovingInfo> movingInfoList;
+	
+	@Schema(name="resultRow", description = "저장/수정 시 행 결과")
+	@JsonProperty("resultRow")
+    @Expose
+    @SerializedName("resultRow")
+	private int resultRow;
 }

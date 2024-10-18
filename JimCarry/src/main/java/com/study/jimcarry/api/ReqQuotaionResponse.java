@@ -9,9 +9,14 @@ import com.google.gson.annotations.SerializedName;
 import com.study.jimcarry.model.ReqQuotation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
+@AllArgsConstructor
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
 public class ReqQuotaionResponse extends CommonResponse {
 	
@@ -20,12 +25,18 @@ public class ReqQuotaionResponse extends CommonResponse {
 	@JsonProperty("reqQuotation")
     @Expose
     @SerializedName("reqQuotation")
-	ReqQuotation reqQuotation;
+	private ReqQuotation reqQuotation;
 	
 	//견적요청서 리스트
 	@Schema(name="reqQuotationList", description = "견적요청서 리스트")
 	@JsonProperty("reqQuotationList")
     @Expose
     @SerializedName("reqQuotationList")
-	List<ReqQuotation> reqQuotationList;
+	private List<ReqQuotation> reqQuotationList;
+	
+	@Schema(name="resultRow", description = "저장/수정 시 행 결과")
+	@JsonProperty("resultRow")
+    @Expose
+    @SerializedName("resultRow")
+	private int resultRow;
 }

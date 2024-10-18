@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class AuthRequest {
+public class UserRequest {
 	
 	@JsonProperty("userId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
 	@Schema(name="userId", description="사용자 아이디") //Swagger/OpenAPI 문서를 자동 생성
