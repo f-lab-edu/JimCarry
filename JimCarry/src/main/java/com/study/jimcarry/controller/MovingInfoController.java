@@ -2,30 +2,26 @@ package com.study.jimcarry.controller;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.study.jimcarry.api.MovingInfoRequest;
 import com.study.jimcarry.api.MovingInfoResponse;
-import com.study.jimcarry.api.ReqQuotaionResponse;
-import com.study.jimcarry.domain.MovingInfoEntity;
-import com.study.jimcarry.domain.ReqQuotationEntity;
+import com.study.jimcarry.exception.CustomException;
+import com.study.jimcarry.exception.ErrorCode;
 import com.study.jimcarry.model.MovingInfo;
-import com.study.jimcarry.service.ConfirmQuotationService;
 import com.study.jimcarry.service.MovingInfoService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping(value = "/api/moving-info")//해당 Controller의 URL을 지정
 @RequiredArgsConstructor
-public class MovinfInfoController {
+public class MovingInfoController {
 	
 //    private final Validator validator;
     private final MovingInfoService movingInfoService;
@@ -50,8 +46,16 @@ public class MovinfInfoController {
     @PostMapping(value = "") //행위(method)는 URL에 포함하지 않는다.
     @Tag(name="MovingInfomation")
     @Operation(summary = "Insert MovingInfomation", description="이사 정보 저장")//OpenAPI/Swagger 사양에서 요약, 설명, 매개변수, 응답 코드 등과 같은 특정 API 엔드포인트에 대한 메타데이터를 제공하는 데 사용
-	public ResponseEntity<MovingInfoResponse> saveMovingInfomation(@RequestBody @Valid MovingInfoRequest request) {
+	public ResponseEntity<MovingInfoResponse> saveMovingInfomation(@RequestBody @Valid MovingInfoRequest request, BindingResult bindingResult) {
     	
+    	//3.Spring 컨텍스트 내에서 유효성 검증을 지원합니다. BindingResult 방식으로 개선하세요.
+        if (bindingResult.hasErrors()) {
+            FieldError fieldError = bindingResult.getFieldError();
+            if (fieldError != null) {
+                throw new CustomException(ErrorCode.BAD_REQUEST.getCode(), fieldError.getDefaultMessage());
+            }
+        }
+        
 		MovingInfo movingInfo = MovingInfo.builder()
 				.reqQuotationId(request.getReqQuotationId())
 				.acceptQuotationDt(request.getAcceptQuotationDt())

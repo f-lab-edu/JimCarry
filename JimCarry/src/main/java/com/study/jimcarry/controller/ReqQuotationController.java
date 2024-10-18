@@ -1,10 +1,5 @@
 package com.study.jimcarry.controller;
 
-import java.util.List;
-import java.util.Set;
-
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,24 +8,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.study.jimcarry.annotation.ValidateFields;
 import com.study.jimcarry.api.ReqQuotaionResponse;
 import com.study.jimcarry.api.ReqQuotationRequest;
-import com.study.jimcarry.domain.ReqQuotationEntity;
-import com.study.jimcarry.exception.CustomException;
-import com.study.jimcarry.exception.ErrorCode;
 import com.study.jimcarry.model.ReqQuotation;
-import com.study.jimcarry.service.MovingInfoService;
 import com.study.jimcarry.service.ReqQuotationService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,7 +51,9 @@ public class ReqQuotationController {
     @PostMapping
     @Tag(name="ReqQuotaion")
     @Operation(summary = "Insert ReqQuotaion", description="견적요청서 저장")
-	public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest request) {
+    //2.Control에서 유효성 검증을 책임하는 객체의 외존성을 제외합시다. AOP를 활용하여 코드를 개선해 보세요.
+    @ValidateFields({"reqQuotationDt", "customerId", "departureAddress", "destinationAddress", "movingDate"})
+    public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest request) {
     	
 		ReqQuotation reqQuotation = ReqQuotation.builder()
 	    		.reqQuotationDt(request.getReqQuotationDt())
