@@ -39,4 +39,5 @@ public class ReqQuotaionResponse extends CommonResponse {
     @Expose
     @SerializedName("resultRow")
 	private int resultRow;
+	
 }

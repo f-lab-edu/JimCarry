@@ -32,8 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MovingInfoController {
 	
-//    private final Validator validator;
     private final MovingInfoService movingInfoService;
+//    private final Validator validator;
 //    private final ModelMapper modelMapper;
 
     // 생성자 주입 방식 생성자가 1개 일때 @Autowired 생략이 가능

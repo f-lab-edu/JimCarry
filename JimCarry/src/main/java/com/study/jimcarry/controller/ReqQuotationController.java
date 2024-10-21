@@ -30,8 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ReqQuotationController {
 	
-//    private final Validator validator;
     private final ReqQuotationService reqQuotationService;
+//    private final Validator validator;
 //    private final ModelMapper modelMapper;
 
     // 생성자 주입 방식

@@ -28,6 +28,8 @@ public class ReqQuotationService {
 	 * @return
 	 */
 	public int saveReqQuotation(ReqQuotation reqQuotation) {
+		
+		//FIXME Query단에서 처리가 가능
 	    // 최대 ID 가져오기
 	    int maxId = reqQuotationMapper.selectReqQuotationMaxId();
 
@@ -76,6 +78,7 @@ public class ReqQuotationService {
 	 */
 	public int modifyReqQuotation(ReqQuotation reqQuotation) {	
 		ReqQuotationEntity findReqQuotationEntity = reqQuotationMapper.selectReqQuotation(reqQuotation.getReqQuotationId());
+		//FIXME OPTIONAL로 변경
 		if(findReqQuotationEntity == null) {
 			throw new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
 		}

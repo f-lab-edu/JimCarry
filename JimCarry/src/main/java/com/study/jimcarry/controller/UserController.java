@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class UserController {
 
-	private final Validator validator;
+//	private final Validator validator;
 	private final UserService userService;
 
 //	public AuthController(Validator validator, AuthService authService, ModelMapper modelMapper) {
@@ -48,15 +48,15 @@ public class UserController {
 	@Operation(summary = "Insert userInfo", description = "사용자 정보 저장") // OpenAPI/Swagger 사양에서 요약, 설명, 매개변수, 응답 코드 등과 같은 특정 API 엔드포인트에 대한 메타데이터를 제공하는 데 사용
 	public ResponseEntity<UserResponse> saveUsers(@RequestBody UserRequest request) {
 
-		log.debug("Received request: {}", request);
-		String[] valids = { "userId", "userName", "email", "password", "userType", "phoneNumber" };
-		for (String field : valids) {
-			Set<ConstraintViolation<UserRequest>> violations = validator.validateProperty(request, field);
-			if (!violations.isEmpty()) {
-				ConstraintViolation<UserRequest> violation = violations.iterator().next();
-				throw new CustomException(ErrorCode.NOT_FOUND.getCode(), violation.getMessage());
-			}
-		}
+//		log.debug("Received request: {}", request);
+//		String[] valids = { "userId", "userName", "email", "password", "userType", "phoneNumber" };
+//		for (String field : valids) {
+//			Set<ConstraintViolation<UserRequest>> violations = validator.validateProperty(request, field);
+//			if (!violations.isEmpty()) {
+//				ConstraintViolation<UserRequest> violation = violations.iterator().next();
+//				throw new CustomException(ErrorCode.NOT_FOUND.getCode(), violation.getMessage());
+//			}
+//		}
 
 		UserInfo userInfo = UserInfo.builder().userId(request.getUserId()).userName(request.getUserName())
 				.password(request.getPassword()).phoneNumber(request.getPhoneNumber()).userType(request.getUserType())
@@ -73,14 +73,14 @@ public class UserController {
 																	// API 엔드포인트에 대한 메타데이터를 제공하는 데 사용
 	public ResponseEntity<UserResponse> findUserId(@RequestBody UserRequest request) {
 		log.debug("Received request: {}", request);
-		String[] valids = { "userName", "email" };
-		for (String field : valids) {
-			Set<ConstraintViolation<UserRequest>> violations = validator.validateProperty(request, field);
-			if (!violations.isEmpty()) {
-				ConstraintViolation<UserRequest> violation = violations.iterator().next();
-				throw new CustomException(ErrorCode.NOT_FOUND.getCode(), violation.getMessage());
-			}
-		}
+//		String[] valids = { "userName", "email" };
+//		for (String field : valids) {
+//			Set<ConstraintViolation<UserRequest>> violations = validator.validateProperty(request, field);
+//			if (!violations.isEmpty()) {
+//				ConstraintViolation<UserRequest> violation = violations.iterator().next();
+//				throw new CustomException(ErrorCode.NOT_FOUND.getCode(), violation.getMessage());
+//			}
+//		}
 
 		UserInfo userInfo = UserInfo.builder().userName(request.getUserName()).email(request.getEmail()).build();
 
@@ -95,14 +95,14 @@ public class UserController {
 																		// 특정 API 엔드포인트에 대한 메타데이터를 제공하는 데 사용
 	public ResponseEntity<UserResponse> changePassword(@RequestBody UserRequest request) {
 		log.debug("Received request: {}", request);
-		String[] valids = { "userId", "password", "curPassword" };
-		for (String field : valids) {
-			Set<ConstraintViolation<UserRequest>> violations = validator.validateProperty(request, field);
-			if (!violations.isEmpty()) {
-				ConstraintViolation<UserRequest> violation = violations.iterator().next();
-				throw new CustomException(ErrorCode.NOT_FOUND.getCode(), violation.getMessage());
-			}
-		}
+//		String[] valids = { "userId", "password", "curPassword" };
+//		for (String field : valids) {
+//			Set<ConstraintViolation<UserRequest>> violations = validator.validateProperty(request, field);
+//			if (!violations.isEmpty()) {
+//				ConstraintViolation<UserRequest> violation = violations.iterator().next();
+//				throw new CustomException(ErrorCode.NOT_FOUND.getCode(), violation.getMessage());
+//			}
+//		}
 
 		UserInfo userInfo = UserInfo.builder().userId(request.getUserId()).password(request.getPassword()).build();
 

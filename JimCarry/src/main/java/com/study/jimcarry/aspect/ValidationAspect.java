@@ -1,6 +1,7 @@
 package com.study.jimcarry.aspect;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -32,9 +33,11 @@ public class ValidationAspect {
    
             // 필드 목록을 가져옵니다.
             String[] fields = validateFields.value();
-
+            Object[] args = joinPoint.getArgs();
+            log.info("Arguments: {}", Arrays.toString(args));
             // 첫 번째 파라미터가 요청 객체라고 가정합니다.
             Object request = joinPoint.getArgs()[0];
+            
             log.info("Validating fields: {}", (Object) fields); // 추가된 로그
             log.info("Request object: {}", request); // 추가된 로그
             // ValidationService를 사용하여 유효성 검사 수행
