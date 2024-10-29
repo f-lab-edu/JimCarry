@@ -14,23 +14,23 @@ import lombok.Getter;
 @Builder
 public class ReqQuotationEntity {
 	
-	// 견적요청_ID
-	private String reqQuotationId;
+	// 견적요청 번호
+	private String quotationReqNo;
 
 	// 견적요청일시
-	private LocalDateTime reqQuotationDt;
+	private LocalDateTime quotationDt;
 
 	// 고객 아이디
-	private String customerId;
+	private String custId;
 
 	// 출발지 주소
-	private String departureAddress;
+	private String pickupAddr;
 
 	// 목적지 주소
-	private String destinationAddress;
+	private String deliveryAddr;
 
 	// 이사 예정일자
-	private LocalDate movingDate;
+	private LocalDate moveDt;
 
 	// 건물 종류 (빌라/연립, 오피스텔, 주택, 아파트, 상가/사무실)
 	private String buildingType;
@@ -39,25 +39,18 @@ public class ReqQuotationEntity {
 	private String roomStructure;
 
 	// 집 평수
-	private double houseArea;
+	private BigDecimal houseSize;
 
 	// 엘리베이터 여부
 	private boolean hasElevator;
-
-	// 주차 여부
-	private boolean hasParking;
 
 	// 짐 박스 갯수
 	private int boxCount;
 
 	// 견적요청 금액
-	private BigDecimal requestedEstimate;
+	private BigDecimal quotationAmount;
+	
+	//생성자
+	private Integer cid;
 
-	// 채택 여부
-	private boolean isAccepted;
-
-	public ReqQuotationEntityBuilder toBuilder() {
-	    return ReqQuotationEntity.builder()
-	            .reqQuotationId(this.reqQuotationId);
-	}
 }

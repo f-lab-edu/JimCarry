@@ -29,6 +29,7 @@ public interface ConfirmQuotationMapper {
 	 * @param reqQuotationId
 	 * @return
 	 */
+	//TODO DEL_YN? 삭제 고민중
 	int deleteConfirmQuotation(String reqQuotationId);
 	
 	/**

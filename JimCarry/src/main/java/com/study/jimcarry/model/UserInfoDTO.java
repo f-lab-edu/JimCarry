@@ -17,7 +17,7 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
-public class UserInfo {
+public class UserInfoDTO {
 	
 	/**
 	 * 유저 아이디

@@ -10,25 +10,25 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class MovingInfoRequest {
+public class QuotationAcceptRequest {
 	
-	//견적요청_ID
-	@JsonProperty("reqQuotationId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
-	@Schema(name="reqQuotationId", description="견적요청_ID") //Swagger/OpenAPI 문서를 자동 생성
-	@NotBlank(message="견적 요청 ID는 필수입니다.")
-	private String reqQuotationId;
+	//견적요청 번호
+	@JsonProperty("quotationReqNo") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+	@Schema(name="quotationReqNo", description="견적요청 번호") //Swagger/OpenAPI 문서를 자동 생성
+	@NotBlank(message="견적요청 번호는 필수입니다.")
+	private String quotationReqNo;
 	
 	//견적채택일시
-	@JsonProperty("acceptQuotationDt") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
-	@Schema(name="acceptQuotationDt", description="견적채택일시") //Swagger/OpenAPI 문서를 자동 생성
+	@JsonProperty("acceptDt") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+	@Schema(name="acceptDt", description="견적채택일시") //Swagger/OpenAPI 문서를 자동 생성
 	@NotNull(message="견적 채택 일시는 필수입니다.")
-	private LocalDateTime acceptQuotationDt;
+	private LocalDateTime acceptDt;
 	
 	//고객 아이디
-	@JsonProperty("customerId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
-	@Schema(name="customerId", description="고객 아이디") //Swagger/OpenAPI 문서를 자동 생성
+	@JsonProperty("custId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+	@Schema(name="custId", description="고객 아이디") //Swagger/OpenAPI 문서를 자동 생성
 	@NotBlank(message="고객 ID는 필수입니다.")
-	private String customerId;
+	private String custId;
 	
 	//기사님 아이디
 	@JsonProperty("driverId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
@@ -46,8 +46,8 @@ public class MovingInfoRequest {
 	private String movingState;
 	
     // 생성자
-	@JsonProperty("ctr") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
-	@Schema(name="ctr", description="생성자") //Swagger/OpenAPI 문서를 자동 생성
+	@JsonProperty("cid") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+	@Schema(name="cid", description="생성자") //Swagger/OpenAPI 문서를 자동 생성
 	@NotBlank(message="생성자는 필수입니다.")
-    private String ctr;
+    private Integer cid;
 }

@@ -4,35 +4,35 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.study.jimcarry.domain.MovingInfoEntity;
+import com.study.jimcarry.domain.QuotationAcceptEntity;
 
 @Mapper
-public interface MovingInfoMapper {
+public interface QuotationAcceptMapper {
 	
 	/**
 	 * 이사 채택
-	 * @param movingInfoEntity
+	 * @param QuotationAcceptEntity
 	 * @return
 	 */
-	int insertMovingInfo(MovingInfoEntity movingInfoEntity);
+	int insertQuotationAccept(QuotationAcceptEntity entity);
 	
 	/**
 	 * 이사내역 전체 조회
 	 * @return
 	 */
-	List<MovingInfoEntity> selectMovingInfoList();
+	List<QuotationAcceptEntity> selectQuotationAcceptList();
 	
 	/**
 	 * 고객별 이사내역 조회
 	 * @param customerId
 	 * @return
 	 */
-	MovingInfoEntity selectMovingInfoByCustomers(String customerId);
+	QuotationAcceptEntity selectQuotationAcceptByCustomers(String customerId);
 	
 	/**
 	 * 기사님별 이사내역 조회
 	 * @param driverId
 	 * @return
 	 */
-	MovingInfoEntity selectMovingInfoByDrivers(String driverId);
+	QuotationAcceptEntity selectQuotationAcceptByDrivers(String driverId);
 }

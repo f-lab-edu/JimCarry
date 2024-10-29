@@ -13,16 +13,16 @@ import lombok.Getter;
  */
 @Getter
 @Builder
-public class MovingInfoEntity {
+public class QuotationAcceptEntity {
 	
 	// 견적요청_ID
-	private String reqQuotationId;
+	private String quotationReqNo;
 
 	// 견적채택일시
-	private LocalDateTime acceptQuotationDt;
+	private LocalDateTime acceptDt;
 
 	// 고객 아이디
-	private String customerId;
+	private String custId;
 	
 	// 기사님 아이디
 	private String driverId;
@@ -31,5 +31,5 @@ public class MovingInfoEntity {
 	private String movingState;
 	
 	// 생성자
-	private String ctr;
+	private Integer cid;
 }

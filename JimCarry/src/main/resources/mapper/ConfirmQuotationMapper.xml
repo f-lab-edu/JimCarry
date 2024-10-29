@@ -3,26 +3,48 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.study.jimcarry.mapper.ConfrimQuotationMapper">
-	<select id="selectAllReqQuotations" resultType="ConfirmQuotationEntity">
+<mapper namespace="com.study.jimcarry.mapper.ConfirmQuotationMapper">
+	<select id="selectConfirmQuotationByDriver" resultType="ConfirmQuotationEntity">
 	
 	</select>
-	<select id="selectReqQuotationByUser" resultType="ConfirmQuotationEntity">
-	
+	<select id="selectConfirmQuotationByUser" resultType="ConfirmQuotationEntity">
+        SELECT 
+            quotaion_confrim_id
+            , QUOTATION_REQ_NO
+            , cust_id
+            , driver_id
+            , confrim_dt
+        FROM tbl_quotation_confirm 
+        WHERE driver_id = #{driverId}
 	</select>
-	<select id="selectReqQuotationMaxId" resultType="java.lang.Integer">
-	
-	</select>
-    <insert id="insertReqQuotation">
-
+    <insert id="insertConfirmQuotation" parameterType="ConfirmQuotationEntity">
+	    INSERT INTO tbl_quotation_confirm (
+	            QUOTATION_REQ_NO
+	            , cust_id
+	            , driver_id
+	            , confrim_dt
+	            , cid
+	        )
+        VALUES (
+            #{quotationReqNo}
+            , #{custId}
+            , #{driverId}
+            , #{confirmDt}
+            , #{cid}
+        )
     </insert>
-    <delete id="deleteReqQuotation">
+    <delete id="deleteConfirmQuotation">
 
     </delete>
-    <update id="updateReqQuotation">
-  
-    </update>
-    <update id="updateReqQuotationIsAccepted">
-  
+    <update id="updateConfirmQuotation">
+    	UPDATE tbl_quotation_confirm
+        SET 
+            QUOTATION_REQ_NO = #{quotationReqNo}
+            , cust_id = #{custId}
+            , driver_id = #{driverId}
+            , confrim_dt = #{confrimDt}
+            , uid = #{uid}
+            , udt = CURRENT_TIMESTAMP()
+        WHERE QUOTATION_REQ_NO = #{quotationReqNo}
     </update>
 </mapper>

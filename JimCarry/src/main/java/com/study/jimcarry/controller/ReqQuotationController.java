@@ -1,36 +1,28 @@
 package com.study.jimcarry.controller;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.study.jimcarry.api.MoveItemRequest;
 import com.study.jimcarry.api.ReqQuotaionResponse;
 import com.study.jimcarry.api.ReqQuotationRequest;
-import com.study.jimcarry.domain.ReqQuotationEntity;
-import com.study.jimcarry.exception.CustomException;
-import com.study.jimcarry.exception.ErrorCode;
-import com.study.jimcarry.model.ReqQuotation;
-import com.study.jimcarry.service.MovingInfoService;
+import com.study.jimcarry.model.MoveItemDTO;
+import com.study.jimcarry.model.ReqQuotationDTO;
 import com.study.jimcarry.service.ReqQuotationService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -64,24 +56,32 @@ public class ReqQuotationController {
     @Operation(summary = "Insert ReqQuotaion", description="견적요청서 저장")
 	public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest request) {
     	
-		ReqQuotation reqQuotation = ReqQuotation.builder()
-	    		.reqQuotationDt(request.getReqQuotationDt())
-	    		.customerId(request.getCustomerId())
-	    		.departureAddress(request.getDepartureAddress())
-	    		.destinationAddress(request.getDestinationAddress())
-	    		.movingDate(request.getMovingDate())
-	    		.buildingType(request.getBuildingType())
-	    		.roomStructure(request.getRoomStructure())
-	    		.houseArea(request.getHouseArea())
-	    		.hasElevator(request.isHasElevator())
-	    		.hasParking(request.isHasParking())
-	    		.boxCount(request.getBoxCount())
-	    		.requestedEstimate(request.getRequestedEstimate())
-	    		.isAccepted(request.isAccepted())
-	    		.build();
+    	ReqQuotationDTO reqQuotation = ReqQuotationDTO.builder()
+    	        .quotationDt(request.getQuotationDt())
+    	        .custId(request.getCustId())
+    	        .pickupAddr(request.getPickupAddr())
+    	        .deliveryAddr(request.getDeliveryAddr())
+    	        .moveDt(request.getMoveDt())
+    	        .buildingType(request.getBuildingType())
+    	        .roomStructure(request.getRoomStructure())
+    	        .houseSize(request.getHouseSize())
+    	        .hasElevator(request.isHasElevator())
+    	        .boxCount(request.getBoxCount())
+    	        .quotationAmount(request.getQuotationAmount())
+    	        .build();
+
+    	List<MoveItemDTO> dtoList = new ArrayList<>();
+    	for(MoveItemRequest mvReq : request.getMoveItemList()) {
+    		MoveItemDTO dto = MoveItemDTO.builder()
+    				.furnitureId(mvReq.getFurnitureId())
+    				.optionValId(mvReq.getOptionValId())
+    				.qty(mvReq.getQty())
+    				.build();
+    		dtoList.add(dto);
+    	}
     	
 		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
-				.resultRow(reqQuotationService.saveReqQuotation(reqQuotation))
+				.resultRow(reqQuotationService.saveReqQuotation(reqQuotation, dtoList))
 				.build();
         return ResponseEntity.ok(response);
 	}
@@ -99,23 +99,21 @@ public class ReqQuotationController {
 	public ResponseEntity<ReqQuotaionResponse> modifyReqQuotation(@RequestBody @Valid ReqQuotationRequest request, 
 			@PathVariable("quotationid") String quotationId) {
     	
-		ReqQuotation reqQuotation = ReqQuotation.builder()
-				.reqQuotationId(quotationId)
-	    		.reqQuotationDt(request.getReqQuotationDt())
-	    		.customerId(request.getCustomerId())
-	    		.departureAddress(request.getDepartureAddress())
-	    		.destinationAddress(request.getDestinationAddress())
-	    		.movingDate(request.getMovingDate())
-	    		.buildingType(request.getBuildingType())
-	    		.roomStructure(request.getRoomStructure())
-	    		.houseArea(request.getHouseArea())
-	    		.hasElevator(request.isHasElevator())
-	    		.hasParking(request.isHasParking())
-	    		.boxCount(request.getBoxCount())
-	    		.requestedEstimate(request.getRequestedEstimate())
-	    		.isAccepted(request.isAccepted())
-	    		.build();
-		
+	    	ReqQuotationDTO reqQuotation = ReqQuotationDTO.builder()
+	            .quotationReqNo(quotationId)
+	            .quotationDt(request.getQuotationDt())
+	            .custId(request.getCustId())
+	            .pickupAddr(request.getPickupAddr())
+	            .deliveryAddr(request.getDeliveryAddr())
+	            .moveDt(request.getMoveDt())
+	            .buildingType(request.getBuildingType())
+	            .roomStructure(request.getRoomStructure())
+	            .houseSize(request.getHouseSize())
+	            .hasElevator(request.isHasElevator())
+	            .boxCount(request.getBoxCount())
+	            .quotationAmount(request.getQuotationAmount())
+	            .build();
+	    		    	
 		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
 				.resultRow(reqQuotationService.modifyReqQuotation(reqQuotation))
 				.build();
@@ -174,23 +172,23 @@ public class ReqQuotationController {
 		return ResponseEntity.ok(response);
     }
     
-    /**
-     * 견적요청서 채택 상태 갱신
-     * @param reqQuotationId
-     * @param isAccepted
-     * @param response
-     * @return
-     * @throws Exception
-     */
-    //@PatchMapping(value = "/{reqquotationid}/{isaccepted}")
-    @PatchMapping
-    @Tag(name="ReqQuotaion")
-    @Operation(summary = "update ReqQuotaion isAccepted", description="견적요청 채택 상태 갱신")
-    public ResponseEntity<ReqQuotaionResponse> patchQuotationIsAccepted(@RequestBody @Valid ReqQuotationRequest reqeust) {
-    	
-		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
-				.resultRow(reqQuotationService.updateReqQuotationIsAccepted(reqeust.getReqQuotationId(), reqeust.isAccepted()))
-				.build();
-		return ResponseEntity.ok(response);
-    }
+//    /**
+//     * 견적요청서 채택 상태 갱신
+//     * @param reqQuotationId
+//     * @param isAccepted
+//     * @param response
+//     * @return
+//     * @throws Exception
+//     */
+//    //@PatchMapping(value = "/{reqquotationid}/{isaccepted}")
+//    @PatchMapping
+//    @Tag(name="ReqQuotaion")
+//    @Operation(summary = "update ReqQuotaion isAccepted", description="견적요청 채택 상태 갱신")
+//    public ResponseEntity<ReqQuotaionResponse> patchQuotationIsAccepted(@RequestBody @Valid ReqQuotationRequest reqeust) {
+//    	
+//		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
+//				.resultRow(reqQuotationService.updateReqQuotationIsAccepted(reqeust.getReqQuotationId(), reqeust.isAccepted()))
+//				.build();
+//		return ResponseEntity.ok(response);
+//    }
 }

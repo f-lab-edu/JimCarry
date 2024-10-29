@@ -19,7 +19,7 @@ import com.study.jimcarry.api.ConfirmQuotationRequest;
 import com.study.jimcarry.api.ReqQuotaionResponse;
 import com.study.jimcarry.domain.ConfirmQuotationEntity;
 import com.study.jimcarry.domain.ReqQuotationEntity;
-import com.study.jimcarry.model.ConfirmQuotation;
+import com.study.jimcarry.model.ConfirmQuotationDTO;
 import com.study.jimcarry.service.ConfirmQuotationService;
 import com.study.jimcarry.service.UserService;
 
@@ -60,10 +60,10 @@ public class ConfirmQuotationController {
     @Operation(summary = "Insert ConfirmQuotation", description="견적확정 정보 저장")//OpenAPI/Swagger 사양에서 요약, 설명, 매개변수, 응답 코드 등과 같은 특정 API 엔드포인트에 대한 메타데이터를 제공하는 데 사용
 	public ResponseEntity<ConfirmQuotationResponse> saveConfirmQuotation(@RequestBody @Valid ConfirmQuotationRequest request) {
     		
-    	ConfirmQuotation confirmQuotation = ConfirmQuotation.builder()
-    			.reqQuotationId(request.getReqQuotationId())
-    			.confirmQuotationDt(request.getConfirmQuotationDt())
-    			.customerId(request.getCustomerId())
+    	ConfirmQuotationDTO confirmQuotation = ConfirmQuotationDTO.builder()
+    			.quotationReqNo(request.getQuotationReqNo())
+    			.confirmDt(request.getConfirmDt())
+    			.custId(request.getCustId())
     			.driverId(request.getDriverId())
     			.build();
     	
@@ -88,11 +88,11 @@ public class ConfirmQuotationController {
 			@PathVariable("quotationid") String quotationId,
 			@RequestBody @Valid ConfirmQuotationRequest request) {
     	
-    	ConfirmQuotation confirmQuotation = ConfirmQuotation.builder()
-    			.reqQuotationId(quotationId)
+    	ConfirmQuotationDTO confirmQuotation = ConfirmQuotationDTO.builder()
+    			.quotationReqNo(quotationId)
     			.driverId(request.getDriverId())
-    			.customerId(request.getCustomerId())
-    			.confirmQuotationDt(request.getConfirmQuotationDt())
+    			.custId(request.getCustId())
+    			.confirmDt(request.getConfirmDt())
     			.build();
     	
     	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
@@ -131,7 +131,7 @@ public class ConfirmQuotationController {
     @Operation(summary = "get ConfirmQuotationList", description="기사님별 견적확정 정보 조회")
     public ResponseEntity<ConfirmQuotationResponse> getConfirmQuotationList(@PathVariable("driverid") String driverId) {
 
-    	List<ConfirmQuotation> ConfirmQuotationList = confirmQuotationService.getConfirmQuotationListByDriver(driverId);
+    	List<ConfirmQuotationDTO> ConfirmQuotationList = confirmQuotationService.getConfirmQuotationListByDriver(driverId);
     	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
     			.confrimQuotationList(ConfirmQuotationList)
     			.build();
@@ -149,7 +149,7 @@ public class ConfirmQuotationController {
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "get ConfirmQuotation", description="사용자별 견적 확정정보 조회")
     public ResponseEntity<ConfirmQuotationResponse> getConfirmQuotation(@PathVariable("customerid") String customerId){
-    	ConfirmQuotation confirmQuotation = confirmQuotationService.getConfirmQuotationByUser(customerId);
+    	ConfirmQuotationDTO confirmQuotation = confirmQuotationService.getConfirmQuotationByUser(customerId);
     	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
     			.confrimQuotation(confirmQuotation)
     			.build();

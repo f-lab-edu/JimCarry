@@ -8,7 +8,7 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.study.jimcarry.model.ReqQuotation;
+import com.study.jimcarry.model.ReqQuotationDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

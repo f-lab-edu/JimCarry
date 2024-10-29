@@ -3,16 +3,13 @@ package com.study.jimcarry.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.study.jimcarry.api.MoveItemRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 //@Data 
@@ -23,33 +20,32 @@ import lombok.Getter;
 */
 @Getter
 @Builder
-@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
-public class ReqQuotation {
+public class ReqQuotationDTO {
 	
 	// 견적요청_ID
-	@Schema(name = "reqQuotationId", description = "견적요청_ID")
-	private String reqQuotationId;
+	@Schema(name = "quotationReqNo", description = "견적요청 번호")
+	private String quotationReqNo;
 
 	// 견적요청일시
-	@Schema(name = "reqQuotationDt", description = "견적요청일시")
-	private LocalDateTime reqQuotationDt;
+	@Schema(name = "quotationDt", description = "견적요청일시")
+	private LocalDateTime quotationDt;
 
 	// 고객 아이디
-	@Schema(name = "customerId", description = "고객 아이디")
-	private String customerId;
+	@Schema(name = "custId", description = "고객 아이디")
+	private String custId;
 
 	// 출발지 주소
-	@Schema(name = "departureAddress", description = "출발지 주소")
-	private String departureAddress;
+	@Schema(name = "pickupAddr", description = "출발지 주소")
+	private String pickupAddr;
 
 	// 목적지 주소
-	@Schema(name = "destinationAddress", description = "목적지 주소")
-	private String destinationAddress;
+	@Schema(name = "deliveryAddr", description = "목적지 주소")
+	private String deliveryAddr;
 
 	// 이사 예정일자
-	@Schema(name = "movingDate", description = "이사 예정일자")
-	private LocalDate movingDate;
+	@Schema(name = "moveDt", description = "이사 예정일자")
+	private LocalDate moveDt;
 
 	// 건물 종류 (빌라/연립, 오피스텔, 주택, 아파트, 상가/사무실)
 	@Schema(name = "buildingType", description = "건물 종류 (빌라/연립, 오피스텔, 주택, 아파트, 상가/사무실)")
@@ -60,27 +56,26 @@ public class ReqQuotation {
 	private String roomStructure;
 
 	// 집 평수
-	@Schema(name = "houseArea", description = "집 평수")
-	private double houseArea;
+	@Schema(name = "houseSize", description = "집 평수")
+	private BigDecimal houseSize;
 
 	// 엘리베이터 여부
 	@Schema(name = "hasElevator", description = "엘리베이터 여부")
 	private boolean hasElevator;
-
-	// 주차 여부
-	@Schema(name = "hasParking", description = "주차 여부")
-	private boolean hasParking;
 
 	// 짐 박스 갯수
 	@Schema(name = "boxCount", description = "짐 박스 갯수")
 	private int boxCount;
 
 	// 견적요청 금액
-	@Schema(name = "requestedEstimate", description = "견적요청 금액")
-	private BigDecimal requestedEstimate;
+	@Schema(name = "quotationAmount", description = "견적요청 금액")
+	private BigDecimal quotationAmount;
 
-	// 채택 여부
-	@Schema(name = "isAccepted", description = "채택 여부")
-	private boolean isAccepted;
+	// 이사 짐 정보 리스트
+	@Schema(name = "moveItemList", description = "이사 짐 정보 리스트")
+	private List<MoveItemDTO> moveItemList;
+	
+	@Schema(name="cid", description="생성자") //Swagger/OpenAPI 문서를 자동 생성
+    private String cid;
 
 }

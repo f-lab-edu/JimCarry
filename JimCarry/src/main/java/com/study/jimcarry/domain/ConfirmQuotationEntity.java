@@ -17,23 +17,19 @@ import lombok.Getter;
 @Builder
 public class ConfirmQuotationEntity {
 	
-	// 견적요청_ID
-	private String reqQuotationId;
-
+	// 견적요청 번호
+	private String quotationReqNo;
+	
 	// 견적확정일시
-	private LocalDateTime confirmQuotationDt;
+	private LocalDateTime confirmDt;
 
 	// 고객 아이디
-	private String customerId;
+	private String custId;
 	
 	// 기사님 아이디
 	private String driverId;
 
 	// 생성자
-	private String ctr;
+	private Integer cid;
 	
-	public ConfirmQuotationEntityBuilder toBuilder() {
-	    return ConfirmQuotationEntity.builder()
-	            .reqQuotationId(this.reqQuotationId);
-	}
 }

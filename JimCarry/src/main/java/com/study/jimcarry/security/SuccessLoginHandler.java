@@ -8,7 +8,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.jimcarry.api.LoginResponse;
-import com.study.jimcarry.model.UserInfo;
+import com.study.jimcarry.model.UserInfoDTO;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,7 +27,7 @@ public class SuccessLoginHandler implements AuthenticationSuccessHandler {
 			CustomUserDetail loginUser = (CustomUserDetail)authentication.getPrincipal();
 	        
 	        //사용자 정보
-			UserInfo userInfo = UserInfo.builder()
+			UserInfoDTO userInfo = UserInfoDTO.builder()
 					.userId(loginUser.getUserId())
 					.userName(loginUser.getUserName())
 					.userType(loginUser.getUserType())

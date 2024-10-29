@@ -44,13 +44,6 @@ public interface ReqQuotationMapper {
 	ReqQuotationEntity selectReqQuotationByUser(String customerId);
 	
 	/**
-	 * 견적요청서 Id 구하기
-	 * 현재 테이블의 Max Id값을 구함
-	 * @return
-	 */
-	int selectReqQuotationMaxId();
-	
-	/**
 	 * 견적 채택상태 갱신
 	 * @param reqQuotationId
 	 * @param isAccepted

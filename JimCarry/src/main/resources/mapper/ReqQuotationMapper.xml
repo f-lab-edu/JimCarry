@@ -4,29 +4,123 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.study.jimcarry.mapper.ReqQuotationMapper">
+	<resultMap id="reqQuotationResultMap" type="ReqQuotationEntity">
+	    <result column="QUOTATION_REQ_NO" property="quotationReqNo" />
+	    <result column="QUOTATION_DT" property="quotationDt" />
+	    <result column="CUST_ID" property="custId" />
+	    <result column="PICKUP_ADDR" property="pickupAddr" />
+	    <result column="DELIVERY_ADDR" property="deliveryAddr" />
+	    <result column="MOVE_DT" property="moveDt" />
+	    <result column="QUOTATION_AMOUNT" property="quotationAmount" />
+	    <result column="BUILDING_TYPE" property="buildingType" />
+	    <result column="ROOM_STRUCTURE" property="roomStructure" />
+	    <result column="HOUSE_SIZE" property="houseSize" />
+	    <result column="HAS_ELEVATOR" property="hasElevator" />
+	    <result column="BOX_COUNT" property="boxCount" />
+	</resultMap>
+
 	<select id="selectAllReqQuotations" resultType="ReqQuotationEntity">
-	
+	     SELECT 
+            QUOTATION_REQ_NO
+            , QUOTATION_DT
+            , CUST_ID
+            , PICKUP_ADDR
+            , DELIVERY_ADDR
+            , MOVE_DT
+            , QUOTATION_AMOUNT
+            , BUILDING_TYPE
+            , ROOM_STRUCTURE AS roomStructure
+            , HOUSE_SIZE
+            , HAS_ELEVATOR
+            , BOX_COUNT
+        FROM tbl_quotation_request 
 	</select>
-	<select id="selectReqQuotationByUser" resultType="ReqQuotationEntity">
-	
-	</select>
-	<select id="selectReqQuotationMaxId" resultType="ReqQuotationEntity">
-	
+	<select id="selectReqQuotationByUser" parameterType="ReqQuotationEntity" resultType="ReqQuotationEntity">
+        SELECT 
+            QUOTATION_REQ_NO
+            , QUOTATION_DT
+            , CUST_ID
+            , PICKUP_ADDR
+            , DELIVERY_ADDR
+            , MOVE_DT
+            , BUILDING_TYPE
+            , ROOM_STRUCTURE
+            , HOUSE_SIZE
+            , HAS_ELEVATOR
+            , BOX_COUNT
+            , QUOTATION_AMOUNT
+            , CID
+        FROM tbl_quotation_request 
+        WHERE CUST_ID = #{custId}
 	</select>
 	<select id="selectReqQuotation" resultType="ReqQuotationEntity">
-	
+        SELECT 
+            QUOTATION_REQ_NO
+            , QUOTATION_DT
+            , CUST_ID
+            , PICKUP_ADDR
+            , DELIVERY_ADDR
+            , MOVE_DT
+            , QUOTATION_AMOUNT
+            , BUILDING_TYPE
+            , ROOM_STRUCTURE
+            , HOUSE_SIZE
+            , HAS_ELEVATOR
+            , BOX_COUNT
+        FROM tbl_quotation_request 
+        WHERE QUOTATION_REQ_NO = #{quotationReqNo}
 	</select>
-    <insert id="insertReqQuotation">
-
+    <insert id="insertReqQuotation" parameterType="ReqQuotationEntity">
+       INSERT INTO tbl_quotation_request (
+            QUOTATION_REQ_NO
+            , QUOTATION_DT
+            , CUST_ID
+            , PICKUP_ADDR
+            , DELIVERY_ADDR
+            , MOVE_DT
+            , QUOTATION_AMOUNT
+            , BUILDING_TYPE
+            , ROOM_STRUCTURE
+            , HOUSE_SIZE
+            , HAS_ELEVATOR
+            , BOX_COUNT
+            , CID
+        )
+        VALUES (
+            #{quotationReqNo}
+            , #{quotationDt}
+            , #{custId}
+            , #{pickupAddr}
+            , #{deliveryAddr}
+            , #{moveDt}
+            , #{quotationAmount}
+            , #{buildingType}
+            , #{roomStructure}
+            , #{houseSize}
+            , #{hasElevator}
+            , #{boxCount}
+            , #{cid}
+        )
     </insert>
     <delete id="deleteReqQuotation">
-
+		DELETE FROM tbl_quotation_request WHERE QUOTATION_REQ_NO = #{quotationReqNo}
     </delete>
-
     <update id="updateReqQuotation">
-  
-    </update>
-    <update id="updateReqQuotationIsAccepted">
-  
+        UPDATE tbl_quotation_request
+        SET 
+            QUOTATION_DT = #{quotationDt}
+            , CUST_ID = #{custId}
+            , PICKUP_ADDR = #{pickupAddr}
+            , DELIVERY_ADDR = #{deliveryAddr}
+            , MOVE_DT = #{moveDt}
+            , QUOTATION_AMOUNT = #{quotationAmount}
+            , BUILDING_TYPE = #{buildingType}
+            , ROOM_STRUCTURE = #{roomStructure}
+            , HOUSE_SIZE = #{houseSize}
+            , HAS_ELEVATOR = #{hasElevator}
+            , BOX_COUNT = #{boxCount}
+            , UID = #{uid}
+            , UDT = CURRENT_TIMESTAMP()
+        WHERE QUOTATION_REQ_NO = #{quotationReqNo}
     </update>
 </mapper>

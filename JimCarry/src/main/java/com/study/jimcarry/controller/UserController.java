@@ -17,7 +17,7 @@ import com.study.jimcarry.api.UserResponse;
 import com.study.jimcarry.domain.UserEntity;
 import com.study.jimcarry.exception.CustomException;
 import com.study.jimcarry.exception.ErrorCode;
-import com.study.jimcarry.model.UserInfo;
+import com.study.jimcarry.model.UserInfoDTO;
 import com.study.jimcarry.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -58,7 +58,7 @@ public class UserController {
 			}
 		}
 
-		UserInfo userInfo = UserInfo.builder().userId(request.getUserId()).userName(request.getUserName())
+		UserInfoDTO userInfo = UserInfoDTO.builder().userId(request.getUserId()).userName(request.getUserName())
 				.password(request.getPassword()).phoneNumber(request.getPhoneNumber()).userType(request.getUserType())
 				.email(request.getEmail()).build();
 
@@ -82,7 +82,7 @@ public class UserController {
 			}
 		}
 
-		UserInfo userInfo = UserInfo.builder().userName(request.getUserName()).email(request.getEmail()).build();
+		UserInfoDTO userInfo = UserInfoDTO.builder().userName(request.getUserName()).email(request.getEmail()).build();
 
 		UserResponse userResponse = UserResponse.builder().userId(userService.findUserId(userInfo)).build();
 
@@ -104,7 +104,7 @@ public class UserController {
 			}
 		}
 
-		UserInfo userInfo = UserInfo.builder().userId(request.getUserId()).password(request.getPassword()).build();
+		UserInfoDTO userInfo = UserInfoDTO.builder().userId(request.getUserId()).password(request.getPassword()).build();
 
 		UserResponse userResponse = UserResponse.builder().resultRow(userService.changePassword(userInfo)).build();
 

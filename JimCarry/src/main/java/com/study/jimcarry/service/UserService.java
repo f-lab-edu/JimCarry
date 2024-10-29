@@ -9,7 +9,7 @@ import com.study.jimcarry.exception.CustomException;
 import com.study.jimcarry.exception.ErrorCode;
 import com.study.jimcarry.mapper.RoleMapper;
 import com.study.jimcarry.mapper.UserMapper;
-import com.study.jimcarry.model.UserInfo;
+import com.study.jimcarry.model.UserInfoDTO;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +22,7 @@ public class UserService {
     private final UserMapper userMapper;
     private final RoleMapper roleMapper;
 
-	public int saveUserInfo(UserInfo userInfo) {
+	public int saveUserInfo(UserInfoDTO userInfo) {
 
 		UserEntity findEntity = userMapper.findUserById(userInfo.getUserId());
 		if(findEntity != null) {
@@ -46,7 +46,7 @@ public class UserService {
 		return roleMapper.insertRoleInfo(roleEntity);
 	}
 
-	public String findUserId(UserInfo userInfo) {
+	public String findUserId(UserInfoDTO userInfo) {
 		
 		//Builder 패턴으로 컨트롤러에서 넘겨 받은 UserInfo를 UserEntity로 변환
 		UserEntity userEntity = UserEntity.builder()
@@ -63,7 +63,7 @@ public class UserService {
 		return findUser.getUserId();
 	}
 
-	public int changePassword(UserInfo userInfo) {
+	public int changePassword(UserInfoDTO userInfo) {
 		
 		UserEntity findUser = userMapper.findUserById(userInfo.getUserId());
 		if(!findUser.getPassword().equals(DigestUtils.sha256Hex(userInfo.getCurrentPassword()))) {

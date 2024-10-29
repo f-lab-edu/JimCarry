@@ -1,18 +1,21 @@
 package com.study.jimcarry.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.study.jimcarry.domain.MoveItemEntity;
 import com.study.jimcarry.domain.ReqQuotationEntity;
 import com.study.jimcarry.exception.CustomException;
 import com.study.jimcarry.exception.ErrorCode;
-import com.study.jimcarry.mapper.MovingInfoMapper;
+import com.study.jimcarry.mapper.MoveItemMapper;
 import com.study.jimcarry.mapper.ReqQuotationMapper;
-import com.study.jimcarry.model.ReqQuotation;
+import com.study.jimcarry.model.MoveItemDTO;
+import com.study.jimcarry.model.ReqQuotationDTO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,48 +25,59 @@ public class ReqQuotationService {
 	
     private final ReqQuotationMapper reqQuotationMapper;
     
+    private final MoveItemMapper moveItemMapper;
 	/**
 	 * 견적요청서 작성
 	 * @param reqQuotationEntity
 	 * @return
 	 */
-	public int saveReqQuotation(ReqQuotation reqQuotation) {
-	    // 최대 ID 가져오기
-	    int maxId = reqQuotationMapper.selectReqQuotationMaxId();
+    @Transactional
+	public int saveReqQuotation(ReqQuotationDTO reqQuotation, List<MoveItemDTO> moveItemList) {
+		
+		  // UUID 생성 (유일한 식별자)
+	    String uuid = UUID.randomUUID().toString();
 
-	    // 날짜 형식 설정 (YYYYMMDD)
-	    String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+	    // ID 조합: "ReqQuo_UUID ReqQu0_ 제거"
+	    String generatedId = "ReqQuo_" + uuid;
 
-	    // StringBuilder를 사용하여 ID 조합: "ReqQuoYYYYMMDD_Number"
-	    StringBuilder generatedIdBuilder = new StringBuilder();
-	    generatedIdBuilder.append("ReqQuo")
-	                      .append(currentDate)
-	                      .append("_")
-	                      .append(maxId + 1);
+	    // UUID로 조회하여 이미 존재하는지 확인
+	    Optional<ReqQuotationEntity> optionalReqQuotation = 
+	        Optional.ofNullable(reqQuotationMapper.selectReqQuotation(generatedId));
 
-	    // 조합된 문자열을 ID로 설정
-	    String generatedId = generatedIdBuilder.toString();
+	    // 만약 존재한다면 예외 발생
+	    optionalReqQuotation.ifPresent(req -> {
+	        throw new CustomException(ErrorCode.CONFLICT.getCode(), ErrorCode.CONFLICT.getMessage());
+	    });
 	    
 	    // 빌더 패턴을 사용하여 reqQuotationEntity 생성
 	    ReqQuotationEntity reqQuotationEntity = ReqQuotationEntity.builder()
-	    		.reqQuotationId(generatedId)
-	    		.reqQuotationDt(reqQuotation.getReqQuotationDt())
-	    		.customerId(reqQuotation.getCustomerId())
-	    		.departureAddress(reqQuotation.getDepartureAddress())
-	    		.destinationAddress(reqQuotation.getDestinationAddress())
-	    		.movingDate(reqQuotation.getMovingDate())
+	    		.quotationReqNo(generatedId)
+	    		.quotationDt(reqQuotation.getQuotationDt())
+	    		.custId(reqQuotation.getCustId())
+	    		.pickupAddr(reqQuotation.getPickupAddr())
+	    		.deliveryAddr(reqQuotation.getDeliveryAddr())
+	    		.moveDt(reqQuotation.getMoveDt())
 	    		.buildingType(reqQuotation.getBuildingType())
 	    		.roomStructure(reqQuotation.getRoomStructure())
-	    		.houseArea(reqQuotation.getHouseArea())
+	    		.houseSize(reqQuotation.getHouseSize())
 	    		.hasElevator(reqQuotation.isHasElevator())
-	    		.hasParking(reqQuotation.isHasParking())
 	    		.boxCount(reqQuotation.getBoxCount())
-	    		.requestedEstimate(reqQuotation.getRequestedEstimate())
-	    		.isAccepted(reqQuotation.isAccepted())
+	    		.quotationAmount(reqQuotation.getQuotationAmount())
+	    		.cid(0)
 	    		.build();
 
-	    //TODO 이삿 짐 정보 저장 로직 추가 예정
-	    //request에서 이상 짐 정보를 List로 받아와서 for문을 돌릴지 고민중..
+	    for(MoveItemDTO dto : moveItemList) {
+	    	MoveItemEntity entity = MoveItemEntity.builder()
+    			.quotationReqNo(generatedId)
+    			.furnitureId(dto.getFurnitureId())
+    			.optionValId(dto.getOptionValId())
+    			.qty(dto.getQty())
+    			.cid(0)
+    			.build();
+	    		
+	    	moveItemMapper.insertMoveItem(entity);
+	    }
+	    
 	    
 	    // 레코드 저장
 	    return reqQuotationMapper.insertReqQuotation(reqQuotationEntity);
@@ -74,28 +88,27 @@ public class ReqQuotationService {
 	 * @param reqQuotationEntity
 	 * @return
 	 */
-	public int modifyReqQuotation(ReqQuotation reqQuotation) {	
-		ReqQuotationEntity findReqQuotationEntity = reqQuotationMapper.selectReqQuotation(reqQuotation.getReqQuotationId());
-		if(findReqQuotationEntity == null) {
+	public int modifyReqQuotation(ReqQuotationDTO reqQuotation) {	
+		//find 변수명 뺴기
+		ReqQuotationEntity entity = reqQuotationMapper.selectReqQuotation(reqQuotation.getQuotationReqNo());
+		if(entity == null) {
 			throw new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
 		}
 		
-	    // 빌더 패턴을 사용하여 reqQuotationEntity 생성
+	    // 빌더 패턴을 사용하여 reqQuotationEntity 생성, Update를 위한 DTO를 생성 해서 entity를 황용 한뒤 Mapper로 넘긴다.
 	    ReqQuotationEntity reqQuotationEntity = ReqQuotationEntity.builder()
-	    		.reqQuotationId(reqQuotation.getReqQuotationId())
-	    		.reqQuotationDt(reqQuotation.getReqQuotationDt())
-	    		.customerId(reqQuotation.getCustomerId())
-	    		.departureAddress(reqQuotation.getDepartureAddress())
-	    		.destinationAddress(reqQuotation.getDestinationAddress())
-	    		.movingDate(reqQuotation.getMovingDate())
+	    		.quotationReqNo(reqQuotation.getQuotationReqNo())
+	    		.quotationDt(reqQuotation.getQuotationDt())
+	    		.custId(reqQuotation.getCustId())
+	    		.pickupAddr(reqQuotation.getPickupAddr())
+	    		.deliveryAddr(reqQuotation.getDeliveryAddr())
+	    		.moveDt(reqQuotation.getMoveDt())
 	    		.buildingType(reqQuotation.getBuildingType())
 	    		.roomStructure(reqQuotation.getRoomStructure())
-	    		.houseArea(reqQuotation.getHouseArea())
+	    		.houseSize(reqQuotation.getHouseSize())
 	    		.hasElevator(reqQuotation.isHasElevator())
-	    		.hasParking(reqQuotation.isHasParking())
 	    		.boxCount(reqQuotation.getBoxCount())
-	    		.requestedEstimate(reqQuotation.getRequestedEstimate())
-	    		.isAccepted(reqQuotation.isAccepted())
+	    		.quotationAmount(reqQuotation.getQuotationAmount())
 	    		.build();
 	    
 		return reqQuotationMapper.updateReqQuotation(reqQuotationEntity);
@@ -114,25 +127,23 @@ public class ReqQuotationService {
 	 * 견적요청서 전체 조회
 	 * @return
 	 */
-	public List<ReqQuotation> getReqQuotationList() {
+	public List<ReqQuotationDTO> getReqQuotationList() {
 		List<ReqQuotationEntity> findList =  reqQuotationMapper.selectAllReqQuotations();
-		List<ReqQuotation> reqQuotationList = new ArrayList<>();
+		List<ReqQuotationDTO> reqQuotationList = new ArrayList<>();
 		for(ReqQuotationEntity entity : findList) {
-			ReqQuotation reqQuotation = ReqQuotation.builder()
-		    		.reqQuotationId(entity.getReqQuotationId())
-		    		.reqQuotationDt(entity.getReqQuotationDt())
-		    		.customerId(entity.getCustomerId())
-		    		.departureAddress(entity.getDepartureAddress())
-		    		.destinationAddress(entity.getDestinationAddress())
-		    		.movingDate(entity.getMovingDate())
+			ReqQuotationDTO reqQuotation = ReqQuotationDTO.builder()
+		    		.quotationReqNo(entity.getQuotationReqNo())
+		    		.quotationDt(entity.getQuotationDt())
+		    		.custId(entity.getCustId())
+		    		.pickupAddr(entity.getPickupAddr())
+		    		.deliveryAddr(entity.getDeliveryAddr())
+		    		.moveDt(entity.getMoveDt())
 		    		.buildingType(entity.getBuildingType())
 		    		.roomStructure(entity.getRoomStructure())
-		    		.houseArea(entity.getHouseArea())
+		    		.houseSize(entity.getHouseSize())
 		    		.hasElevator(entity.isHasElevator())
-		    		.hasParking(entity.isHasParking())
 		    		.boxCount(entity.getBoxCount())
-		    		.requestedEstimate(entity.getRequestedEstimate())
-		    		.isAccepted(entity.isAccepted())
+		    		.quotationAmount(entity.getQuotationAmount())
 		    		.build();
 			reqQuotationList.add(reqQuotation);
 		}
@@ -144,26 +155,24 @@ public class ReqQuotationService {
 	 * @param customerId
 	 * @return
 	 */
-	public ReqQuotation getReqQuotationByUser(String customerId) {
+	public ReqQuotationDTO getReqQuotationByUser(String customerId) {
 		ReqQuotationEntity entity = reqQuotationMapper.selectReqQuotationByUser(customerId);
 		if(entity == null) {
 			throw new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
 		}
-		ReqQuotation reqQuotation = ReqQuotation.builder()
-	    		.reqQuotationId(entity.getReqQuotationId())
-	    		.reqQuotationDt(entity.getReqQuotationDt())
-	    		.customerId(entity.getCustomerId())
-	    		.departureAddress(entity.getDepartureAddress())
-	    		.destinationAddress(entity.getDestinationAddress())
-	    		.movingDate(entity.getMovingDate())
+		ReqQuotationDTO reqQuotation = ReqQuotationDTO.builder()
+	    		.quotationReqNo(entity.getQuotationReqNo())
+	    		.quotationDt(entity.getQuotationDt())
+	    		.custId(entity.getCustId())
+	    		.pickupAddr(entity.getPickupAddr())
+	    		.deliveryAddr(entity.getDeliveryAddr())
+	    		.moveDt(entity.getMoveDt())
 	    		.buildingType(entity.getBuildingType())
 	    		.roomStructure(entity.getRoomStructure())
-	    		.houseArea(entity.getHouseArea())
+	    		.houseSize(entity.getHouseSize())
 	    		.hasElevator(entity.isHasElevator())
-	    		.hasParking(entity.isHasParking())
 	    		.boxCount(entity.getBoxCount())
-	    		.requestedEstimate(entity.getRequestedEstimate())
-	    		.isAccepted(entity.isAccepted())
+	    		.quotationAmount(entity.getQuotationAmount())
 	    		.build();
 		return reqQuotation;
 	}

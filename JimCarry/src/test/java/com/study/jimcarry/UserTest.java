@@ -8,7 +8,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.study.jimcarry.domain.RoleEntity;
-import com.study.jimcarry.domain.UserEntity;
+import com.study.jimcarry.model.UserInfoDTO;
 import com.study.jimcarry.service.UserService;
 import com.study.jimcarry.type.UserType;
 
@@ -18,12 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 @Transactional
 @Rollback(false)
 @Slf4j
-public class AuthTest {
+public class UserTest {
 	
    private final UserService authService; // 필드 정의
 
    @Autowired
-   public AuthTest(UserService authService) { // 생성자 주입
+   public UserTest(UserService authService) { // 생성자 주입
        this.authService = authService;
    }
 
@@ -51,7 +51,7 @@ public class AuthTest {
 	void saveUserTest() {
 		
 	    // given
-		UserEntity user = UserEntity.builder()
+		UserInfoDTO user = UserInfoDTO.builder()
 //						.userName("USER_1")
 //						.password("12345")
 //						.phoneNumber("010-1111-2222")
