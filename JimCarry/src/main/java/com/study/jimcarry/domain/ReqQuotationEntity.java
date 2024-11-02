@@ -1,17 +1,19 @@
 package com.study.jimcarry.domain;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 /**
  * 견적요청 테이블
  */
 @Getter
 @Builder
+@ToString
 public class ReqQuotationEntity {
 	
 	// 견적요청 번호
@@ -55,5 +57,8 @@ public class ReqQuotationEntity {
 	
 	//견적 상태
 	private String status;
+	
+	//Update 버전
+	private Integer version;
 
 }

@@ -35,6 +35,7 @@
             , BOX_COUNT
             , cid
             , status
+            , version
         FROM tbl_quotation
 	</select>
 	<select id="selectReqQuotationByUser" parameterType="ReqQuotationEntity" resultType="ReqQuotationEntity">
@@ -53,6 +54,7 @@
             , BOX_COUNT
             , cid
             , status
+            , version
         FROM tbl_quotation
         WHERE CUST_ID = #{custId}
 	</select>
@@ -72,6 +74,7 @@
             , BOX_COUNT
             , cid
             , status
+            , version
         FROM tbl_quotation
         WHERE QUOTATION_REQ_NO = #{quotationReqNo}
 	</select>

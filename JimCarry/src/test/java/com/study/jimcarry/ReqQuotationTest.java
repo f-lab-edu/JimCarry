@@ -1,10 +1,16 @@
 package com.study.jimcarry;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -158,29 +164,85 @@ public class ReqQuotationTest {
 	@DisplayName("견적 수정")
 	void modifyQuotationTest() throws Exception {
 		
-		String strDate = "    2024-11-05 00:00:00";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date date = sdf.parse(strDate);
-		
-		//given
-		UpdateReqQuotationDTO updateDto = UpdateReqQuotationDTO.builder()
-				.pickupAddr("Namyangyu, Korea")
-	    		.deliveryAddr("Chanwon, Korea")
-	    		.moveDt(date)
-	    		.buildingType("단독주택")
-	    		.roomStructure("원룸")
-	    		.houseSize(BigDecimal.valueOf(18))
-	    		.hasElevator(false)
-	    		.boxCount(10)
-	    		.quotationAmount(BigDecimal.valueOf(1000.00))
-	    		.build();
-		
-		//when
-		reqQuotationService.modifyReqQuotation(updateDto, "30473496-ef9f-443e-986e-70f0f20dc076");
-		
-		//then
-		ReqQuotationDTO dto = reqQuotationService.getReqQuotationByUser("1");
+	    // Test data preparation
+	    String strDate = "2024-11-05 00:00:00";
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    Date date = sdf.parse(strDate);
+
+	    // given
+	    UpdateReqQuotationDTO updateDto = UpdateReqQuotationDTO.builder()
+	            .pickupAddr("YangPeyng, Korea")
+	            .deliveryAddr("Tokyo, Japan")
+	            .moveDt(date)
+	            .buildingType("단독주택")
+	            .roomStructure("원룸")
+	            .houseSize(BigDecimal.valueOf(18))
+	            .hasElevator(false)
+	            .boxCount(10)
+	            .quotationAmount(BigDecimal.valueOf(1000.00))
+	            .build();
+
+	    String quotationId = "30473496-ef9f-443e-986e-70f0f20dc076";
+	  
+	    // when
+	    reqQuotationService.modifyReqQuotation(updateDto, quotationId);
+
+	    // then
+	    ReqQuotationDTO dto = reqQuotationService.getReqQuotationByUser("3"); // Assuming user ID is "3"
 	    log.debug("변경 된 값 -> {}", dto);
+
+	}
+	
+	@Test
+	@DisplayName("견적 수정 멀티스레드 테스트 스레드풀 5개, 요청 10개")
+	void modifyQuotationMultiTest() throws Exception {
+	    // Test data preparation
+	    String strDate = "2024-11-05 00:00:00";
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	    Date date = sdf.parse(strDate);
+
+	    // Update DTO preparation
+	    UpdateReqQuotationDTO updateDto = UpdateReqQuotationDTO.builder()
+	            .pickupAddr("YangPeyng, Korea")
+	            .deliveryAddr("Tokyo, Japan")
+	            .moveDt(date)
+	            .buildingType("단독주택")
+	            .roomStructure("원룸")
+	            .houseSize(BigDecimal.valueOf(18))
+	            .hasElevator(false)
+	            .boxCount(10)
+	            .quotationAmount(BigDecimal.valueOf(1000.00))
+	            .build();
+
+	    String quotationId = "30473496-ef9f-443e-986e-70f0f20dc076";
+
+	    // ExecutorService를 사용하여 멀티스레드 환경에서 수정 요청을 처리
+	    ExecutorService executorService = Executors.newFixedThreadPool(5); // 5개의 스레드
+	    List<Future<Void>> futures = new ArrayList<>();
+
+	    for (int i = 0; i < 10; i++) { // 10개의 수정 요청
+	        final int attempt = i;
+	        futures.add(executorService.submit(() -> {
+	            try {
+	                reqQuotationService.modifyReqQuotation(updateDto, quotationId);
+	                log.debug("수정 성공: 요청 번호 {}", attempt);
+	            } catch (Exception e) {
+	                log.error("수정 실패: 요청 번호 {} - {}", attempt, e.getMessage());
+	            }
+	            return null;
+	        }));
+	    }
+
+	    // 모든 작업이 완료될 때까지 대기
+	    for (Future<Void> future : futures) {
+	        try {
+	            future.get(); // 예외를 체크하기 위해 get() 호출
+	        } catch (ExecutionException e) {
+	            log.error("스레드 실행 중 예외 발생: {}", e.getCause().getMessage());
+	        }
+	    }
+
+	    executorService.shutdown(); // 스레드 풀 종료
 	}
 	
 	@Test
