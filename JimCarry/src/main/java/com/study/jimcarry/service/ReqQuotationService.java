@@ -54,24 +54,20 @@ public class ReqQuotationService {
 		String generatedId = UUID.randomUUID().toString();
 		log.debug("uuid ver4 -> {}", generatedId);
 
-		// 빌더 패턴을 사용하여 reqQuotationEntity 생성
-		ReqQuotationEntity reqQuotationEntity = ReqQuotationEntity.builder().quotationReqNo(generatedId)
+		for (MoveItemDTO dto : moveItemList) {
+
+			moveItemMapper.insertMoveItem(MoveItemEntity.builder().quotationReqNo(generatedId)
+					.furnitureId(dto.getFurnitureId()).optionValId(dto.getOptionValId()).qty(dto.getQty()).cid(0)
+					.build());
+		}
+
+		// 레코드 저장
+		return reqQuotationMapper.insertReqQuotation(ReqQuotationEntity.builder().quotationReqNo(generatedId)
 				.custId(reqQuotation.getCustId()).pickupAddr(reqQuotation.getPickupAddr())
 				.deliveryAddr(reqQuotation.getDeliveryAddr()).moveDt(reqQuotation.getMoveDt())
 				.buildingType(reqQuotation.getBuildingType()).roomStructure(reqQuotation.getRoomStructure())
 				.houseSize(reqQuotation.getHouseSize()).hasElevator(reqQuotation.isHasElevator())
-				.boxCount(reqQuotation.getBoxCount()).quotationAmount(reqQuotation.getQuotationAmount()).cid(0).build();
-
-		for (MoveItemDTO dto : moveItemList) {
-			MoveItemEntity entity = MoveItemEntity.builder().quotationReqNo(generatedId)
-					.furnitureId(dto.getFurnitureId()).optionValId(dto.getOptionValId()).qty(dto.getQty()).cid(0)
-					.build();
-			log.debug("move Item -> {}", entity);
-			moveItemMapper.insertMoveItem(entity);
-		}
-
-		// 레코드 저장
-		return reqQuotationMapper.insertReqQuotation(reqQuotationEntity);
+				.boxCount(reqQuotation.getBoxCount()).quotationAmount(reqQuotation.getQuotationAmount()).cid(0).build());
 	}
 
 	/**
@@ -83,18 +79,19 @@ public class ReqQuotationService {
 	@Transactional
 	public int modifyReqQuotation(UpdateReqQuotationDTO updateReqQuotation, String quotationId) {
 	    for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
-	        // 견적 정보를 조회합니다.
+	        // 견적 정보를 조회
 	        Optional<ReqQuotationEntity> optionalEntity = Optional.ofNullable(reqQuotationMapper.selectReqQuotation(quotationId));
 	        ReqQuotationEntity entity = optionalEntity.orElseThrow(
 	                () -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
 
-	        // 견적 상태가 "0"이 아닐 경우 예외를 발생시킵니다.
+	        // 견적 상태가 "0"이 아닐 경우 예외를 발생
 	        if (!"0".equals(entity.getStatus())) {
 	            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), "이미 확정되거나 채택 된 견적 입니다.");
 	        }
 	        log.debug("version => {}", entity.getVersion());
-	        // 빌더 패턴을 사용하여 업데이트할 엔티티를 생성합니다.
-	        entity = ReqQuotationEntity.builder()
+
+	        // 견적 업데이트
+	        int resultRow = reqQuotationMapper.updateReqQuotation(ReqQuotationEntity.builder()
 	                .quotationReqNo(quotationId)
 	                .pickupAddr(updateReqQuotation.getPickupAddr())
 	                .deliveryAddr(updateReqQuotation.getDeliveryAddr())
@@ -107,21 +104,18 @@ public class ReqQuotationService {
 	                .quotationAmount(updateReqQuotation.getQuotationAmount())
 	                .cid(0) // 실제 cid 값으로 대체해야 함
 	                .version(entity.getVersion())
-	                .build();
-
-	        // 업데이트를 시도합니다.
-	        int resultRow = reqQuotationMapper.updateReqQuotation(entity);
+	                .build());
 	        
-	        // 업데이트 성공 시 결과를 반환합니다.
+	        // 업데이트 성공 시 
 	        if (resultRow == 1) {
 	            return resultRow; // 성공적으로 업데이트 되었을 때
 	        } else {
+	        	 // 재시도를 위한 로깅
 	            log.warn("Optimistic locking failure, attempt: {}", attempt + 1);
-	            // 재시도를 위한 로깅
 	        }
 	    }
 
-	    // 모든 시도 후 업데이트 실패 시 예외를 발생시킵니다.
+	    // 모든 시도 후 업데이트 실패 시 예외를 발생
 	    throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), "수정 실패: 다른 사용자가 먼저 변경하였습니다.");
 	}
 
@@ -153,13 +147,12 @@ public class ReqQuotationService {
 		List<ReqQuotationEntity> findList = reqQuotationMapper.selectAllReqQuotations();
 		List<ReqQuotationDTO> reqQuotationList = new ArrayList<>();
 		for (ReqQuotationEntity entity : findList) {
-			ReqQuotationDTO reqQuotation = ReqQuotationDTO.builder().quotationReqNo(entity.getQuotationReqNo())
+			reqQuotationList.add(ReqQuotationDTO.builder().quotationReqNo(entity.getQuotationReqNo())
 					.custId(entity.getCustId()).pickupAddr(entity.getPickupAddr())
 					.deliveryAddr(entity.getDeliveryAddr()).moveDt(entity.getMoveDt())
 					.buildingType(entity.getBuildingType()).roomStructure(entity.getRoomStructure())
 					.houseSize(entity.getHouseSize()).hasElevator(entity.isHasElevator()).boxCount(entity.getBoxCount())
-					.quotationAmount(entity.getQuotationAmount()).status(entity.getStatus()).build();
-			reqQuotationList.add(reqQuotation);
+					.quotationAmount(entity.getQuotationAmount()).status(entity.getStatus()).build());
 		}
 		return reqQuotationList;
 	}
@@ -177,13 +170,12 @@ public class ReqQuotationService {
 		ReqQuotationEntity entity = optionalEntity.orElseThrow(
 				() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
 
-		ReqQuotationDTO reqQuotation = ReqQuotationDTO.builder().quotationReqNo(entity.getQuotationReqNo())
+		return ReqQuotationDTO.builder().quotationReqNo(entity.getQuotationReqNo())
 				.custId(entity.getCustId()).pickupAddr(entity.getPickupAddr()).deliveryAddr(entity.getDeliveryAddr())
 				.moveDt(entity.getMoveDt()).buildingType(entity.getBuildingType())
 				.roomStructure(entity.getRoomStructure()).houseSize(entity.getHouseSize())
 				.hasElevator(entity.isHasElevator()).boxCount(entity.getBoxCount())
 				.quotationAmount(entity.getQuotationAmount()).status(entity.getStatus()).build();
-		return reqQuotation;
 	}
 
 	/**

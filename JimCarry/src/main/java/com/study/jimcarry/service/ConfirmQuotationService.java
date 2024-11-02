@@ -31,17 +31,15 @@ public class ConfirmQuotationService {
 	 * @return
 	 */
 	public int saveConfirmQuotation(ConfirmQuotationDTO confirmQuotation) {
-		ConfirmQuotationEntity entity = ConfirmQuotationEntity.builder()
+		//견적 테이블의 status 값을 1로 update
+		reqQuotationMapper.updateReqQuotationStatus(confirmQuotation.getQuotationReqNo(), "1");
+		return confirmQuotationMapper.insertConfirmQuotation(ConfirmQuotationEntity.builder()
 				.quotationReqNo(confirmQuotation.getQuotationReqNo())
 				.confirmDt(confirmQuotation.getConfirmDt())
 				.custId(confirmQuotation.getCustId())
 				.driverId(confirmQuotation.getDriverId())
 				.cid(0)
-				.build();
-		
-		//견적 테이블의 status 값을 1로 update
-		reqQuotationMapper.updateReqQuotationStatus(confirmQuotation.getQuotationReqNo(), "1");
-		return confirmQuotationMapper.insertConfirmQuotation(entity);
+				.build());
 	}
 
 //	/**
@@ -91,13 +89,12 @@ public class ConfirmQuotationService {
 		List<ConfirmQuotationEntity> list = confirmQuotationMapper.selectConfirmQuotationByDriver(driverId);
 		List<ConfirmQuotationDTO> quotationList = new ArrayList<>();
 		for(ConfirmQuotationEntity entity : list) {
-			ConfirmQuotationDTO dto = ConfirmQuotationDTO.builder()
+			quotationList.add(ConfirmQuotationDTO.builder()
 					.quotationReqNo(entity.getQuotationReqNo())
 					.confirmDt(entity.getConfirmDt())
 					.custId(entity.getCustId())
 					.driverId(entity.getDriverId())
-					.build();
-			quotationList.add(dto);
+					.build());
 		}
 		return quotationList;
 	}
@@ -116,13 +113,12 @@ public class ConfirmQuotationService {
 		Optional<ConfirmQuotationEntity> optionalEntity = Optional.ofNullable(confirmQuotationMapper.selectConfirmQuotationByUser(customerId));
 		ConfirmQuotationEntity entity = optionalEntity.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
 		
-		ConfirmQuotationDTO dto = ConfirmQuotationDTO.builder()
+		return ConfirmQuotationDTO.builder()
 				.quotationReqNo(entity.getQuotationReqNo())
 				.confirmDt(entity.getConfirmDt())
 				.custId(entity.getCustId())
 				.driverId(entity.getDriverId())
-				.build();;
-		return dto;	
+				.build();
 	}
 	
 }
