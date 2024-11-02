@@ -104,6 +104,20 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.uuid</groupId>
+		    <artifactId>java-uuid-generator</artifactId>
+		    <version>4.1.0</version> <!-- 최신 버전을 사용하도록 업데이트 필요 -->
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.datatype</groupId>
+		    <artifactId>jackson-datatype-jsr310</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.springframework.security</groupId>
+		    <artifactId>spring-security-test</artifactId>
+		    <scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

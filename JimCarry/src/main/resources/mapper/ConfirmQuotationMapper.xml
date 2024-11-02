@@ -5,17 +5,24 @@
 
 <mapper namespace="com.study.jimcarry.mapper.ConfirmQuotationMapper">
 	<select id="selectConfirmQuotationByDriver" resultType="ConfirmQuotationEntity">
-	
-	</select>
-	<select id="selectConfirmQuotationByUser" resultType="ConfirmQuotationEntity">
-        SELECT 
-            quotaion_confrim_id
-            , QUOTATION_REQ_NO
+	    SELECT 
+             QUOTATION_REQ_NO
             , cust_id
             , driver_id
             , confrim_dt
+            , cid
         FROM tbl_quotation_confirm 
         WHERE driver_id = #{driverId}
+	</select>
+	<select id="selectConfirmQuotationByUser" resultType="ConfirmQuotationEntity">
+        SELECT 
+             QUOTATION_REQ_NO
+            , cust_id
+            , driver_id
+            , confrim_dt
+            , cid
+        FROM tbl_quotation_confirm 
+        WHERE cust_id = #{cust_id}
 	</select>
     <insert id="insertConfirmQuotation" parameterType="ConfirmQuotationEntity">
 	    INSERT INTO tbl_quotation_confirm (
@@ -34,7 +41,7 @@
         )
     </insert>
     <delete id="deleteConfirmQuotation">
-
+		DELETE FROM tbl_quotation_confirm WHERE QUOTATION_REQ_NO = #{quotationReqNo}
     </delete>
     <update id="updateConfirmQuotation">
     	UPDATE tbl_quotation_confirm

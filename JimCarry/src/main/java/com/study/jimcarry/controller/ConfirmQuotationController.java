@@ -2,32 +2,25 @@ package com.study.jimcarry.controller;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.study.jimcarry.api.ConfirmQuotationResponse;
 import com.study.jimcarry.api.ConfirmQuotationRequest;
-import com.study.jimcarry.api.ReqQuotaionResponse;
-import com.study.jimcarry.domain.ConfirmQuotationEntity;
-import com.study.jimcarry.domain.ReqQuotationEntity;
+import com.study.jimcarry.api.ConfirmQuotationResponse;
 import com.study.jimcarry.model.ConfirmQuotationDTO;
 import com.study.jimcarry.service.ConfirmQuotationService;
-import com.study.jimcarry.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,12 +48,12 @@ public class ConfirmQuotationController {
 	 * @return
 	 * @throws Exception
 	 */
-    @PostMapping(value = "") //행위(method)는 URL에 포함하지 않는다.
+    @PostMapping//행위(method)는 URL에 포함하지 않는다.
     @Tag(name="ConfirmQuotation")
     @Operation(summary = "Insert ConfirmQuotation", description="견적확정 정보 저장")//OpenAPI/Swagger 사양에서 요약, 설명, 매개변수, 응답 코드 등과 같은 특정 API 엔드포인트에 대한 메타데이터를 제공하는 데 사용
 	public ResponseEntity<ConfirmQuotationResponse> saveConfirmQuotation(@RequestBody @Valid ConfirmQuotationRequest request) {
     		
-    	ConfirmQuotationDTO confirmQuotation = ConfirmQuotationDTO.builder()
+    	ConfirmQuotationDTO dto = ConfirmQuotationDTO.builder()
     			.quotationReqNo(request.getQuotationReqNo())
     			.confirmDt(request.getConfirmDt())
     			.custId(request.getCustId())
@@ -68,39 +61,41 @@ public class ConfirmQuotationController {
     			.build();
     	
     	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
-    			.resultRow(confirmQuotationService.saveConfirmQuotation(confirmQuotation))
+    			.resultRow(confirmQuotationService.saveConfirmQuotation(dto))
     			.build();
     	
         return ResponseEntity.ok(response);
 	}
     
-    /**
-     * 견적 확정 정보 수정
-     * @param reqeust
-     * @param response
-     * @return
-     * @throws Exception
-     */
-    @PutMapping(value = "/{quotationid}") //PUT방식은 전체의 리소스를 교체 할 때 사용하고, PATCH는 리소스의 일부분을 교체 할 때 사용.
-    @Tag(name="ConfirmQuotation")
-    @Operation(summary = "Modify ConfirmQuotation", description="견적확정 정보 수정")
-	public ResponseEntity<ConfirmQuotationResponse> modifyConfirmQuotation(
-			@PathVariable("quotationid") String quotationId,
-			@RequestBody @Valid ConfirmQuotationRequest request) {
-    	
-    	ConfirmQuotationDTO confirmQuotation = ConfirmQuotationDTO.builder()
-    			.quotationReqNo(quotationId)
-    			.driverId(request.getDriverId())
-    			.custId(request.getCustId())
-    			.confirmDt(request.getConfirmDt())
-    			.build();
-    	
-    	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
-    			.resultRow(confirmQuotationService.modifyConfrimQuotation(confirmQuotation))
-    			.build();
-  
-		return ResponseEntity.ok(response);
-	}
+//    /**
+//     * 견적 확정 정보 수정
+//     * 수정할 일이 없을 것 같아 @Deprecated 처리
+//     * @param reqeust
+//     * @param response
+//     * @return
+//     * @throws Exception
+//     */
+//    @Deprecated
+//    @PutMapping(value = "/{quotationid}") //PUT방식은 전체의 리소스를 교체 할 때 사용하고, PATCH는 리소스의 일부분을 교체 할 때 사용.
+//    @Tag(name="ConfirmQuotation")
+//    @Operation(summary = "Modify ConfirmQuotation", description="견적확정 정보 수정")
+//	public ResponseEntity<ConfirmQuotationResponse> modifyConfirmQuotation(
+//			@PathVariable("quotationid") String quotationId,
+//			@RequestBody @Valid ConfirmQuotationRequest request) {
+//    	
+//    	ConfirmQuotationDTO quotation = ConfirmQuotationDTO.builder()
+//    			.quotationReqNo(quotationId)
+//    			.driverId(request.getDriverId())
+//    			.custId(request.getCustId())
+//    			.confirmDt(request.getConfirmDt())
+//    			.build();
+//    	
+//    	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
+//    			.resultRow(confirmQuotationService.modifyConfrimQuotation(quotation))
+//    			.build();
+//  
+//		return ResponseEntity.ok(response);
+//	}
     
     /**
      * 견적요청서 삭제

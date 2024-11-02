@@ -1,16 +1,15 @@
 package com.study.jimcarry.model;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.study.jimcarry.api.MoveItemRequest;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 //@Data 
 /**
@@ -20,6 +19,7 @@ import lombok.Getter;
 */
 @Getter
 @Builder
+@ToString
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
 public class ReqQuotationDTO {
 	
@@ -28,8 +28,8 @@ public class ReqQuotationDTO {
 	private String quotationReqNo;
 
 	// 견적요청일시
-	@Schema(name = "quotationDt", description = "견적요청일시")
-	private LocalDateTime quotationDt;
+//	@Schema(name = "quotationDt", description = "견적요청일시")
+//	private LocalDateTime quotationDt;
 
 	// 고객 아이디
 	@Schema(name = "custId", description = "고객 아이디")
@@ -45,7 +45,7 @@ public class ReqQuotationDTO {
 
 	// 이사 예정일자
 	@Schema(name = "moveDt", description = "이사 예정일자")
-	private LocalDate moveDt;
+	private Date moveDt;
 
 	// 건물 종류 (빌라/연립, 오피스텔, 주택, 아파트, 상가/사무실)
 	@Schema(name = "buildingType", description = "건물 종류 (빌라/연립, 오피스텔, 주택, 아파트, 상가/사무실)")
@@ -77,5 +77,9 @@ public class ReqQuotationDTO {
 	
 	@Schema(name="cid", description="생성자") //Swagger/OpenAPI 문서를 자동 생성
     private String cid;
-
+	
+	//견적상태 -> 0: 견적요청 / 1: 견적확정 / 2: 견적채택
+	@Schema(name = "status", description = "견적상태")
+	private String status;
+	
 }

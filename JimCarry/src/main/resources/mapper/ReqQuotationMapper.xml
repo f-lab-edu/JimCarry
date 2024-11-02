@@ -33,7 +33,9 @@
             , HOUSE_SIZE
             , HAS_ELEVATOR
             , BOX_COUNT
-        FROM tbl_quotation_request 
+            , cid
+            , status
+        FROM tbl_quotation
 	</select>
 	<select id="selectReqQuotationByUser" parameterType="ReqQuotationEntity" resultType="ReqQuotationEntity">
         SELECT 
@@ -43,14 +45,15 @@
             , PICKUP_ADDR
             , DELIVERY_ADDR
             , MOVE_DT
+            , QUOTATION_AMOUNT
             , BUILDING_TYPE
-            , ROOM_STRUCTURE
+            , ROOM_STRUCTURE AS roomStructure
             , HOUSE_SIZE
             , HAS_ELEVATOR
             , BOX_COUNT
-            , QUOTATION_AMOUNT
-            , CID
-        FROM tbl_quotation_request 
+            , cid
+            , status
+        FROM tbl_quotation
         WHERE CUST_ID = #{custId}
 	</select>
 	<select id="selectReqQuotation" resultType="ReqQuotationEntity">
@@ -63,17 +66,18 @@
             , MOVE_DT
             , QUOTATION_AMOUNT
             , BUILDING_TYPE
-            , ROOM_STRUCTURE
+            , ROOM_STRUCTURE AS roomStructure
             , HOUSE_SIZE
             , HAS_ELEVATOR
             , BOX_COUNT
-        FROM tbl_quotation_request 
+            , cid
+            , status
+        FROM tbl_quotation
         WHERE QUOTATION_REQ_NO = #{quotationReqNo}
 	</select>
     <insert id="insertReqQuotation" parameterType="ReqQuotationEntity">
-       INSERT INTO tbl_quotation_request (
+       INSERT INTO tbl_quotation (
             QUOTATION_REQ_NO
-            , QUOTATION_DT
             , CUST_ID
             , PICKUP_ADDR
             , DELIVERY_ADDR
@@ -88,7 +92,6 @@
         )
         VALUES (
             #{quotationReqNo}
-            , #{quotationDt}
             , #{custId}
             , #{pickupAddr}
             , #{deliveryAddr}
@@ -103,14 +106,12 @@
         )
     </insert>
     <delete id="deleteReqQuotation">
-		DELETE FROM tbl_quotation_request WHERE QUOTATION_REQ_NO = #{quotationReqNo}
+		DELETE FROM tbl_quotation WHERE QUOTATION_REQ_NO = #{quotationReqNo}
     </delete>
     <update id="updateReqQuotation">
-        UPDATE tbl_quotation_request
+        UPDATE tbl_quotation
         SET 
-            QUOTATION_DT = #{quotationDt}
-            , CUST_ID = #{custId}
-            , PICKUP_ADDR = #{pickupAddr}
+             PICKUP_ADDR = #{pickupAddr}
             , DELIVERY_ADDR = #{deliveryAddr}
             , MOVE_DT = #{moveDt}
             , QUOTATION_AMOUNT = #{quotationAmount}
@@ -119,8 +120,14 @@
             , HOUSE_SIZE = #{houseSize}
             , HAS_ELEVATOR = #{hasElevator}
             , BOX_COUNT = #{boxCount}
-            , UID = #{uid}
+            , UID = #{cid}
             , UDT = CURRENT_TIMESTAMP()
+            , version = version + 1
+        WHERE QUOTATION_REQ_NO = #{quotationReqNo} AND version = #{version}
+    </update>
+    <update id="updateReqQuotationStatus" parameterType="map">
+        UPDATE tbl_quotation
+        SET status = #{status}
         WHERE QUOTATION_REQ_NO = #{quotationReqNo}
     </update>
 </mapper>

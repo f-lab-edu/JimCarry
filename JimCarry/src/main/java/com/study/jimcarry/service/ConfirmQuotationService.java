@@ -2,13 +2,16 @@ package com.study.jimcarry.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
 import com.study.jimcarry.domain.ConfirmQuotationEntity;
+import com.study.jimcarry.domain.ReqQuotationEntity;
 import com.study.jimcarry.exception.CustomException;
 import com.study.jimcarry.exception.ErrorCode;
 import com.study.jimcarry.mapper.ConfirmQuotationMapper;
+import com.study.jimcarry.mapper.ReqQuotationMapper;
 import com.study.jimcarry.model.ConfirmQuotationDTO;
 
 import lombok.RequiredArgsConstructor;
@@ -20,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ConfirmQuotationService {
 	
     private final ConfirmQuotationMapper confirmQuotationMapper;
+    private final ReqQuotationMapper reqQuotationMapper;
     
 	/**
 	 * 견적확정 정보 저장 
@@ -27,44 +31,56 @@ public class ConfirmQuotationService {
 	 * @return
 	 */
 	public int saveConfirmQuotation(ConfirmQuotationDTO confirmQuotation) {
-		ConfirmQuotationEntity confirmQuotationEntity = ConfirmQuotationEntity.builder()
+		ConfirmQuotationEntity entity = ConfirmQuotationEntity.builder()
 				.quotationReqNo(confirmQuotation.getQuotationReqNo())
 				.confirmDt(confirmQuotation.getConfirmDt())
 				.custId(confirmQuotation.getCustId())
 				.driverId(confirmQuotation.getDriverId())
 				.cid(0)
 				.build();
-		return confirmQuotationMapper.insertConfirmQuotation(confirmQuotationEntity);
+		
+		//견적 테이블의 status 값을 1로 update
+		reqQuotationMapper.updateReqQuotationStatus(confirmQuotation.getQuotationReqNo(), "1");
+		return confirmQuotationMapper.insertConfirmQuotation(entity);
 	}
 
-	/**
-	 * 견적확정 정보 수정
-	 * @param confirmQuotationEntity
-	 * @return
-	 */
-	public int modifyConfrimQuotation(ConfirmQuotationDTO confirmQuotation) {
-		
-		ConfirmQuotationEntity confirmQuotationEntity = ConfirmQuotationEntity.builder()
-				.quotationReqNo(confirmQuotation.getQuotationReqNo())
-				.confirmDt(confirmQuotation.getConfirmDt())
-				.custId(confirmQuotation.getCustId())
-				.driverId(confirmQuotation.getDriverId())
-				.build();
-		
-		ConfirmQuotationEntity findConfirmQuotation = confirmQuotationMapper.selectConfrimQuotation(confirmQuotationEntity.getQuotationReqNo());
-		if(findConfirmQuotation == null) {
-			throw new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
-		}
-		return confirmQuotationMapper.updateConfirmQuotation(confirmQuotationEntity);
-	}
+//	/**
+//	 * 견적확정 정보 수정
+//	 * @param confirmQuotationEntity
+//	 * @return
+//	 */
+//	@Deprecated
+//	public int modifyConfrimQuotation(ConfirmQuotationDTO confirmQuotation) {
+//		
+//		ConfirmQuotationEntity confirmQuotationEntity = ConfirmQuotationEntity.builder()
+//				.quotationReqNo(confirmQuotation.getQuotationReqNo())
+//				.confirmDt(confirmQuotation.getConfirmDt())
+//				.custId(confirmQuotation.getCustId())
+//				.driverId(confirmQuotation.getDriverId())
+//				.build();
+//		
+//		ConfirmQuotationEntity findConfirmQuotation = confirmQuotationMapper.selectConfrimQuotation(confirmQuotationEntity.getQuotationReqNo());
+//		if(findConfirmQuotation == null) {
+//			throw new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+//		}
+//		return confirmQuotationMapper.updateConfirmQuotation(confirmQuotationEntity);
+//	}
 	
 	/**
 	 * 견적 확정정보 삭제(철회)
 	 * @param reqQuotationId
 	 * @return
 	 */
-	public int deleteConfirmQuotation(String reqQuotationId) {
-		return confirmQuotationMapper.deleteConfirmQuotation(reqQuotationId);
+	public int deleteConfirmQuotation(String quotationId) {
+		Optional<ReqQuotationEntity> optionalEntity = Optional.ofNullable(reqQuotationMapper.selectReqQuotation(quotationId));
+		ReqQuotationEntity entity = optionalEntity.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
+		
+	    if ("2".equals(entity.getStatus())) {
+            throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), "이미 채택 된 견적 입니다.");
+        }
+		
+	    reqQuotationMapper.updateReqQuotationStatus(quotationId, "0");
+		return confirmQuotationMapper.deleteConfirmQuotation(quotationId);
 	}
 	
 	/**
@@ -72,18 +88,18 @@ public class ConfirmQuotationService {
 	 * @return
 	 */
 	public List<ConfirmQuotationDTO> getConfirmQuotationListByDriver(String driverId) {
-		List<ConfirmQuotationEntity> findList = confirmQuotationMapper.selectConfirmQuotationByDriver(driverId);
-		List<ConfirmQuotationDTO> confirmQuotationList = new ArrayList<>();
-		for(ConfirmQuotationEntity entity : findList) {
-			ConfirmQuotationDTO confirmQuotation = ConfirmQuotationDTO.builder()
+		List<ConfirmQuotationEntity> list = confirmQuotationMapper.selectConfirmQuotationByDriver(driverId);
+		List<ConfirmQuotationDTO> quotationList = new ArrayList<>();
+		for(ConfirmQuotationEntity entity : list) {
+			ConfirmQuotationDTO dto = ConfirmQuotationDTO.builder()
 					.quotationReqNo(entity.getQuotationReqNo())
 					.confirmDt(entity.getConfirmDt())
 					.custId(entity.getCustId())
 					.driverId(entity.getDriverId())
 					.build();
-			confirmQuotationList.add(confirmQuotation);
+			quotationList.add(dto);
 		}
-		return confirmQuotationList;
+		return quotationList;
 	}
 	
 	/**
@@ -92,17 +108,21 @@ public class ConfirmQuotationService {
 	 * @return
 	 */
 	public ConfirmQuotationDTO getConfirmQuotationByUser(String customerId) {
-		ConfirmQuotationEntity entity = confirmQuotationMapper.selectConfirmQuotationByUser(customerId);
-		if(entity == null) {
-			throw new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
-		}
-		ConfirmQuotationDTO confirmQuotation = ConfirmQuotationDTO.builder()
+//		ConfirmQuotationEntity entity = confirmQuotationMapper.selectConfirmQuotationByUser(customerId);
+//		if(entity == null) {
+//			throw new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage());
+//		}
+		
+		Optional<ConfirmQuotationEntity> optionalEntity = Optional.ofNullable(confirmQuotationMapper.selectConfirmQuotationByUser(customerId));
+		ConfirmQuotationEntity entity = optionalEntity.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
+		
+		ConfirmQuotationDTO dto = ConfirmQuotationDTO.builder()
 				.quotationReqNo(entity.getQuotationReqNo())
 				.confirmDt(entity.getConfirmDt())
 				.custId(entity.getCustId())
 				.driverId(entity.getDriverId())
 				.build();;
-		return confirmQuotation;	
+		return dto;	
 	}
 	
 }

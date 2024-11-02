@@ -2,25 +2,30 @@ package com.study.jimcarry.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.study.jimcarry.api.MoveItemRequest;
 import com.study.jimcarry.api.ReqQuotaionResponse;
 import com.study.jimcarry.api.ReqQuotationRequest;
+import com.study.jimcarry.exception.CustomException;
+import com.study.jimcarry.exception.ErrorCode;
 import com.study.jimcarry.model.MoveItemDTO;
 import com.study.jimcarry.model.ReqQuotationDTO;
+import com.study.jimcarry.model.UpdateReqQuotationDTO;
 import com.study.jimcarry.service.ReqQuotationService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Tag(name="ReqQuotation", description="ReqQuotation API")
 @RestController
-@RequestMapping(value = "/api/req-quotation")
+@RequestMapping(value = "/api/quotation")
 @RequiredArgsConstructor
 public class ReqQuotationController {
 	
@@ -57,7 +62,6 @@ public class ReqQuotationController {
 	public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest request) {
     	
     	ReqQuotationDTO reqQuotation = ReqQuotationDTO.builder()
-    	        .quotationDt(request.getQuotationDt())
     	        .custId(request.getCustId())
     	        .pickupAddr(request.getPickupAddr())
     	        .deliveryAddr(request.getDeliveryAddr())
@@ -96,13 +100,16 @@ public class ReqQuotationController {
     @PutMapping(value = "/{quotationid}") //PUT방식은 전체의 리소스를 교체 할 때 사용하고, PATCH는 리소스의 일부분을 교체 할 때 사용.
     @Tag(name="ReqQuotaion")
     @Operation(summary = "Modify ReqQuotaion", description="견적요청서 수정")
-	public ResponseEntity<ReqQuotaionResponse> modifyReqQuotation(@RequestBody @Valid ReqQuotationRequest request, 
+	public ResponseEntity<ReqQuotaionResponse> modifyReqQuotation(@RequestBody ReqQuotationRequest request, 
 			@PathVariable("quotationid") String quotationId) {
     	
-	    	ReqQuotationDTO reqQuotation = ReqQuotationDTO.builder()
-	            .quotationReqNo(quotationId)
-	            .quotationDt(request.getQuotationDt())
-	            .custId(request.getCustId())
+        	// Optional을 사용하여 유효성 체크
+        	Optional.ofNullable(quotationId)
+                .filter(id -> !id.trim().isEmpty())
+                .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), "Quotation ID must not be empty"));
+        	
+        	//UpdateDTO를 생성하여 UPDATE 할 필드만 정의
+	    	UpdateReqQuotationDTO updateReqQuotation = UpdateReqQuotationDTO.builder()
 	            .pickupAddr(request.getPickupAddr())
 	            .deliveryAddr(request.getDeliveryAddr())
 	            .moveDt(request.getMoveDt())
@@ -115,7 +122,7 @@ public class ReqQuotationController {
 	            .build();
 	    		    	
 		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
-				.resultRow(reqQuotationService.modifyReqQuotation(reqQuotation))
+				.resultRow(reqQuotationService.modifyReqQuotation(updateReqQuotation, quotationId))
 				.build();
 
 		return ResponseEntity.ok(response);
@@ -167,28 +174,30 @@ public class ReqQuotationController {
     public ResponseEntity<ReqQuotaionResponse> getReqQuotation(@PathVariable("customerid") String customerId) {
 		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
 				.reqQuotation(reqQuotationService.getReqQuotationByUser(customerId))
-				.reqQuotationList(reqQuotationService.getReqQuotationList())
+				//.reqQuotationList(reqQuotationService.getReqQuotationList())
 				.build();
 		return ResponseEntity.ok(response);
     }
     
-//    /**
-//     * 견적요청서 채택 상태 갱신
-//     * @param reqQuotationId
-//     * @param isAccepted
-//     * @param response
-//     * @return
-//     * @throws Exception
-//     */
-//    //@PatchMapping(value = "/{reqquotationid}/{isaccepted}")
-//    @PatchMapping
-//    @Tag(name="ReqQuotaion")
-//    @Operation(summary = "update ReqQuotaion isAccepted", description="견적요청 채택 상태 갱신")
-//    public ResponseEntity<ReqQuotaionResponse> patchQuotationIsAccepted(@RequestBody @Valid ReqQuotationRequest reqeust) {
-//    	
-//		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
-//				.resultRow(reqQuotationService.updateReqQuotationIsAccepted(reqeust.getReqQuotationId(), reqeust.isAccepted()))
-//				.build();
-//		return ResponseEntity.ok(response);
-//    }
+    /**
+     * 견적상태 갱신
+     * @param reqeust
+     * @return
+     */
+    @PatchMapping(value = "/{quotationid}")
+    @Tag(name="ReqQuotaion")
+    @Operation(summary = "update ReqQuotaion isAccepted", description="견적상태 갱신")
+    public ResponseEntity<ReqQuotaionResponse> patchQuotationIsAccepted(@RequestBody ReqQuotationRequest reqeust
+    		,@PathVariable("quotationid") String quotationId) {
+    	
+    	// Optional을 사용하여 유효성 체크
+    	Optional.ofNullable(quotationId)
+            .filter(id -> !id.trim().isEmpty())
+            .orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), "Quotation ID must not be empty"));
+    	
+		ReqQuotaionResponse response = ReqQuotaionResponse.builder()
+				.resultRow(reqQuotationService.updateReqQuotationStatus(quotationId, reqeust.getStatus()))
+				.build();
+		return ResponseEntity.ok(response);
+    }
 }

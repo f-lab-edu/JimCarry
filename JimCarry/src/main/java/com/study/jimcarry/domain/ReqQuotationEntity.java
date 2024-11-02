@@ -1,7 +1,7 @@
 package com.study.jimcarry.domain;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.util.Date;
 import java.time.LocalDateTime;
 
 import lombok.Builder;
@@ -30,8 +30,11 @@ public class ReqQuotationEntity {
 	private String deliveryAddr;
 
 	// 이사 예정일자
-	private LocalDate moveDt;
+	private Date moveDt;
 
+	// 견적요청 금액
+	private BigDecimal quotationAmount;
+	
 	// 건물 종류 (빌라/연립, 오피스텔, 주택, 아파트, 상가/사무실)
 	private String buildingType;
 
@@ -46,11 +49,11 @@ public class ReqQuotationEntity {
 
 	// 짐 박스 갯수
 	private int boxCount;
-
-	// 견적요청 금액
-	private BigDecimal quotationAmount;
 	
 	//생성자
 	private Integer cid;
+	
+	//견적 상태
+	private String status;
 
 }

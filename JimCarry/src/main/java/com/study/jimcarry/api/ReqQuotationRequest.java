@@ -1,8 +1,7 @@
 package com.study.jimcarry.api;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,10 +16,10 @@ import lombok.Data;
 public class ReqQuotationRequest {
 	
 	//견적요청일시
-	@JsonProperty("quotationDt") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
-	@Schema(name="quotationDt", description="견적요청일시") //Swagger/OpenAPI 문서를 자동 생성
-	@NotNull(message="견적 요청 일시는 필수입니다.")
-	private LocalDateTime quotationDt;
+//	@JsonProperty("quotationDt") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+//	@Schema(name="quotationDt", description="견적요청일시") //Swagger/OpenAPI 문서를 자동 생성
+//	@NotNull(message="견적 요청 일시는 필수입니다.")
+//	private LocalDateTime quotationDt;
 	
 	//고객 아이디
 	@JsonProperty("custId") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
@@ -44,7 +43,7 @@ public class ReqQuotationRequest {
 	@JsonProperty("moveDt") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
 	@Schema(name="moveDt", description="이사 일자") //Swagger/OpenAPI 문서를 자동 생성
 	@NotNull(message="이사 일자는 필수입니다.")
-    private LocalDate moveDt;
+    private Date moveDt;
 
     // 건물 종류 (빌라/연립, 오피스텔, 주택, 아파트, 상가/사무실)
 	@JsonProperty("buildingType") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
@@ -61,7 +60,7 @@ public class ReqQuotationRequest {
     // 집 평수 (15평, 24평, 32평, 45평, 100평)
 	@JsonProperty("houseSize") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
 	@Schema(name="houseSize", description="집 평수") //Swagger/OpenAPI 문서를 자동 생성
-	@NotBlank(message="집 평수는 필수입니다.")
+	@NotNull(message="집 평수는 필수입니다.")
     private BigDecimal houseSize;
 
     // 엘리베이터 여부
@@ -84,14 +83,16 @@ public class ReqQuotationRequest {
     // 생성자
 	@JsonProperty("cid") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
 	@Schema(name="cid", description="생성자") //Swagger/OpenAPI 문서를 자동 생성
-	@NotBlank(message="생성자는 필수입니다.")
+	@NotNull(message="생성자는 필수입니다.")
     private Integer cid;
 	
-
 	//이사 짐 정보 리스트
 	@JsonProperty("moveItemList") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
 	@Schema(name="moveItemList", description="이사 짐 정보 리스트") //Swagger/OpenAPI 문서를 자동 생성
-	@NotBlank(message="이사 짐 정보 리스트는 필수입니다.")
+	@NotNull(message="이사 짐 정보 리스트는 필수입니다.")
 	private List<MoveItemRequest> moveItemList;
-
+	
+	@JsonProperty("status") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
+	@Schema(name="status", description="견적상태") //Swagger/OpenAPI 문서를 자동 생성
+	private String status;
 }

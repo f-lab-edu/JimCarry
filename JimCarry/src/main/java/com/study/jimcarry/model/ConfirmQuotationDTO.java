@@ -1,17 +1,14 @@
 package com.study.jimcarry.model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 //@Data 
 /**
@@ -21,6 +18,7 @@ import lombok.Getter;
 */
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
 public class ConfirmQuotationDTO {
@@ -31,7 +29,7 @@ public class ConfirmQuotationDTO {
 
 	// 견적확정일시
 	@Schema(name = "confirmDt", description = "견적확정일시")
-	private LocalDateTime confirmDt;
+	private Date confirmDt;
 
 	// 고객 아이디
 	@Schema(name = "custId", description = "고객 아이디")
