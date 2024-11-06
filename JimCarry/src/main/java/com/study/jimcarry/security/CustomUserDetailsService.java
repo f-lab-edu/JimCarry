@@ -21,24 +21,22 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	
 	@Override
-	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+	public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
 		
-		UserEntity user = userMapper.findUserById(userName);
+		UserEntity user = userMapper.findUserById(userId);
 		
 		if (user == null) {
             throw new UsernameNotFoundException("사용자를 찾을 수 없습니다.");
         }
-		
-		CustomUserDetail loginUser = CustomUserDetail.builder()
-				.userId(user.getUserId())
-				.userName(user.getUserName())
-				.password(user.getPassword())
-				.phoneNumber(user.getPhoneNumber())
-				.email(user.getEmail())
-				.userType(user.getUserType())
-				.build();
-		
-		return loginUser;
+
+        return CustomUserDetail.builder()
+                .userId(user.getUserId())
+                .userName(user.getUserName())
+                .password(user.getPassword())
+                .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
+                .userType(user.getUserType())
+                .build();
 	}
 
 }
