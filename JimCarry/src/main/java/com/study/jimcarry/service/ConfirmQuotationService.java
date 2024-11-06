@@ -31,7 +31,7 @@ public class ConfirmQuotationService {
 	/**
 	 * 견적확정 정보 저장
 	 * 
-	 * @param confirmQuotationEntity
+	 * @param confirmQuotation
 	 * @return
 	 */
 	@Transactional
