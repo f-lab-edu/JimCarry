@@ -11,13 +11,7 @@
     </insert>
 
     <select id="findUserById" resultType="com.study.jimcarry.domain.UserEntity">
-        SELECT 
-	         user_id
-	        ,username
-	        ,password
-	        ,phone_number
-	        ,email
-	        ,user_type
+        SELECT user_id
         FROM users 
         WHERE user_id = #{userId}
     </select>

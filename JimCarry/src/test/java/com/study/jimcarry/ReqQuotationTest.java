@@ -28,6 +28,7 @@ import com.study.jimcarry.service.ReqQuotationService;
 
 import lombok.extern.slf4j.Slf4j;
 
+//대상이되는 Service만 테스트, 단위테스트로 변경(특정레이어), Mock객체 생성
 @SpringBootTest(classes= {JimCarryApplication.class})
 @Transactional
 @Rollback(false)
