@@ -52,19 +52,24 @@ public class ReqQuotationService {
 		// UUID version4 생성
 		// version4는 정렬되지 않은 UUID로 PK로 사용할 경우
 		// 삽입, 조회 성능에 영향을 미침
-		String generatedId = UUID.randomUUID().toString();
-		log.debug("uuid ver4 -> {}", generatedId);
+		String uuidVer4 = UUID.randomUUID().toString();
+		log.debug("uuid ver4 -> {}", uuidVer4);
 
 		for (MoveItemDTO dto : moveItemList) {
 
 			moveItemMapper.insertMoveItem(
-					MoveItemEntity.builder().quotationReqNo(generatedId).furnitureId(dto.getFurnitureId())
-							.optionValId(dto.getOptionValId()).qty(dto.getQty()).cid(0).build());
+					MoveItemEntity.builder()
+							.quotationReqNo(uuidVer1)
+							.furnitureId(dto.getFurnitureId())
+							.optionValId(dto.getOptionValId())
+							.qty(dto.getQty())
+							.cid(0)
+							.build());
 		}
 
 		// 레코드 저장
 		return reqQuotationMapper.insertReqQuotation(
-				ReqQuotationEntity.builder().quotationReqNo(generatedId).custId(reqQuotation.getCustId())
+				ReqQuotationEntity.builder().quotationReqNo(uuidVer1).custId(reqQuotation.getCustId())
 						.pickupAddr(reqQuotation.getPickupAddr()).deliveryAddr(reqQuotation.getDeliveryAddr())
 						.moveDt(reqQuotation.getMoveDt()).buildingType(reqQuotation.getBuildingType())
 						.roomStructure(reqQuotation.getRoomStructure()).houseSize(reqQuotation.getHouseSize())
@@ -82,15 +87,25 @@ public class ReqQuotationService {
 	public int modifyReqQuotation(UpdateReqQuotationDTO updateReqQuotation, String quotationId) {
 		for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
 			// 견적 정보를 조회
-			Optional<ReqQuotationEntity> optionalEntity = Optional
-					.ofNullable(reqQuotationMapper.selectReqQuotation(quotationId));
-			ReqQuotationEntity entity = optionalEntity.orElseThrow(
-					() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
+			/**
+			 * AS-IS
+			 */
+//			Optional<ReqQuotationEntity> optionalEntity = Optional
+//					.ofNullable(reqQuotationMapper.selectReqQuotation(quotationId));
+//			ReqQuotationEntity entity = optionalEntity.orElseThrow(
+//					() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
+			/**
+			 * TO-BE
+			 */
+			ReqQuotationEntity entity = Optional.ofNullable(reqQuotationMapper.selectReqQuotation(quotationId))
+					.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
+
 
 			// 견적 상태가 "0"이 아닐 경우 예외를 발생
-			if (!"0".equals(entity.getStatus())) {
-				throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), "이미 확정되거나 채택 된 견적 입니다.");
-			}
+			QuotationStatus.validDraftStatus(entity.getStatus());
+//			if (!QuotationStatus.DRAFT.getCode().equals(entity.getStatus())) {
+//				throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), "이미 확정되거나 채택 된 견적 입니다.");
+//			}
 			log.debug("version => {}", entity.getVersion());
 
 			// 견적 업데이트
@@ -106,10 +121,9 @@ public class ReqQuotationService {
 			// 업데이트 성공 시
 			if (resultRow == 1) {
 				return resultRow; // 성공적으로 업데이트 되었을 때
-			} else {
-				// 재시도를 위한 로깅
-				log.warn("Optimistic locking failure, attempt: {}", attempt + 1);
 			}
+			// 재시도를 위한 로깅
+			log.warn("Optimistic locking failure, attempt: {}", attempt + 1);
 		}
 
 		// 모든 시도 후 업데이트 실패 시 예외를 발생
@@ -119,19 +133,17 @@ public class ReqQuotationService {
 	/**
 	 * 견적요청서 삭제
 	 * 
-	 * @param reqQuotationId
+	 * @param quotationId
 	 * @return
 	 */
 	public int deleteReqQuotation(String quotationId) {
 
-		Optional<ReqQuotationEntity> optionalEntity = Optional
-				.ofNullable(reqQuotationMapper.selectReqQuotation(quotationId));
-		ReqQuotationEntity entity = optionalEntity.orElseThrow(
-				() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
+		ReqQuotationEntity entity = Optional.ofNullable(reqQuotationMapper.selectReqQuotation(quotationId))
+				.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
 
-		if (!"0".equals(entity.getStatus())) {
-			throw new CustomException(ErrorCode.INTERNAL_SERVER_ERROR.getCode(), "이미 확정되거나 채택 된 견적 입니다.");
-		}
+		// 견적 상태가 "0"이 아닐 경우 예외를 발생
+		QuotationStatus.validDraftStatus(entity.getStatus());
+
 		return reqQuotationMapper.deleteReqQuotation(quotationId);
 	}
 
@@ -162,16 +174,23 @@ public class ReqQuotationService {
 	 */
 	public ReqQuotationDTO getReqQuotationByUser(String customerId) {
 
-		Optional<ReqQuotationEntity> optionalEntity = Optional
-				.ofNullable(reqQuotationMapper.selectReqQuotationByUser(customerId));
-		ReqQuotationEntity entity = optionalEntity.orElseThrow(
-				() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
+		ReqQuotationEntity entity = Optional.ofNullable(reqQuotationMapper.selectReqQuotationByUser(customerId))
+		.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
 
-		return ReqQuotationDTO.builder().quotationReqNo(entity.getQuotationReqNo()).custId(entity.getCustId())
-				.pickupAddr(entity.getPickupAddr()).deliveryAddr(entity.getDeliveryAddr()).moveDt(entity.getMoveDt())
-				.buildingType(entity.getBuildingType()).roomStructure(entity.getRoomStructure())
-				.houseSize(entity.getHouseSize()).hasElevator(entity.isHasElevator()).boxCount(entity.getBoxCount())
-				.quotationAmount(entity.getQuotationAmount()).status(entity.getStatus()).build();
+		return ReqQuotationDTO.builder()
+				.quotationReqNo(entity.getQuotationReqNo())
+				.custId(entity.getCustId())
+				.pickupAddr(entity.getPickupAddr())
+				.deliveryAddr(entity.getDeliveryAddr())
+				.moveDt(entity.getMoveDt())
+				.buildingType(entity.getBuildingType())
+				.roomStructure(entity.getRoomStructure())
+				.houseSize(entity.getHouseSize())
+				.hasElevator(entity.isHasElevator())
+				.boxCount(entity.getBoxCount())
+				.quotationAmount(entity.getQuotationAmount())
+				.status(entity.getStatus())
+				.build();
 	}
 
 	/**
