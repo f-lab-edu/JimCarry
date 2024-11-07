@@ -28,9 +28,9 @@ public class MoveItemRequest {
 	@NotBlank(message="옵션 명 ID는 필수 입니다.")
     private Integer optionValId;
 
-	// 출발지 주소
+	// 가구 수량
 	@JsonProperty("qty") //클라이언트에서 requestBody에 json으로 보낼 때 매핑
 	@Schema(name="qty", description="가구 수량") //Swagger/OpenAPI 문서를 자동 생성
 	@NotBlank(message="가구 수량은 필수 입니다.")
-    private Integer qty;
+    private Integer quantity;
 }

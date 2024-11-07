@@ -25,18 +25,18 @@ public class ConfirmQuotationResponse extends CommonResponse {
 	@JsonProperty("confrimQuotation")
     @Expose
     @SerializedName("confrimQuotation")
-	private ConfirmQuotationDTO confrimQuotation;
+	private ConfirmQuotationDTO confirmQuotation;
 	
 	//견적확정 정보 리스트
 	@Schema(name="confrimQuotationList", description = "견적확정 정보 리스트")
 	@JsonProperty("confrimQuotationList")
     @Expose
     @SerializedName("confrimQuotationList")
-	private List<ConfirmQuotationDTO> confrimQuotationList;
+	private List<ConfirmQuotationDTO> confirmQuotations;
 	
-	@Schema(name="resultRow", description = "저장/수정 시 행 결과")
-	@JsonProperty("resultRow")
+	@Schema(name="results", description = "저장/수정 시 행 결과")
+	@JsonProperty("results")
     @Expose
-    @SerializedName("resultRow")
-	private int resultRow;
+    @SerializedName("results")
+	private int results;
 }

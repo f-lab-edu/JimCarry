@@ -44,7 +44,7 @@ public class ReqQuotationEntity {
 	private String roomStructure;
 
 	// 집 평수
-	private BigDecimal houseSize;
+	private int houseSize;
 
 	// 엘리베이터 여부
 	private boolean hasElevator;

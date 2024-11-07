@@ -22,12 +22,7 @@ public class AppConfig {
     public ModelMapper modelMapper(){
         return new ModelMapper();
     }
-    
-    @Bean
-    public Validator validator() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        return factory.getValidator();
-    }
+
     
     @Bean
     public ObjectMapper objectMapper() {

@@ -57,7 +57,7 @@ public class ReqQuotationDTO {
 
 	// 집 평수
 	@Schema(name = "houseSize", description = "집 평수")
-	private BigDecimal houseSize;
+	private int houseSize;
 
 	// 엘리베이터 여부
 	@Schema(name = "hasElevator", description = "엘리베이터 여부")

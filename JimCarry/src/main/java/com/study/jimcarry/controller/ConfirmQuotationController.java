@@ -61,7 +61,7 @@ public class ConfirmQuotationController {
     			.build();
     	
     	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
-    			.resultRow(confirmQuotationService.saveConfirmQuotation(dto))
+    			.results(confirmQuotationService.saveConfirmQuotation(dto))
     			.build();
     	
         return ResponseEntity.ok(response);
@@ -109,7 +109,7 @@ public class ConfirmQuotationController {
     @Operation(summary = "Delete ConfirmQuotation", description="견적 확정정보 삭제(철회)")
     public ResponseEntity<ConfirmQuotationResponse> deleteReqQuotation(@PathVariable("quotationid") String quotationId) {
     	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
-    			.resultRow(	confirmQuotationService.deleteConfirmQuotation(quotationId))
+    			.results(	confirmQuotationService.deleteConfirmQuotation(quotationId))
     			.build();
     	return ResponseEntity.ok(response);
     }
@@ -128,7 +128,7 @@ public class ConfirmQuotationController {
 
     	List<ConfirmQuotationDTO> ConfirmQuotationList = confirmQuotationService.getConfirmQuotationListByDriver(driverId);
     	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
-    			.confrimQuotationList(ConfirmQuotationList)
+    			.confirmQuotations(ConfirmQuotationList)
     			.build();
     	return ResponseEntity.ok(response);
     }
@@ -146,7 +146,7 @@ public class ConfirmQuotationController {
     public ResponseEntity<ConfirmQuotationResponse> getConfirmQuotation(@PathVariable("customerid") String customerId){
     	ConfirmQuotationDTO confirmQuotation = confirmQuotationService.getConfirmQuotationByUser(customerId);
     	ConfirmQuotationResponse response = ConfirmQuotationResponse.builder()
-    			.confrimQuotation(confirmQuotation)
+    			.confirmQuotation(confirmQuotation)
     			.build();
     	return ResponseEntity.ok(response);
     }

@@ -110,13 +110,19 @@ public class ReqQuotationService {
 
 			// 견적 업데이트
 			int resultRow = reqQuotationMapper.updateReqQuotation(ReqQuotationEntity.builder()
-					.quotationReqNo(quotationId).pickupAddr(updateReqQuotation.getPickupAddr())
-					.deliveryAddr(updateReqQuotation.getDeliveryAddr()).moveDt(updateReqQuotation.getMoveDt())
+					.quotationReqNo(quotationId)
+					.pickupAddr(updateReqQuotation.getPickupAddr())
+					.deliveryAddr(updateReqQuotation.getDeliveryAddr())
+					.moveDt(updateReqQuotation.getMoveDt())
 					.buildingType(updateReqQuotation.getBuildingType())
-					.roomStructure(updateReqQuotation.getRoomStructure()).houseSize(updateReqQuotation.getHouseSize())
-					.hasElevator(updateReqQuotation.isHasElevator()).boxCount(updateReqQuotation.getBoxCount())
-					.quotationAmount(updateReqQuotation.getQuotationAmount()).cid(0) // 실제 cid 값으로 대체해야 함
-					.version(entity.getVersion()).build());
+					.roomStructure(updateReqQuotation.getRoomStructure())
+					.houseSize(updateReqQuotation.getHouseSize())
+					.hasElevator(updateReqQuotation.isHasElevator())
+					.boxCount(updateReqQuotation.getBoxCount())
+					.quotationAmount(updateReqQuotation.getQuotationAmount())
+					.cid(0) // 실제 cid 값으로 대체해야 함
+					.version(entity.getVersion())
+					.build());
 
 			// 업데이트 성공 시
 			if (resultRow == 1) {

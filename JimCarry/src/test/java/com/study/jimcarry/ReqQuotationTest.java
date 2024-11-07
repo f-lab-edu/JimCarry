@@ -56,7 +56,7 @@ public class ReqQuotationTest {
         request.setQuotationAmount(BigDecimal.valueOf(1000000.00));
         request.setBuildingType("Apartment");
         request.setRoomStructure("2 rooms");
-        request.setHouseSize(BigDecimal.valueOf(24));
+        request.setHouseSize(24);
         request.setHasElevator(true);
         request.setBoxCount(30);
         request.setCid(1);
@@ -66,25 +66,25 @@ public class ReqQuotationTest {
         MoveItemRequest moveReq1= new MoveItemRequest();
         moveReq1.setFurnitureId(1);
         moveReq1.setOptionValId(1);
-        moveReq1.setQty(1);
+        moveReq1.setQuantity(1);
         moveItemList.add(moveReq1);
         
         MoveItemRequest moveReq2= new MoveItemRequest();
         moveReq2.setFurnitureId(2);
         moveReq2.setOptionValId(2);
-        moveReq2.setQty(1);
+        moveReq2.setQuantity(1);
         moveItemList.add(moveReq2);
         
         MoveItemRequest moveReq3= new MoveItemRequest();
         moveReq3.setFurnitureId(2);
         moveReq3.setOptionValId(5);
-        moveReq3.setQty(1);
+        moveReq3.setQuantity(1);
         moveItemList.add(moveReq3);
         
         MoveItemRequest moveReq4= new MoveItemRequest();
         moveReq4.setFurnitureId(2);
         moveReq4.setOptionValId(9);
-        moveReq4.setQty(1);
+        moveReq4.setQuantity(1);
         moveItemList.add(moveReq4);
         
         request.setMoveItemList(moveItemList);
@@ -108,7 +108,7 @@ public class ReqQuotationTest {
     		MoveItemDTO mvDto = MoveItemDTO.builder()
     				.furnitureId(mvReq.getFurnitureId())
     				.optionValId(mvReq.getOptionValId())
-    				.qty(mvReq.getQty())
+    				.qty(mvReq.getQuantity())
     				.build();
     		dtoList.add(mvDto);
     	}
@@ -177,7 +177,7 @@ public class ReqQuotationTest {
 	            .moveDt(date)
 	            .buildingType("단독주택")
 	            .roomStructure("원룸")
-	            .houseSize(BigDecimal.valueOf(18))
+	            .houseSize(18)
 	            .hasElevator(false)
 	            .boxCount(10)
 	            .quotationAmount(BigDecimal.valueOf(1000.00))
@@ -209,7 +209,7 @@ public class ReqQuotationTest {
 	            .moveDt(date)
 	            .buildingType("단독주택")
 	            .roomStructure("원룸")
-	            .houseSize(BigDecimal.valueOf(18))
+	            .houseSize(18)
 	            .hasElevator(false)
 	            .boxCount(10)
 	            .quotationAmount(BigDecimal.valueOf(1000.00))

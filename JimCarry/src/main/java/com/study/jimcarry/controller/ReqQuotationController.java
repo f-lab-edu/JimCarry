@@ -3,6 +3,7 @@ package com.study.jimcarry.controller;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,15 +62,30 @@ public class ReqQuotationController {
 	@Tag(name = "ReqQuotaion")
 	@Operation(summary = "Insert ReqQuotaion", description = "견적요청서 저장")
 	public ResponseEntity<ReqQuotaionResponse> saveReqQuotation(@RequestBody @Valid ReqQuotationRequest request) {
-
-		List<MoveItemDTO> dtoList = new ArrayList<>();
-		for (MoveItemRequest mvReq : request.getMoveItemList()) {
-			dtoList.add(MoveItemDTO.builder().furnitureId(mvReq.getFurnitureId()).optionValId(mvReq.getOptionValId())
-					.qty(mvReq.getQty()).build());
-		}
+		/**
+		 * AS-IS
+		 */
+//		List<MoveItemDTO> dtoList = new ArrayList<>();
+//		for (MoveItemRequest mvReq : request.getMoveItemList()) {
+//			dtoList.add(MoveItemDTO.builder()
+//					.furnitureId(mvReq.getFurnitureId())
+//					.optionValId(mvReq.getOptionValId())
+//					.qty(mvReq.getQty())
+//					.build());
+//		}
+		/**
+		 * TO-BE
+		 */
+		List<MoveItemDTO> dtoList = request.getMoveItemList().stream()
+				.map(mvReq -> MoveItemDTO.builder()
+						.furnitureId(mvReq.getFurnitureId())
+						.optionValId(mvReq.getOptionValId())
+						.qty(mvReq.getQty())
+						.build())
+				.collect(Collectors.toList());
 
 		return ResponseEntity.ok(ReqQuotaionResponse.builder()
-				.resultRow(reqQuotationService.saveReqQuotation(
+				.results(reqQuotationService.saveReqQuotation(
 						ReqQuotationDTO.builder().custId(request.getCustId()).pickupAddr(request.getPickupAddr())
 								.deliveryAddr(request.getDeliveryAddr()).moveDt(request.getMoveDt())
 								.buildingType(request.getBuildingType()).roomStructure(request.getRoomStructure())
@@ -98,7 +114,7 @@ public class ReqQuotationController {
 				() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), "Quotation ID must not be empty"));
 
 		return ResponseEntity.ok(ReqQuotaionResponse.builder()
-				.resultRow(reqQuotationService.modifyReqQuotation(
+				.results(reqQuotationService.modifyReqQuotation(
 						UpdateReqQuotationDTO.builder().pickupAddr(request.getPickupAddr())
 								.deliveryAddr(request.getDeliveryAddr()).moveDt(request.getMoveDt())
 								.buildingType(request.getBuildingType()).roomStructure(request.getRoomStructure())
@@ -121,7 +137,7 @@ public class ReqQuotationController {
 	@Operation(summary = "Delete ReqQuotaion", description = "견적요청서 삭제")
 	public ResponseEntity<ReqQuotaionResponse> deleteReqQuotation(@PathVariable("quotationid") String quotationId) {
 		return ResponseEntity.ok(
-				ReqQuotaionResponse.builder().resultRow(reqQuotationService.deleteReqQuotation(quotationId)).build());
+				ReqQuotaionResponse.builder().results(reqQuotationService.deleteReqQuotation(quotationId)).build());
 	}
 
 	/**
@@ -172,6 +188,6 @@ public class ReqQuotationController {
 				() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), "Quotation ID must not be empty"));
 
 		return ResponseEntity.ok(ReqQuotaionResponse.builder()
-				.resultRow(reqQuotationService.updateReqQuotationStatus(quotationId, reqeust.getStatus())).build());
+				.results(reqQuotationService.updateReqQuotationStatus(quotationId, reqeust.getStatus())).build());
 	}
 }

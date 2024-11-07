@@ -20,12 +20,12 @@ public class LoginResponse extends CommonResponse {
 	@JsonProperty("userInfo")
     @Expose
     @SerializedName("userInfo")
-	private UserInfoDTO userInfo;
+	private UserInfoDTO userInfoDto;
 
 	public LoginResponse() {}
 	
-	public LoginResponse(UserInfoDTO userInfo) {
-		this.userInfo = userInfo;
+	public LoginResponse(UserInfoDTO userInfoDto) {
+		this.userInfoDto = userInfoDto;
 	}
 		
 }

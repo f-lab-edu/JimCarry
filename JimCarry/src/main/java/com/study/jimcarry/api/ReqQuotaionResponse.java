@@ -34,9 +34,9 @@ public class ReqQuotaionResponse extends CommonResponse {
     @SerializedName("reqQuotationList")
 	private List<ReqQuotationDTO> reqQuotationList;
 	
-	@Schema(name="resultRow", description = "저장/수정 시 행 결과")
-	@JsonProperty("resultRow")
+	@Schema(name="results", description = "저장/수정 시 행 결과")
+	@JsonProperty("results")
     @Expose
-    @SerializedName("resultRow")
-	private int resultRow;
+    @SerializedName("results")
+	private int results;
 }
