@@ -1,13 +1,8 @@
 package com.study.jimcarry.domain;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
-import com.study.jimcarry.domain.ReqQuotationEntity.ReqQuotationEntityBuilder;
+import java.util.Date;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 /**
@@ -17,23 +12,19 @@ import lombok.Getter;
 @Builder
 public class ConfirmQuotationEntity {
 	
-	// 견적요청_ID
-	private String reqQuotationId;
-
-	// 견적확정일시
-	private LocalDateTime confirmQuotationDt;
-
+	// 견적요청 번호
+	private String quotationReqNo;
+	
 	// 고객 아이디
-	private String customerId;
+	private String custId;
 	
 	// 기사님 아이디
 	private String driverId;
+	
+	// 견적확정일시
+	private Date confirmDt;
 
 	// 생성자
-	private String ctr;
+	private Integer cid;
 	
-	public ConfirmQuotationEntityBuilder toBuilder() {
-	    return ConfirmQuotationEntity.builder()
-	            .reqQuotationId(this.reqQuotationId);
-	}
 }

@@ -3,6 +3,7 @@ package com.study.jimcarry.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.study.jimcarry.domain.ReqQuotationEntity;
 
@@ -44,19 +45,12 @@ public interface ReqQuotationMapper {
 	ReqQuotationEntity selectReqQuotationByUser(String customerId);
 	
 	/**
-	 * 견적요청서 Id 구하기
-	 * 현재 테이블의 Max Id값을 구함
-	 * @return
-	 */
-	int selectReqQuotationMaxId();
-	
-	/**
-	 * 견적 채택상태 갱신
+	 * 견적상태 갱신
 	 * @param reqQuotationId
 	 * @param isAccepted
 	 * @return
 	 */
-	int updateReqQuotationIsAccepted(String reqQuotationId, Boolean isAccepted);
+	   int updateReqQuotationStatus(@Param("quotationReqNo") String reqQuotationId, @Param("status") String status);
 	
 	/**
 	 * 견적요청서 조회

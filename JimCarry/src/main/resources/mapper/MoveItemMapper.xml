@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.jimcarry.mapper.MoveItemMapper">
+
+    <insert id="insertMoveItem" parameterType="com.study.jimcarry.domain.MoveItemEntity">
+        INSERT INTO tbl_move_item (
+            quotation_req_no
+            , furniture_id
+            , option_val_id
+            , qty
+            , cid
+        )
+        VALUES (
+            #{quotationReqNo}
+            , #{furnitureId}
+            , #{optionValId}
+            , #{qty}
+            , #{cid}
+        )
+    </insert>
+
+</mapper>

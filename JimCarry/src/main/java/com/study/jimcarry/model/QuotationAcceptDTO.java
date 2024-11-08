@@ -23,22 +23,29 @@ import lombok.Getter;
 @Builder
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
-public class ConfirmQuotation {
+public class QuotationAcceptDTO {
 	
-	// 견적요청_ID
-	@Schema(name = "reqQuotationId", description = "견적요청_ID")
-	private String reqQuotationId;
+	// 견적요청 번호
+	@Schema(name = "quotationReqNo", description = "견적요청 번호")
+	private String quotationReqNo;
 
-	// 견적확정일시
-	@Schema(name = "confirmQuotationDt", description = "견적확정일시")
-	private LocalDateTime confirmQuotationDt;
+	// 견적채택일시
+	@Schema(name = "acceptDt", description = "견적채택일시")
+	private LocalDateTime acceptDt;
 
 	// 고객 아이디
-	@Schema(name = "customerId", description = "고객 아이디")
-	private String customerId;
+	@Schema(name = "custId", description = "고객 아이디")
+	private String custId;
 
 	// 기사님 아이디
 	@Schema(name = "driverId", description = "기사님 아이디")
 	private String driverId;
-
+	
+	// 이사상태
+	@Schema(name = "movingState", description = "이사 상태")
+	private String movingState;
+	
+	// 생성자
+	@Schema(name = "cid", description = "생성자")
+	private Integer cid;
 }

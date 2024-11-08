@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @WebMvcTest(UserController.class) 
 @Slf4j
-public class AuthMockUpTest {
+public class UserMockUpTest {
 
     @Autowired
     private MockMvc mockMvc;

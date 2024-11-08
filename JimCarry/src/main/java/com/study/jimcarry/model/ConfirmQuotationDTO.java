@@ -1,17 +1,14 @@
 package com.study.jimcarry.model;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
+import lombok.ToString;
 
 //@Data 
 /**
@@ -21,27 +18,28 @@ import lombok.Getter;
 */
 @Getter
 @Builder
+@ToString
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL) // null 제외
-public class MovingInfo {
+public class ConfirmQuotationDTO {
 	
-	// 견적요청_ID
-	@Schema(name = "reqQuotationId", description = "견적요청_ID")
-	private String reqQuotationId;
+	// 견적요청 번호
+	@Schema(name = "quotationReqNo", description = "견적요청 번호")
+	private String quotationReqNo;
 
-	// 견적채택일시
-	@Schema(name = "acceptQuotationDt", description = "견적채택일시")
-	private LocalDateTime acceptQuotationDt;
+	// 견적확정일시
+	@Schema(name = "confirmDt", description = "견적확정일시")
+	private Date confirmDt;
 
 	// 고객 아이디
-	@Schema(name = "customerId", description = "고객 아이디")
-	private String customerId;
+	@Schema(name = "custId", description = "고객 아이디")
+	private String custId;
 
 	// 기사님 아이디
 	@Schema(name = "driverId", description = "기사님 아이디")
 	private String driverId;
 	
-	// 이사상태
-	@Schema(name = "movingState", description = "이사 상태")
-	private String movingState;
+	@Schema(name="cid", description="생성자") //Swagger/OpenAPI 문서를 자동 생성
+    private String cid;
+
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.study.jimcarry.model.UserInfo;
+import com.study.jimcarry.model.UserInfoDTO;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
@@ -20,12 +20,12 @@ public class LoginResponse extends CommonResponse {
 	@JsonProperty("userInfo")
     @Expose
     @SerializedName("userInfo")
-	private UserInfo userInfo;
+	private UserInfoDTO userInfoDto;
 
 	public LoginResponse() {}
 	
-	public LoginResponse(UserInfo userInfo) {
-		this.userInfo = userInfo;
+	public LoginResponse(UserInfoDTO userInfoDto) {
+		this.userInfoDto = userInfoDto;
 	}
 		
 }
