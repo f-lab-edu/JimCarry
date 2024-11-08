@@ -77,12 +77,12 @@ public class ReqQuotationController {
 		 * TO-BE
 		 */
 		List<MoveItemDTO> dtoList = request.getMoveItemList().stream()
-				.map(mvReq -> MoveItemDTO.builder()
-						.furnitureId(mvReq.getFurnitureId())
-						.optionValId(mvReq.getOptionValId())
-						.qty(mvReq.getQty())
-						.build())
-				.collect(Collectors.toList());
+		        .map(mvReq -> MoveItemDTO.builder()
+		                .furnitureId(mvReq.getFurnitureId())
+		                .optionValId(mvReq.getOptionValId())
+		                .qty(mvReq.getQuantity())
+		                .build()) // Close the builder here
+		        .collect(Collectors.toList()); // Collect outside the map
 
 		return ResponseEntity.ok(ReqQuotaionResponse.builder()
 				.results(reqQuotationService.saveReqQuotation(
