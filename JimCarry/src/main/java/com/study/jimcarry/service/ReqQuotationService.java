@@ -37,8 +37,8 @@ public class ReqQuotationService {
 
 	/**
 	 * 견적요청서 작성
-	 * 
-	 * @param reqQuotationEntity
+	 * @param reqQuotation
+	 * @param moveItemList
 	 * @return
 	 */
 	@Transactional
@@ -62,14 +62,14 @@ public class ReqQuotationService {
 							.quotationReqNo(uuidVer1)
 							.furnitureId(dto.getFurnitureId())
 							.optionValId(dto.getOptionValId())
-							.qty(dto.getQty())
+							.quantity(dto.getQuantity())
 							.cid(0)
 							.build());
 		}
 
 		// 레코드 저장
 		return reqQuotationMapper.insertReqQuotation(
-				ReqQuotationEntity.builder().quotationReqNo(uuidVer1).custId(reqQuotation.getCustId())
+				ReqQuotationEntity.builder().quotationReqNo(uuidVer1).custId(reqQuotation.getCustomerId())
 						.pickupAddr(reqQuotation.getPickupAddr()).deliveryAddr(reqQuotation.getDeliveryAddr())
 						.moveDt(reqQuotation.getMoveDt()).buildingType(reqQuotation.getBuildingType())
 						.roomStructure(reqQuotation.getRoomStructure()).houseSize(reqQuotation.getHouseSize())
@@ -79,8 +79,8 @@ public class ReqQuotationService {
 
 	/**
 	 * 견적요청서 수정
-	 * 
-	 * @param reqQuotationEntity
+	 * @param updateReqQuotation
+	 * @param quotationId
 	 * @return
 	 */
 	@Transactional
@@ -138,7 +138,7 @@ public class ReqQuotationService {
 
 	/**
 	 * 견적요청서 삭제
-	 * 
+	 *
 	 * @param quotationId
 	 * @return
 	 */
@@ -155,37 +155,44 @@ public class ReqQuotationService {
 
 	/**
 	 * 견적요청서 전체 조회
-	 * 
+	 *
 	 * @return
 	 */
 	public List<ReqQuotationDTO> getReqQuotationList() {
-		List<ReqQuotationEntity> findList = reqQuotationMapper.selectAllReqQuotations();
+		List<ReqQuotationEntity> reqQuotations = reqQuotationMapper.selectAllReqQuotations();
 		List<ReqQuotationDTO> reqQuotationList = new ArrayList<>();
-		for (ReqQuotationEntity entity : findList) {
-			reqQuotationList.add(ReqQuotationDTO.builder().quotationReqNo(entity.getQuotationReqNo())
-					.custId(entity.getCustId()).pickupAddr(entity.getPickupAddr())
-					.deliveryAddr(entity.getDeliveryAddr()).moveDt(entity.getMoveDt())
-					.buildingType(entity.getBuildingType()).roomStructure(entity.getRoomStructure())
-					.houseSize(entity.getHouseSize()).hasElevator(entity.isHasElevator()).boxCount(entity.getBoxCount())
-					.quotationAmount(entity.getQuotationAmount()).status(entity.getStatus()).build());
+		for (ReqQuotationEntity entity : reqQuotations) {
+			reqQuotationList.add(ReqQuotationDTO.builder()
+					.quotationReqNo(entity.getQuotationReqNo())
+					.customerId(entity.getCustId())
+					.pickupAddr(entity.getPickupAddr())
+					.deliveryAddr(entity.getDeliveryAddr())
+					.moveDt(entity.getMoveDt())
+					.buildingType(entity.getBuildingType())
+					.roomStructure(entity.getRoomStructure())
+					.houseSize(entity.getHouseSize())
+					.hasElevator(entity.isHasElevator())
+					.boxCount(entity.getBoxCount())
+					.quotationAmount(entity.getQuotationAmount())
+					.status(entity.getStatus())
+					.build());
 		}
 		return reqQuotationList;
 	}
 
 	/**
 	 * 사용자별 견적요청서 조회
-	 * 
+	 *
 	 * @param customerId
 	 * @return
 	 */
 	public ReqQuotationDTO getReqQuotationByUser(String customerId) {
-
 		ReqQuotationEntity entity = Optional.ofNullable(reqQuotationMapper.selectReqQuotationByUser(customerId))
-		.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
+				.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND.getCode(), ErrorCode.NOT_FOUND.getMessage()));
 
 		return ReqQuotationDTO.builder()
 				.quotationReqNo(entity.getQuotationReqNo())
-				.custId(entity.getCustId())
+				.customerId(entity.getCustId())
 				.pickupAddr(entity.getPickupAddr())
 				.deliveryAddr(entity.getDeliveryAddr())
 				.moveDt(entity.getMoveDt())
@@ -201,7 +208,7 @@ public class ReqQuotationService {
 
 	/**
 	 * 견적상태 갱신
-	 * 
+	 *
 	 * @param reqQuotationId
 	 * @param status
 	 * @return

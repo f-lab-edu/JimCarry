@@ -6,6 +6,6 @@ import com.study.jimcarry.domain.MoveItemEntity;
 
 @Mapper
 public interface MoveItemMapper {
-	
+
 	int insertMoveItem(MoveItemEntity moveItemEntity);
 }
