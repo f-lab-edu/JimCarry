@@ -1,4 +1,4 @@
-name: CI and CD for Spring Boot
+name: JimCarry CI
 
 on:
   push:
