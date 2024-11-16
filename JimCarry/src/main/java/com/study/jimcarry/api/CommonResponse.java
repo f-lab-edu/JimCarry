@@ -42,4 +42,6 @@ public class CommonResponse {
 		this.resultCode = err.getCode();
 		this.resultMsg = err.getMessage();
 	}
+	
+	//TEST CI
 }
