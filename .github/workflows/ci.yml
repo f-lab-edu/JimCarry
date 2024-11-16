@@ -17,6 +17,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # mvnw 파일에 실행 권한 부여
+      - name: Give execute permission to mvnw
+        run: chmod +x ./JimCarry/mvnw
+        
       # 2. Java JDK 설정
       - name: Set up JDK
         uses: actions/setup-java@v3
