@@ -28,7 +28,7 @@ jobs:
       - name: Build with Maven Wrapper
         run: |
           mvn clean package -DskipTests
-
+          working-directory: ./JimCarry  # pom.xml이 있는 디렉토리로 경로 변경
       # 4. 테스트 실행
       - name: Run tests
         run: mvn test
