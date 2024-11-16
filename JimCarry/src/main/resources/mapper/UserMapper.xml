@@ -6,13 +6,13 @@
 <mapper namespace="com.study.jimcarry.mapper.UserMapper">
 
     <insert id="insertUserInfo" parameterType="com.study.jimcarry.domain.UserEntity">
-        INSERT INTO users (user_id, username, password, phone_number, email, user_type)
+        INSERT INTO tbl_users (user_id, username, password, phone_number, email, user_type)
         VALUES (#{userId}, #{userName}, #{password}, #{phoneNumber}, #{email}, #{userType})
     </insert>
 
     <select id="findUserById" resultType="com.study.jimcarry.domain.UserEntity">
         SELECT user_id
-        FROM users 
+        FROM tbl_users 
         WHERE user_id = #{userId}
     </select>
 
@@ -24,11 +24,11 @@
 	        ,phone_number
 	        ,email
 	        ,user_type
-        FROM users
+        FROM tbl_users
     </select>
 
     <update id="updateUser" parameterType="com.study.jimcarry.domain.UserEntity">
-        UPDATE users
+        UPDATE tbl_users
         SET username = #{userName},
             password = #{password},
             phone_number = #{phoneNumber},
@@ -38,17 +38,17 @@
     </update>
 
     <delete id="deleteUser">
-        DELETE FROM users WHERE user_id = #{userId}
+        DELETE FROM tbl_users WHERE user_id = #{userId}
     </delete>
     <select id="findUserId" parameterType="com.study.jimcarry.domain.UserEntity">
-    	SELECT user_id
-    	FROM users
+    	SELECT tbl_user_id
+    	FROM tbl_users
     	WHERE 1=1
     	AND username = #{userName}
     	AND email = #{email}
     </select>
     <update id="changePassword" parameterType="com.study.jimcarry.domain.UserEntity">
-        UPDATE users
+        UPDATE tbl_users
         SET password = #{password}
         WHERE 1=1
         AND user_id = #{userId}
