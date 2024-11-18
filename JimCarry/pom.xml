@@ -90,11 +90,16 @@
 		<dependency>    
 			<groupId>org.springframework.boot</groupId>    
 			<artifactId>spring-boot-starter-cache</artifactId>
-		</dependency> 
-		<dependency>    
-			<groupId>net.sf.ehcache</groupId>    
-			<artifactId>ehcache</artifactId>    
-			<version>2.10.6</version>
+		</dependency>
+		<!-- Spring의 캐시 추상화를 사용하기 위해 추가 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<classifier>jakarta</classifier>
 		</dependency>
 		<dependency>
 		    <groupId>commons-codec</groupId>
@@ -122,6 +127,17 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mybatis.spring.boot</groupId>
+			<artifactId>mybatis-spring-boot-starter-test</artifactId>
+			<version>3.0.3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -138,7 +154,17 @@
 					</excludes>
 				</configuration>
 			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.codehaus.mojo</groupId>-->
+<!--				<artifactId>sonar-maven-plugin</artifactId>-->
+<!--				<version>3.9.1.2184</version> &lt;!&ndash; 최신 버전 확인 &ndash;&gt;-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
-
+	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2</url>
+		</repository>
+	</repositories>
 </project>
