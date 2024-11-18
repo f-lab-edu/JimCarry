@@ -1,9 +1,10 @@
-package com.study.jimcarry;
+package com.study.jimcarry.service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.study.jimcarry.JimCarryApplication;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.study.jimcarry.api.ConfirmQuotationRequest;
 import com.study.jimcarry.model.ConfirmQuotationDTO;
 import com.study.jimcarry.model.ReqQuotationDTO;
-import com.study.jimcarry.service.ConfirmQuotationService;
-import com.study.jimcarry.service.ReqQuotationService;
 
 import lombok.extern.slf4j.Slf4j;
 
