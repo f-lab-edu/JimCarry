@@ -43,4 +43,5 @@ jobs:
             -Dsonar.organization=hongseokwoo1991 \
             -Dsonar.host.url=https://sonarcloud.io \
             -Dsonar.token=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.exclusions=**/test/**
         working-directory: ./JimCarry
