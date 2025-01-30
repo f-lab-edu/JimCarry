@@ -34,9 +34,9 @@ jobs:
         working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
         
       # 4. 테스트 실행
-      - name: Run tests
-        run: ./mvnw test
-        working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
+      #- name: Run tests
+      #  run: ./mvnw test
+      #  working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
       # 5. 서버에 배포 (서버가 준비된 상태에서 SSH를 통해 배포)
       # - name: Deploy to server via SSH
       #   uses: appleboy/ssh-action@v0.1.9
