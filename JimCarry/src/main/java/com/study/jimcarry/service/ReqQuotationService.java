@@ -71,7 +71,7 @@ public class ReqQuotationService {
 
 		// 레코드 저장
 		return reqQuotationMapper.insertReqQuotation(
-				ReqQuotationEntity.builder().quotationReqNo(uuidVer1).custId(reqQuotation.getCustomerId())
+				ReqQuotationEntity.builder().quotationReqNo(uuidVer1).custId(reqQuotation.getCustId())
 						.pickupAddr(reqQuotation.getPickupAddr()).deliveryAddr(reqQuotation.getDeliveryAddr())
 						.moveDt(reqQuotation.getMoveDt()).buildingType(reqQuotation.getBuildingType())
 						.roomStructure(reqQuotation.getRoomStructure()).houseSize(reqQuotation.getHouseSize())
@@ -167,7 +167,7 @@ public class ReqQuotationService {
 		for (ReqQuotationEntity entity : reqQuotations) {
 			reqQuotationList.add(ReqQuotationDTO.builder()
 					.quotationReqNo(entity.getQuotationReqNo())
-					.customerId(entity.getCustId())
+					.custId(entity.getCustId())
 					.pickupAddr(entity.getPickupAddr())
 					.deliveryAddr(entity.getDeliveryAddr())
 					.moveDt(entity.getMoveDt())
@@ -196,7 +196,8 @@ public class ReqQuotationService {
 
 		return ReqQuotationDTO.builder()
 				.quotationReqNo(entity.getQuotationReqNo())
-				.customerId(entity.getCustId())
+				.quotationDt(entity.getQuotationDt())
+				.custId(entity.getCustId())
 				.pickupAddr(entity.getPickupAddr())
 				.deliveryAddr(entity.getDeliveryAddr())
 				.moveDt(entity.getMoveDt())
@@ -207,6 +208,7 @@ public class ReqQuotationService {
 				.boxCount(entity.getBoxCount())
 				.quotationAmount(entity.getQuotationAmount())
 				.status(entity.getStatus())
+				.version(entity.getVersion())
 				.build();
 	}
 

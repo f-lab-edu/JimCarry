@@ -2,6 +2,7 @@ package com.study.jimcarry.model;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -33,12 +34,12 @@ public class ReqQuotationDTO implements Serializable {
 	private String quotationReqNo;
 
 	// 견적요청일시
-//	@Schema(name = "quotationDt", description = "견적요청일시")
-//	private LocalDateTime quotationDt;
+	@Schema(name = "quotationDt", description = "견적요청일시")
+	private LocalDateTime quotationDt;
 
 	// 고객 아이디
 	@Schema(name = "custId", description = "고객 아이디")
-	private String customerId;
+	private String custId;
 
 	// 출발지 주소
 	@Schema(name = "pickupAddr", description = "출발지 주소")
@@ -77,8 +78,8 @@ public class ReqQuotationDTO implements Serializable {
 	private BigDecimal quotationAmount;
 
 	// 이사 짐 정보 리스트
-	@Schema(name = "moveItemList", description = "이사 짐 정보 리스트")
-	private List<MoveItemDTO> moveItemList;
+//	@Schema(name = "moveItemList", description = "이사 짐 정보 리스트")
+//	private List<MoveItemDTO> moveItemList;
 
 	@Schema(name="cid", description="생성자") //Swagger/OpenAPI 문서를 자동 생성
 	private String cid;
@@ -87,4 +88,6 @@ public class ReqQuotationDTO implements Serializable {
 	@Schema(name = "status", description = "견적상태")
 	private String status = QuotationStatus.DRAFT.getCode();
 
+	@Schema(name = "version", description = "버전")
+	private int version;
 }

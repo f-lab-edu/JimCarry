@@ -81,7 +81,7 @@ public class ReqQuotationController {
 
 		return ResponseEntity.ok(ReqQuotaionResponse.builder()
 				.results(reqQuotationService.saveReqQuotation(
-						ReqQuotationDTO.builder().customerId(request.getCustId()).pickupAddr(request.getPickupAddr())
+						ReqQuotationDTO.builder().custId(request.getCustId()).pickupAddr(request.getPickupAddr())
 								.deliveryAddr(request.getDeliveryAddr()).moveDt(request.getMoveDt())
 								.buildingType(request.getBuildingType()).roomStructure(request.getRoomStructure())
 								.houseSize(request.getHouseSize()).hasElevator(request.isHasElevator())
