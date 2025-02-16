@@ -116,8 +116,7 @@ public class ConfirmQuotationController {
     
     /**
      * 기사님별 견적확정 정보 조회
-     * @param customerId
-     * @param response
+     * @param driverId
      * @return
      * @throws Exception
      */
