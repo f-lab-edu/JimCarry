@@ -51,7 +51,7 @@ jobs:
 
       # 6. 빌드된 .jar 파일을 서버로 전송 (scp 사용)
       - name: Copy jar file to server using SCP
-        uses: appleboy/ssh-action@v0.1.9
+        uses: appleboy/scp-action@v0.1.9
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
