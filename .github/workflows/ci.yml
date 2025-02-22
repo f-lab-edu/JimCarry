@@ -38,22 +38,6 @@ jobs:
         run: ./mvnw test
         working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
 
-      # 5. 빌드된 .jar 파일을 아티팩트로 저장 (actions/upload-artifact v2 사용)
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: app-jar
-          path: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
-
-      # 6. 서버에 배포 (서버가 준비된 상태에서 SSH를 통해 배포)
-      - name: Deploy to server via SCP
-        run: |
-          scp -i ${{ secrets.PRIVATE_KEY }} -P 22 ./JimCarry/target/*.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/root/jimcarry/app.jar
-        env:
-          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-
       # 7. 서버에서 애플리케이션 실행
       - name: Restart Spring Boot application on server
         uses: appleboy/ssh-action@v0.1.9
