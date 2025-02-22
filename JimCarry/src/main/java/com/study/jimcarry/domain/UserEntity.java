@@ -28,4 +28,6 @@ public class UserEntity {
     
     // 유저 유형
     private String userType;
+
+    private int cid;
 }

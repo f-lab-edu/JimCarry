@@ -59,5 +59,11 @@ public class UserInfoDTO {
 	 * phoneNumber
 	 */
 	@Schema(name="phoneNumber", description = "phoneNumber")
-    private String phoneNumber;  
+    private String phoneNumber;
+
+	/**
+	 * cid
+	 */
+	@Schema(name="cid", description = "cid")
+	private int cid;
 }
