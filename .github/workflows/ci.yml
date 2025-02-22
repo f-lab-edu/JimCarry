@@ -39,12 +39,6 @@ jobs:
         working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
 
       # 7. 서버에서 애플리케이션 실행
-      - name: Restart Spring Boot application on server
-        uses: appleboy/ssh-action@v0.1.9
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.PRIVATE_KEY }}
-          port: 22
-          script: |
-            echo "Stopping existing Spring Boot application..."
+      - name: Test SSH connectivity
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.PRIVATE_KEY }} ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} 'echo "Connection successful"'
