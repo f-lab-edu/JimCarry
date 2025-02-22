@@ -69,10 +69,9 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
           script: |
-            echo "Stopping existing Spring Boot application..."
-            pkill -f 'java -jar' || true
-            sleep 3
-            echo "Starting new Spring Boot application..."
             cd /root/JimCarry/target
+            sudo fuser -k -n tcp 8090 || true
+            echo "Stopping existing Spring Boot application..."
             chmod +x jimcarry-0.0.1-SNAPSHOT.jar
-            nohup java -jar jimcarry-0.0.1-SNAPSHOT.jar > /root/JimCarry/application.log 2>&1 &
+            nohup java -jar jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 & 
+            echo "Starting new Spring Boot application..."
