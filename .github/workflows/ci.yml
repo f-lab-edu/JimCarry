@@ -38,8 +38,8 @@ jobs:
         run: ./mvnw test
         working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
 
-      # 7. 서버에서 애플리케이션 실행
-      - name: Restart Spring Boot application on server
+      # 7. 서버접속 테스트
+      - name: Test Server Connecting
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.SERVER_IP }}
