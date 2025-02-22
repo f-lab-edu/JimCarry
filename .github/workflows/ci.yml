@@ -48,6 +48,3 @@ jobs:
           port: 22
           script: |
             echo "Stopping existing Spring Boot application..."
-            pkill -f 'java -jar' || true  # 기존 Java 프로세스를 종료
-            echo "Starting new Spring Boot application..."
-            nohup java -jar /root/jimcarry/app.jar &  # 새로 배포된 앱 실행
