@@ -58,4 +58,4 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
           source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
-          target: /jimcarry  # 서버의 목적지 경로
+          target: /root/jimcarry  # 서버의 목적지 경로
