@@ -60,7 +60,7 @@ jobs:
           source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
           target: /root  # 서버의 목적지 경로
 
-      # 7. 서버에서 애플리케이션 실행
+      # Deploy to the server
       - name: Restart Spring Boot application on server
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -70,8 +70,9 @@ jobs:
           port: 2223
           script: |
             echo "Stopping existing Spring Boot application..."
-            pkill -f 'java -jar' || true  
+            pkill -f 'java -jar' || true
+            sleep 3
             echo "Starting new Spring Boot application..."
             cd /root/JimCarry/target
-            java -jar jimcarry-0.0.1-SNAPSHOT.jar
-
+            chmod +x jimcarry-0.0.1-SNAPSHOT.jar
+            nohup java -jar jimcarry-0.0.1-SNAPSHOT.jar > /root/JimCarry/application.log 2>&1 &
