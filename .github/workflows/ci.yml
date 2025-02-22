@@ -27,13 +27,19 @@ jobs:
         with:
           java-version: 17  # 사용하는 Java 버전
           distribution: temurin
-
-     # 3. Maven Wrapper 사용하여 빌드 (./mvnw는 Maven Wrapper 스크립트)
+      # 3.DB 정보
+      - name: Set environment variables for database and authentication
+        run: |
+          echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
+          echo "DB_USER=${{ secrets.DB_USER }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          
+     # 4. Maven Wrapper 사용하여 빌드 (./mvnw는 Maven Wrapper 스크립트)
       - name: Build with Maven Wrapper
         run: ./mvnw clean package -DskipTests
         working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
         
-      # 4. 테스트 실행
+      # 5. 테스트 실행
       - name: Run tests
         run: ./mvnw test
         working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
