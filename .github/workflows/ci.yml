@@ -38,36 +38,32 @@ jobs:
         run: ./mvnw test
         working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
 
-      # 5. 빌드된 .jar 파일을 아티팩트로 저장
+      # 5. 빌드된 .jar 파일을 아티팩트로 저장 (actions/upload-artifact v2 사용)
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: app-jar
           path: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
 
       # 6. 서버에 배포 (서버가 준비된 상태에서 SSH를 통해 배포)
       - name: Deploy to server via SCP
-        uses: appleboy/scp-action@v0.1.1
-        with:
-          host: ${{ secrets.SERVER_IP }}   # 서버 IP 주소
-          username: ${{ secrets.SERVER_USER }}  # 서버 사용자 이름
-          key: ${{ secrets.PRIVATE_KEY }}  # SSH 개인 키 (GitHub Secrets에 저장)
-          port: 22  # SSH 포트 (기본값 22)
-          source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일
-          target: /root/jimcarry/  # 서버에 저장할 경로
-          
-      - name: Deploy to server via SSH
+        run: |
+          scp -i ${{ secrets.PRIVATE_KEY }} -P 22 ./JimCarry/target/*.jar ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/root/jimcarry/app.jar
+        env:
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_IP: ${{ secrets.SERVER_IP }}
+
+      # 7. 서버에서 애플리케이션 실행
+      - name: Restart Spring Boot application on server
         uses: appleboy/ssh-action@v0.1.9
         with:
-          host: ${{ secrets.SERVER_IP }}   # 서버 IP 주소
-          username: ${{ secrets.SERVER_USER }}  # 서버 사용자 이름
-          key: ${{ secrets.PRIVATE_KEY }}  # SSH 개인 키 (GitHub Secrets에 저장)
-          port: 22  # SSH 포트 (기본값 22)
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.PRIVATE_KEY }}
+          port: 22
           script: |
             echo "Stopping existing Spring Boot application..."
             pkill -f 'java -jar' || true  # 기존 Java 프로세스를 종료
-            cd /root/jimcarry
-            echo "Cleaning up old files..."
-            rm -rf *  # 기존 파일을 모두 삭제
             echo "Starting new Spring Boot application..."
-            nohup java -jar app.jar &  # Spring Boot 애플리케이션 실행
+            nohup java -jar /root/jimcarry/app.jar &  # 새로 배포된 앱 실행
