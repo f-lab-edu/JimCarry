@@ -37,6 +37,7 @@ public class UserService {
 				.phoneNumber(userInfo.getPhoneNumber())
 				.email(userInfo.getEmail())
 				.userType(userInfo.getUserType())
+				.cid(userInfo.getCid())
 				.build();
 		
 		return userMapper.insertUserInfo(userEntity);

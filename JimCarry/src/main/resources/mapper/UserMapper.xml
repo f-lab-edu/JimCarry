@@ -6,8 +6,8 @@
 <mapper namespace="com.study.jimcarry.mapper.UserMapper">
 
     <insert id="insertUserInfo" parameterType="com.study.jimcarry.domain.UserEntity">
-        INSERT INTO tbl_users (user_id, username, password, phone_number, email, user_type)
-        VALUES (#{userId}, #{userName}, #{password}, #{phoneNumber}, #{email}, #{userType})
+        INSERT INTO tbl_users (user_id, username, password, phone_number, email, user_type, cid, cdt)
+        VALUES (#{userId}, #{userName}, #{password}, #{phoneNumber}, #{email}, #{userType}, #{cid}, now())
     </insert>
 
     <select id="findUserById" resultType="com.study.jimcarry.domain.UserEntity">
@@ -32,7 +32,7 @@
         SET username = #{userName},
             password = #{password},
             phone_number = #{phoneNumber},
-            email = #{email}
+            email = #{email},
             user_type = #{userType}
         WHERE user_id = #{userId}
     </update>
@@ -41,7 +41,7 @@
         DELETE FROM tbl_users WHERE user_id = #{userId}
     </delete>
     <select id="findUserId" parameterType="com.study.jimcarry.domain.UserEntity">
-    	SELECT tbl_user_id
+    	SELECT user_id
     	FROM tbl_users
     	WHERE 1=1
     	AND username = #{userName}

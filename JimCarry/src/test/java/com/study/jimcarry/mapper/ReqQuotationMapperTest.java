@@ -6,7 +6,7 @@
 //import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-//import org.springframework.test.context.junit.jupiter.SpringExtension;
+//import org.springframework.context.annotation.ComponentScan;
 //
 //import java.math.BigDecimal;
 //import java.time.LocalDateTime;
