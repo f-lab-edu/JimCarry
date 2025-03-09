@@ -83,7 +83,7 @@ jobs:
               echo "blue" > /root/current_profile.txt  # 초기 상태를 blue로 설정
             fi
             echo "CURRENT_PROFILE=$CURRENT_PROFILE" >> $GITHUB_ENV
-
+      
             # 프로파일 자동 전환 (blue <-> green)
             if [ "$CURRENT_PROFILE" == "blue" ]; then
               echo "Switching to green profile"
@@ -104,9 +104,9 @@ jobs:
               chmod +x jimcarry-0.0.1-SNAPSHOT.jar
               nohup java -jar -Dspring.profiles.active=blue jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
             fi
-
+      
             echo "Application started with profile ${{ env.ENV_PROFILE }}."
-
+      
             # Nginx 설정 리로드 (새로운 프로파일로 요청 라우팅)
             echo "Reloading Nginx..."
             sudo nginx -s reload
