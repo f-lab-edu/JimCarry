@@ -17,10 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # mvnw 파일에 실행 권한 부여
-      - name: Give execute permission to mvnw
-        run: chmod +x ./JimCarry/mvnw
-        
       # 2. Java JDK 설정
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -28,17 +24,26 @@ jobs:
           java-version: 17  # 사용하는 Java 버전
           distribution: temurin
 
-      # 3. Maven Wrapper 사용하여 빌드 (./mvnw는 Maven Wrapper 스크립트)
+      # 3. application.yml 생성 (maven build 전에 생성)
+      - name: Decode application.yml from secrets
+        run: |
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./JimCarry/src/main/resources/application.yml
+
+      # 4. mvnw 파일에 실행 권한 부여
+      - name: Give execute permission to mvnw
+        run: chmod +x ./JimCarry/mvnw
+        
+      # 5. Maven Wrapper 사용하여 빌드
       - name: Build with Maven Wrapper
         run: ./mvnw clean package -DskipTests
-        working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
+        working-directory: ./JimCarry
 
-      # 4. 테스트 실행
+      # 6. 테스트 실행
       - name: Run tests
         run: ./mvnw test
-        working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
+        working-directory: ./JimCarry
 
-      # 5. 서버접속 테스트
+      # 7. 서버접속 테스트
       - name: Test Server Connecting
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -49,7 +54,7 @@ jobs:
           script: |
             echo "Connected Server"
 
-      # 6. 빌드된 .jar 파일을 서버로 전송 (scp 사용)
+      # 8. 빌드된 .jar 파일을 서버로 전송 (scp 사용)
       - name: Copy jar file to server using SCP
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -60,7 +65,7 @@ jobs:
           source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
           target: /root  # 서버의 목적지 경로
 
-      # Deploy to the server
+      # 9. 서버에서 Spring Boot 애플리케이션 실행
       - name: Restart Spring Boot application on server
         uses: appleboy/ssh-action@v0.1.9
         with:
