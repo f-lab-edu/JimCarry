@@ -65,7 +65,7 @@ jobs:
           source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
           target: /root  # 서버의 목적지 경로
 
-      # 9. 서버에서 Spring Boot 애플리케이션 실행
+      # 9. 서버에서 Spring Boot 애플리케이션 실행_
       - name: Restart Spring Boot application on server
         uses: appleboy/ssh-action@v0.1.9
         with:
