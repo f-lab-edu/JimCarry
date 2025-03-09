@@ -28,8 +28,6 @@ jobs:
       - name: Decode application.yml from secrets
         run: |
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./JimCarry/src/main/resources/application.yml
-          cd JimCarry
-          ls -al
           
       # 4. mvnw 파일에 실행 권한 부여
       - name: Give execute permission to mvnw
