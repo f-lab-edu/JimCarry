@@ -28,7 +28,8 @@ jobs:
       - name: Decode application.yml from secrets
         run: |
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./JimCarry/src/main/resources/application.yml
-          cat ./JimCarry/src/main/resources/application.yml  # 내용 확인을 위해 추가
+          cat ./JimCarry/src/main/resources/application.yml
+          
       # 4. mvnw 파일에 실행 권한 부여
       - name: Give execute permission to mvnw
         run: chmod +x ./JimCarry/mvnw
