@@ -74,41 +74,56 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
           script: |
-            # 현재 프로파일을 추적 (파일로 저장된 상태를 읽어옵니다)
-            if [ -f "/root/current_profile.txt" ]; then
-              CURRENT_PROFILE=$(cat /root/current_profile.txt)
-              echo "Current Profile: $CURRENT_PROFILE"
-            else
-              CURRENT_PROFILE="blue"  # 기본값은 blue
-              echo "blue" > /root/current_profile.txt  # 초기 상태를 blue로 설정
-            fi
-            
-            # GitHub 환경 변수 설정
-            echo "CURRENT_PROFILE=$CURRENT_PROFILE" >> $GITHUB_ENV
-            
-            # 프로파일 자동 전환 (blue <-> green)
-            if [ "$CURRENT_PROFILE" == "blue" ]; then
-              echo "Switching to green profile"
-              echo "green" > /root/current_profile.txt  # 상태 저장
-              echo "ENV_PROFILE=green" >> $GITHUB_ENV
-              # Nginx upstream을 green 프로파일로 변경
-              sudo sed -i 's/server 127.0.0.1:8090;/server 127.0.0.1:8091;/g' /etc/nginx/nginx.conf
-              sudo fuser -k -n tcp 8090 || true  # 기존 blue 애플리케이션 종료
-              chmod +x /root/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar
-              nohup java -jar -Dspring.profiles.active=green /root/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
-            else
-              echo "Switching to blue profile"
-              echo "blue" > /root/current_profile.txt  # 상태 저장
-              echo "ENV_PROFILE=blue" >> $GITHUB_ENV
-              # Nginx upstream을 blue 프로파일로 변경
-              sudo sed -i 's/server 127.0.0.1:8091;/server 127.0.0.1:8090;/g' /etc/nginx/nginx.conf
-              sudo fuser -k -n tcp 8091 || true  # 기존 green 애플리케이션 종료
-              chmod +x /root/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar
-              nohup java -jar -Dspring.profiles.active=blue /root/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
-            fi
-            
-            echo "Application started with profile $CURRENT_PROFILE."
-            
-            # Nginx 설정 리로드 (새로운 프로파일로 요청 라우팅)
-            echo "Reloading Nginx..."
-            sudo nginx -s reload
+              # 현재 프로파일을 추적 (파일로 저장된 상태를 읽어옵니다)
+              if [ -f "/***/current_profile.txt" ]; then
+                CURRENT_PROFILE=$(cat /***/current_profile.txt)
+                echo "Current Profile: $CURRENT_PROFILE"
+              else
+                CURRENT_PROFILE="blue"  # 기본값은 blue
+                echo "blue" > /***/current_profile.txt  # 초기 상태를 blue로 설정
+              fi
+              
+              # GitHub 환경 변수 설정 (이 부분은 필요에 따라 사용하세요)
+              # echo "CURRENT_PROFILE=$CURRENT_PROFILE" >> $GITHUB_ENV
+              
+              # 프로파일 자동 전환 (blue <-> green)
+              if [ "$CURRENT_PROFILE" == "blue" ]; then
+                echo "Switching to green profile"
+                echo "green" > /***/current_profile.txt  # 상태 저장
+                # Nginx upstream을 green 프로파일로 변경
+                sudo sed -i 's/server 127.0.0.1:8090;/server 127.0.0.1:8091;/g' /etc/nginx/nginx.conf
+                sudo fuser -k -n tcp 8090 || true  # 기존 blue 애플리케이션 종료
+              
+                # 새로운 green 프로파일로 애플리케이션 실행
+                chmod +x /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar
+                nohup java -jar -Dspring.profiles.active=green /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
+              
+                # 애플리케이션이 준비될 때까지 대기 (Health check)
+                while ! curl -s http://127.0.0.1:8091/actuator/health; do
+                  echo "Waiting for application to start on port 8091..."
+                  sleep 5
+                done
+              
+              else
+                echo "Switching to blue profile"
+                echo "blue" > /***/current_profile.txt  # 상태 저장
+                # Nginx upstream을 blue 프로파일로 변경
+                sudo sed -i 's/server 127.0.0.1:8091;/server 127.0.0.1:8090;/g' /etc/nginx/nginx.conf
+                sudo fuser -k -n tcp 8091 || true  # 기존 green 애플리케이션 종료
+              
+                # 새로운 blue 프로파일로 애플리케이션 실행
+                chmod +x /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar
+                nohup java -jar -Dspring.profiles.active=blue /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
+              
+                # 애플리케이션이 준비될 때까지 대기 (Health check)
+                while ! curl -s http://127.0.0.1:8090/actuator/health; do
+                  echo "Waiting for application to start on port 8090..."
+                  sleep 5
+                done
+              fi
+              
+              echo "Application started with profile $CURRENT_PROFILE."
+              
+              # Nginx 설정 리로드 (새로운 프로파일로 요청 라우팅)
+              echo "Reloading Nginx..."
+              sudo nginx -s reload
