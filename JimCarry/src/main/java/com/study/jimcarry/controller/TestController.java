@@ -12,6 +12,6 @@ public class TestController {
 
     @GetMapping("/")
     public String index() {
-        return "CI/CD Deploy Test - Active Profile: " + activeProfile;
+        return "CI/CD Deploy Test - Active Profile: " + activeProfile + "Zero-downtime deployment test";
     }
 }
