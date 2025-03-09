@@ -17,10 +17,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # mvnw 파일에 실행 권한 부여
-      - name: Give execute permission to mvnw
-        run: chmod +x ./JimCarry/mvnw
-        
       # 2. Java JDK 설정
       - name: Set up JDK
         uses: actions/setup-java@v3
@@ -28,28 +24,106 @@ jobs:
           java-version: 17  # 사용하는 Java 버전
           distribution: temurin
 
-     # 3. Maven Wrapper 사용하여 빌드 (./mvnw는 Maven Wrapper 스크립트)
+      # 3. application.yml 생성 (Base64로 인코딩된 값을 secrets에 저장)
+      - name: Decode application.yml from secrets
+        run: |
+          echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./JimCarry/src/main/resources/application.yml
+
+      # 4. mvnw 파일에 실행 권한 부여
+      - name: Give execute permission to mvnw
+        run: chmod +x ./JimCarry/mvnw
+        
+      # 5. Maven Wrapper 사용하여 빌드
       - name: Build with Maven Wrapper
         run: ./mvnw clean package -DskipTests
-        working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
-        
-      # 4. 테스트 실행
+        working-directory: ./JimCarry
+
+      # 6. 테스트 실행
       - name: Run tests
         run: ./mvnw test
-        working-directory: ./JimCarry  # mvnw 파일이 있는 디렉토리로 경로 설정
-      # 5. 서버에 배포 (서버가 준비된 상태에서 SSH를 통해 배포)
-      # - name: Deploy to server via SSH
-      #   uses: appleboy/ssh-action@v0.1.9
-      #   with:
-      #     host: ${{ secrets.SERVER_IP }}   # 서버 IP 주소
-      #     username: ${{ secrets.SERVER_USER }}  # 서버 사용자 이름
-      #     key: ${{ secrets.PRIVATE_KEY }}  # SSH 개인 키 (GitHub Secrets에 저장)
-      #     port: 22  # SSH 포트 (기본값 22)
-      #     script: |
-      #       # 서버에서 실행할 명령어들
-      #       echo "Stopping existing Spring Boot application..."
-      #       pkill -f 'java -jar' || true  # 기존 Java 프로세스 종료
-      #       cd /path/to/your/application  # 애플리케이션 디렉토리로 이동
-      #       rm -rf *  # 기존 파일 삭제
-      #       mv /path/to/github/actions/artifact/*.jar app.jar  # 새로 빌드된 .jar 파일 복사
-      #       nohup java -jar app.jar &  # 새로운 애플리케이션 실행
+        working-directory: ./JimCarry
+
+      # 7. 서버 접속 테스트
+      - name: Test Server Connecting
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 2223
+          script: |
+            echo "Connected Server"
+
+      # 8. 빌드된 .jar 파일을 서버로 전송 (SCP 사용)
+      - name: Copy jar file to server using SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 2223
+          source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
+          target: /root  # 서버의 목적지 경로
+
+      # 9. 서버에서 Spring Boot 애플리케이션 실행 및 Nginx 재시작
+      - name: Restart Spring Boot application on server
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 2223
+          script: |
+              # 현재 프로파일을 추적 (파일로 저장된 상태를 읽어옵니다)
+              if [ -f "/***/current_profile.txt" ]; then
+                CURRENT_PROFILE=$(cat /***/current_profile.txt)
+                echo "Current Profile: $CURRENT_PROFILE"
+              else
+                CURRENT_PROFILE="blue"  # 기본값은 blue
+                echo "blue" > /***/current_profile.txt  # 초기 상태를 blue로 설정
+              fi
+              
+              # GitHub 환경 변수 설정 (이 부분은 필요에 따라 사용하세요)
+              # echo "CURRENT_PROFILE=$CURRENT_PROFILE" >> $GITHUB_ENV
+              
+              # 프로파일 자동 전환 (blue <-> green)
+              if [ "$CURRENT_PROFILE" == "blue" ]; then
+                echo "Switching to green profile"
+                echo "green" > /***/current_profile.txt  # 상태 저장
+                # Nginx upstream을 green 프로파일로 변경
+                sudo sed -i 's/server 127.0.0.1:8090;/server 127.0.0.1:8091;/g' /etc/nginx/nginx.conf
+                sudo fuser -k -n tcp 8090 || true  # 기존 blue 애플리케이션 종료
+              
+                # 새로운 green 프로파일로 애플리케이션 실행
+                chmod +x /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar
+                nohup java -jar -Dspring.profiles.active=green /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
+              
+                # 애플리케이션이 준비될 때까지 대기 (Health check)
+                while ! curl -s http://127.0.0.1:8091/actuator/health; do
+                  echo "Waiting for application to start on port 8091..."
+                  sleep 5
+                done
+              
+              else
+                echo "Switching to blue profile"
+                echo "blue" > /***/current_profile.txt  # 상태 저장
+                # Nginx upstream을 blue 프로파일로 변경
+                sudo sed -i 's/server 127.0.0.1:8091;/server 127.0.0.1:8090;/g' /etc/nginx/nginx.conf
+                sudo fuser -k -n tcp 8091 || true  # 기존 green 애플리케이션 종료
+              
+                # 새로운 blue 프로파일로 애플리케이션 실행
+                chmod +x /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar
+                nohup java -jar -Dspring.profiles.active=blue /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
+              
+                # 애플리케이션이 준비될 때까지 대기 (Health check)
+                while ! curl -s http://127.0.0.1:8090/actuator/health; do
+                  echo "Waiting for application to start on port 8090..."
+                  sleep 5
+                done
+              fi
+              
+              echo "Application started with profile $CURRENT_PROFILE."
+              
+              # Nginx 설정 리로드 (새로운 프로파일로 요청 라우팅)
+              echo "Reloading Nginx..."
+              sudo nginx -s reload
