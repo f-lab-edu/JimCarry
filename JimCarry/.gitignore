@@ -43,3 +43,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# application.yml은 Git에 포함하지 않도록 추가
+/application.yml

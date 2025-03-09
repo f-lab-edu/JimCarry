@@ -9,6 +9,6 @@ public class TestController {
 
     @GetMapping("/")
     public String index() {
-        return "CI/CD 배포 연습";
+        return "CI/CD Study";
     }
 }

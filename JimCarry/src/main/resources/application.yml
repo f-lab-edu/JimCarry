@@ -21,9 +21,9 @@ spring:
     jcache:
       config: classpath:ehcache.xml
   datasource:
-    url: jdbc:mariadb://localhost:3306/jimcarry  # 데이터베이스 URL
+    url: jdbc:mariadb://211.188.56.168:3306/jimcarry  # 데이터베이스 URL
     username: root                                  # DB 사용자명
-    password: root                                  # DB 비밀번호
+    password: 1!Endbql0515                                  # DB 비밀번호
     driver-class-name: org.mariadb.jdbc.Driver     # MariaDB JDBC 드라이버
     hikari:
       maximum-pool-size: 10                         # 커넥션 풀 크기 설정
