@@ -65,7 +65,7 @@ jobs:
           source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
           target: /root  # 서버의 목적지 경로
 
-      # 9. 서버에서 Spring Boot 애플리케이션 실행_
+      # 9. 서버에서 Spring Boot 애플리케이션 실행 및 Nginx 재시작
       - name: Restart Spring Boot application on server
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -82,6 +82,7 @@ jobs:
               echo "Current Profile: $CURRENT_PROFILE"
             else
               CURRENT_PROFILE="blue"  # 기본값은 blue
+              echo "blue" > /root/current_profile.txt  # 초기 상태를 blue로 설정
             fi
             echo "CURRENT_PROFILE=$CURRENT_PROFILE" >> $GITHUB_ENV
 
@@ -103,3 +104,7 @@ jobs:
             fi
 
             echo "Application started with profile ${{ env.ENV_PROFILE }}."
+
+            # Nginx 설정 리로드
+            echo "Reloading Nginx..."
+            sudo nginx -s reload
