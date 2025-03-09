@@ -24,7 +24,7 @@ jobs:
           java-version: 17  # 사용하는 Java 버전
           distribution: temurin
 
-      # 3. application.yml 생성
+      # 3. application.yml 생성 (application.yml을 Setting > Actions secrets에 Base64인코딩 하여 저장)
       - name: Decode application.yml from secrets
         run: |
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./JimCarry/src/main/resources/application.yml
