@@ -17,6 +17,6 @@ public class TestController {
     public String index() {
         return "CI/CD Deploy Test - Active Profile: " + activeProfile +
                 " | Server Port: " + serverPort +
-                " | Zero-downtime deployment test!!";
+                " | Zero-downtime deployment test";
     }
 }
