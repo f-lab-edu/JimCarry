@@ -48,7 +48,35 @@ jobs:
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.SERVER_IP }}
-  옴)
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 2223
+          script: |
+            echo "Connected Server"
+
+      # 8. 빌드된 .jar 파일을 서버로 전송 (SCP 사용)
+      - name: Copy jar file to server using SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 2223
+          source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
+          target: /root  # 서버의 목적지 경로
+
+      # 9. 서버에서 Spring Boot 애플리케이션 실행
+      - name: Restart Spring Boot application on server
+        uses: appleboy/ssh-action@v0.1.9
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 2223
+          script: |
+            cd /root/JimCarry/target
+
+            # 현재 프로파일을 추적 (파일로 저장된 상태를 읽어옵니다)
             if [ -f "/root/current_profile.txt" ]; then
               CURRENT_PROFILE=$(cat /root/current_profile.txt)
               echo "Current Profile: $CURRENT_PROFILE"
