@@ -28,6 +28,7 @@ public class WebSecurityConfig {
         //.cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(authorize -> authorize
         	    .requestMatchers("/api/auth/**").permitAll()
+				.requestMatchers("/actuator/**").permitAll()
         	    //.requestMatchers("/static/**").permitAll()
                 //.requestMatchers(AntPathRequestMatcher.antMatcher("/api/**")).authenticated()
                 .anyRequest().permitAll()
