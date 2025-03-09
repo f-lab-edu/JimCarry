@@ -10,8 +10,13 @@ public class TestController {
     @Value("${spring.profiles.active}")
     private String activeProfile;
 
+    @Value("${server.port}")
+    private int serverPort;
+
     @GetMapping("/")
     public String index() {
-        return "CI/CD Deploy Test - Active Profile: " + activeProfile + " Zero-downtime deployment test";
+        return "CI/CD Deploy Test - Active Profile: " + activeProfile +
+                " | Server Port: " + serverPort +
+                " | Zero-downtime deployment test";
     }
 }
