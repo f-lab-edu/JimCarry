@@ -24,11 +24,11 @@ jobs:
           java-version: 17  # 사용하는 Java 버전
           distribution: temurin
 
-      # 3. application.yml 생성 (application.yml을 Setting > Actions secrets에 Base64인코딩 하여 저장)
+      # 3. application.yml 생성 (Base64로 인코딩된 값을 secrets에 저장)
       - name: Decode application.yml from secrets
         run: |
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./JimCarry/src/main/resources/application.yml
-          
+
       # 4. mvnw 파일에 실행 권한 부여
       - name: Give execute permission to mvnw
         run: chmod +x ./JimCarry/mvnw
@@ -43,7 +43,7 @@ jobs:
         run: ./mvnw test
         working-directory: ./JimCarry
 
-      # 7. 서버접속 테스트
+      # 7. 서버 접속 테스트
       - name: Test Server Connecting
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -54,7 +54,7 @@ jobs:
           script: |
             echo "Connected Server"
 
-      # 8. 빌드된 .jar 파일을 서버로 전송 (scp 사용)
+      # 8. 빌드된 .jar 파일을 서버로 전송 (SCP 사용)
       - name: Copy jar file to server using SCP
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -75,8 +75,31 @@ jobs:
           port: 2223
           script: |
             cd /root/JimCarry/target
-            sudo fuser -k -n tcp 8090 || true
-            echo "Stopping existing Spring Boot application..."
-            chmod +x jimcarry-0.0.1-SNAPSHOT.jar
-            nohup java -jar jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 & 
-            echo "Starting new Spring Boot application..."
+
+            # 현재 프로파일을 추적 (파일로 저장된 상태를 읽어옵니다)
+            if [ -f "/root/current_profile.txt" ]; then
+              CURRENT_PROFILE=$(cat /root/current_profile.txt)
+              echo "Current Profile: $CURRENT_PROFILE"
+            else
+              CURRENT_PROFILE="blue"  # 기본값은 blue
+            fi
+            echo "CURRENT_PROFILE=$CURRENT_PROFILE" >> $GITHUB_ENV
+
+            # 프로파일 자동 전환 (blue <-> green)
+            if [ "$CURRENT_PROFILE" == "blue" ]; then
+              echo "Switching to green profile"
+              echo "green" > /root/current_profile.txt  # 상태 저장
+              echo "ENV_PROFILE=green" >> $GITHUB_ENV
+              sudo fuser -k -n tcp 8090 || true
+              chmod +x jimcarry-0.0.1-SNAPSHOT.jar
+              nohup java -jar -Dspring.profiles.active=green jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
+            else
+              echo "Switching to blue profile"
+              echo "blue" > /root/current_profile.txt  # 상태 저장
+              echo "ENV_PROFILE=blue" >> $GITHUB_ENV
+              sudo fuser -k -n tcp 8091 || true
+              chmod +x jimcarry-0.0.1-SNAPSHOT.jar
+              nohup java -jar -Dspring.profiles.active=blue jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
+            fi
+
+            echo "Application started with profile ${{ env.ENV_PROFILE }}."
