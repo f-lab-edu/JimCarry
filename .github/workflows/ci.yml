@@ -24,7 +24,7 @@ jobs:
           java-version: 17  # 사용하는 Java 버전
           distribution: temurin
 
-      # 3. application.yml 생성 (maven build 전에 생성)
+      # 3. application.yml 생성 (secret에 application.yml을 등록 해 놓음..)
       - name: Decode application.yml from secrets
         run: |
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./JimCarry/src/main/resources/application.yml
