@@ -15,8 +15,9 @@ public class TestController {
 
     @GetMapping("/")
     public String index() {
-        return "CI/CD Blue/Green Deploy Test - Active Profile: " + activeProfile +
+        return "CI/CD Deploy Test - Active Profile: " + activeProfile +
                 " | Server Port: " + serverPort +
-                " | Zero-downtime deployment test";
+                " | Zero-downtime deployment test" +
+                " | Hong Seok Woo";
     }
 }
