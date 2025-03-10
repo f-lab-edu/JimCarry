@@ -80,9 +80,6 @@ jobs:
                 echo "blue" > /***/current_profile.txt  # 초기 상태를 blue로 설정
               fi
               
-              # GitHub 환경 변수 설정 (이 부분은 필요에 따라 사용하세요)
-              # echo "CURRENT_PROFILE=$CURRENT_PROFILE" >> $GITHUB_ENV
-              
               # 프로파일 자동 전환 (blue <-> green)
               if [ "$CURRENT_PROFILE" == "blue" ]; then
                 echo "Switching to green profile"
