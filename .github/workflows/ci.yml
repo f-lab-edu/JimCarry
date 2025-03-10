@@ -3,44 +3,37 @@ name: JimCarry CI
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때 실행
-      
+      - main
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 저장소에서 코드 체크아웃
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # 2. Java JDK 설정
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 17  # 사용하는 Java 버전
+          java-version: 17
           distribution: temurin
 
-      # 3. application.yml 생성 (Base64로 인코딩된 값을 secrets에 저장)
       - name: Decode application.yml from secrets
         run: |
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./JimCarry/src/main/resources/application.yml
 
-      # 4. mvnw 파일에 실행 권한 부여
       - name: Give execute permission to mvnw
         run: chmod +x ./JimCarry/mvnw
-        
-      # 5. Maven Wrapper 사용하여 빌드
+
       - name: Build with Maven Wrapper
         run: ./mvnw clean package -DskipTests
         working-directory: ./JimCarry
 
-      # 6. 테스트 실행
       - name: Run tests
         run: ./mvnw test
         working-directory: ./JimCarry
 
-      # 7. 서버 접속 테스트
       - name: Test Server Connecting
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -48,10 +41,8 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
-          script: |
-            echo "Connected Server"
+          script: echo "Connected Server"
 
-      # 8. 빌드된 .jar 파일을 서버로 전송 (SCP 사용)
       - name: Copy jar file to server using SCP
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -59,10 +50,9 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
-          source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
-          target: /root  # 서버의 목적지 경로
+          source: ./JimCarry/target/*.jar
+          target: /home/${{ secrets.SERVER_USER }}/deploy
 
-      # 9. 서버에서 Spring Boot 애플리케이션 실행 및 Nginx 재시작
       - name: Restart Spring Boot application on server
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -71,53 +61,61 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
           script: |
-              # 현재 프로파일을 추적 (파일로 저장된 상태를 읽어옵니다)
-              if [ -f "/***/current_profile.txt" ]; then
-                CURRENT_PROFILE=$(cat /***/current_profile.txt)
-                echo "Current Profile: $CURRENT_PROFILE"
+              DEPLOY_PATH="/home/${{ secrets.SERVER_USER }}/deploy"
+              JAR_NAME="jimcarry-0.0.1-SNAPSHOT.jar"
+              PROFILE_FILE="$DEPLOY_PATH/current_profile.txt"
+              PID_FILE="$DEPLOY_PATH/app.pid"
+              NGINX_CONF="/etc/nginx/nginx.conf"
+
+              if [ -f "$PROFILE_FILE" ]; then
+                CURRENT_PROFILE=$(cat "$PROFILE_FILE")
               else
-                CURRENT_PROFILE="blue"  # 기본값은 blue
-                echo "blue" > /***/current_profile.txt  # 초기 상태를 blue로 설정
+                CURRENT_PROFILE="blue"
+                echo "blue" > "$PROFILE_FILE"
               fi
-              
-              # 프로파일 자동 전환 (blue <-> green)
+
               if [ "$CURRENT_PROFILE" == "blue" ]; then
-                echo "Switching to green profile"
-                echo "green" > /***/current_profile.txt  # 상태 저장
-                # Nginx upstream을 green 프로파일로 변경
-                sudo sed -i 's/server 127.0.0.1:8090;/server 127.0.0.1:8091;/g' /etc/nginx/nginx.conf
-                sudo fuser -k -n tcp 8090 || true  # 기존 blue 애플리케이션 종료
-              
-                # 새로운 green 프로파일로 애플리케이션 실행
-                chmod +x /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar
-                nohup java -jar -Dspring.profiles.active=green /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
-              
-                # 애플리케이션이 준비될 때까지 대기 (Health check)
-                while ! curl -s http://127.0.0.1:8091/actuator/health; do
-                  echo "Waiting for application to start on port 8091..."
-                  sleep 5
-                done
-              
+                NEW_PROFILE="green"
+                NEW_PORT=8091
+                OLD_PORT=8090
               else
-                echo "Switching to blue profile"
-                echo "blue" > /***/current_profile.txt  # 상태 저장
-                # Nginx upstream을 blue 프로파일로 변경
-                sudo sed -i 's/server 127.0.0.1:8091;/server 127.0.0.1:8090;/g' /etc/nginx/nginx.conf
-                sudo fuser -k -n tcp 8091 || true  # 기존 green 애플리케이션 종료
-              
-                # 새로운 blue 프로파일로 애플리케이션 실행
-                chmod +x /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar
-                nohup java -jar -Dspring.profiles.active=blue /***/JimCarry/target/jimcarry-0.0.1-SNAPSHOT.jar > ./output.log 2>&1 &
-              
-                # 애플리케이션이 준비될 때까지 대기 (Health check)
-                while ! curl -s http://127.0.0.1:8090/actuator/health; do
-                  echo "Waiting for application to start on port 8090..."
-                  sleep 5
-                done
+                NEW_PROFILE="blue"
+                NEW_PORT=8090
+                OLD_PORT=8091
               fi
-              
-              echo "Application started with profile $CURRENT_PROFILE."
-              
-              # Nginx 설정 리로드 (새로운 프로파일로 요청 라우팅)
+
+              echo "Switching to $NEW_PROFILE profile..."
+              echo "$NEW_PROFILE" > "$PROFILE_FILE"
+
+              # Nginx 설정 변경
+              sudo sed -i "s/server 127.0.0.1:$OLD_PORT;/server 127.0.0.1:$NEW_PORT;/g" "$NGINX_CONF"
+
+              # 기존 애플리케이션 종료 (PID 기반)
+              if [ -f "$PID_FILE" ]; then
+                PID=$(cat "$PID_FILE")
+                echo "Stopping existing application (PID: $PID)..."
+                kill -15 $PID
+                sleep 5
+                rm -f "$PID_FILE"
+              fi
+
+              # 새로운 프로파일로 애플리케이션 실행
+              chmod +x "$DEPLOY_PATH/$JAR_NAME"
+              nohup java -jar -Dspring.profiles.active="$NEW_PROFILE" "$DEPLOY_PATH/$JAR_NAME" > $DEPLOY_PATH/output.log 2>&1 & echo $! > "$PID_FILE"
+
+              # Health Check (최대 60초 대기)
+              echo "Waiting for application to start on port $NEW_PORT..."
+              for i in {1..12}; do
+                if curl -s "http://127.0.0.1:$NEW_PORT/actuator/health" | grep -q "UP"; then
+                  echo "Application started successfully on port $NEW_PORT."
+                  break
+                fi
+                echo "Retrying in 5 seconds..."
+                sleep 5
+              done
+
+              # Nginx 리로드
               echo "Reloading Nginx..."
               sudo nginx -s reload
+
+              echo "Deployment completed! Current profile: $NEW_PROFILE"
