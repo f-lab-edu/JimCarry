@@ -131,20 +131,30 @@ jobs:
 
             # Health check (업데이트된 방식)
             echo "Waiting for application to start on port $NEW_PORT..."
-            for i in {1..12}; do
-              RESPONSE=$(curl "http://127.0.0.1:$NEW_PORT/actuator/health")
+            
+            # 최대 30초까지 기다림 (5초마다 확인)
+            for i in {1..6}; do
+              RESPONSE=$(curl -s -m 10 "http://127.0.0.1:$NEW_PORT/actuator/health")
               echo "Response: $RESPONSE"
               
+              # 성공적인 응답이 올 경우
               if echo "$RESPONSE" | grep -q '"status":"UP"'; then
                 echo "Application started successfully on port $NEW_PORT."
                 break
               fi
+            
               echo "Retrying in 5 seconds..."
               sleep 5
             done
-
-            # Nginx 리로드 (애플리케이션이 완전히 시작된 후)
+            
+            # 서버가 응답하지 않으면 에러 메시지 출력 후 종료
+            if [ $i -eq 6 ]; then
+              echo "ERROR: Application did not start properly within the timeout period."
+              exit 1
+            fi
+            
+            # 이제 Nginx 리로드 (애플리케이션이 정상적으로 시작된 후에만 실행)
             echo "Reloading Nginx..."
             sudo nginx -s reload
-
+            
             echo "Deployment completed! Current profile: $NEW_PROFILE"
