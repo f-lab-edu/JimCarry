@@ -3,7 +3,7 @@ name: JimCarry CI
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때 실행!
+      - main  # main 브랜치에 푸시될 때 실행
 
 jobs:
   build:
@@ -140,7 +140,7 @@ jobs:
               sleep 5
             done
 
-            # Nginx 리로드
+            # Nginx 리로드 (애플리케이션이 완전히 시작된 후)
             echo "Reloading Nginx..."
             sudo nginx -s reload
 
