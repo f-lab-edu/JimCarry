@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main  # main 브랜치에 푸시될 때 실행
-      
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,19 +18,19 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: 17
+          java-version: 17  # 사용하는 Java 버전
           distribution: temurin
 
-      # 3. application.yml 생성
+      # 3. application.yml 생성 (Base64로 인코딩된 값을 secrets에 저장)
       - name: Decode application.yml from secrets
         run: |
           echo "${{ secrets.APPLICATION_YML }}" | base64 --decode > ./JimCarry/src/main/resources/application.yml
 
-      # 4. mvnw 실행 권한 부여
+      # 4. mvnw 파일에 실행 권한 부여
       - name: Give execute permission to mvnw
         run: chmod +x ./JimCarry/mvnw
         
-      # 5. Maven 빌드 (테스트 제외)
+      # 5. Maven Wrapper 사용하여 빌드
       - name: Build with Maven Wrapper
         run: ./mvnw clean package -DskipTests
         working-directory: ./JimCarry
@@ -51,7 +51,7 @@ jobs:
           script: |
             echo "Connected Server"
 
-      # 8. 🚀 **빌드된 .jar 파일을 서버로 전송 (SCP)**
+      # 8. 빌드된 .jar 파일을 서버로 전송 (SCP 사용)
       - name: Copy jar file to server using SCP
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -59,10 +59,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
-          source: ./JimCarry/target/*.jar  # 🔹 빌드된 .jar 파일 전송
-          target: /home/${{ secrets.SERVER_USER }}/deploy  # 🔹 서버의 목적지 경로
+          source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
+          target: /home/root/deploy/JimCarry/target/  # 서버의 목적지 경로
 
-      # 9. 🚀 **Spring Boot 애플리케이션 재시작**
+      # 9. 서버에서 Spring Boot 애플리케이션 실행 및 Nginx 재시작
       - name: Restart Spring Boot application on server
         uses: appleboy/ssh-action@v0.1.9
         with:
@@ -71,76 +71,77 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
           script: |
-              DEPLOY_PATH="/home/${{ secrets.SERVER_USER }}/deploy"
-              JAR_NAME=$(ls -1 $DEPLOY_PATH/*.jar | head -n 1)
-              PROFILE_FILE="$DEPLOY_PATH/current_profile.txt"
-              PID_FILE="$DEPLOY_PATH/app.pid"
-              NGINX_CONF="/etc/nginx/nginx.conf"
+            DEPLOY_PATH="/home/root/deploy/JimCarry/target"  # 배포 경로
+            JAR_NAME=$(ls -1 $DEPLOY_PATH/*.jar | head -n 1)
+            PROFILE_FILE="$DEPLOY_PATH/current_profile.txt"
+            PID_FILE="$DEPLOY_PATH/app.pid"
+            NGINX_CONF="/etc/nginx/nginx.conf"
 
-              if [ -f "$PROFILE_FILE" ]; then
-                CURRENT_PROFILE=$(cat "$PROFILE_FILE")
-              else
-                CURRENT_PROFILE="blue"
-                echo "blue" > "$PROFILE_FILE"
-              fi
+            # .jar 파일 존재 여부 점검
+            if [ ! -f "$JAR_NAME" ]; then
+              echo "ERROR: $JAR_NAME not found!"
+              exit 1
+            fi
 
-              if [ "$CURRENT_PROFILE" == "blue" ]; then
-                NEW_PROFILE="green"
-                NEW_PORT=8091
-                OLD_PORT=8090
-              else
-                NEW_PROFILE="blue"
-                NEW_PORT=8090
-                OLD_PORT=8091
-              fi
+            # 현재 프로파일 추적
+            if [ -f "$PROFILE_FILE" ]; then
+              CURRENT_PROFILE=$(cat "$PROFILE_FILE")
+            else
+              CURRENT_PROFILE="blue"
+              echo "blue" > "$PROFILE_FILE"
+            fi
 
-              echo "Switching to $NEW_PROFILE profile..."
-              echo "$NEW_PROFILE" > "$PROFILE_FILE"
+            if [ "$CURRENT_PROFILE" == "blue" ]; then
+              NEW_PROFILE="green"
+              NEW_PORT=8091
+              OLD_PORT=8090
+            else
+              NEW_PROFILE="blue"
+              NEW_PORT=8090
+              OLD_PORT=8091
+            fi
 
-              # 🔹 기존 애플리케이션 종료 (PID 존재 여부 확인)
-              if [ -f "$PID_FILE" ]; then
-                PID=$(cat "$PID_FILE")
-                if [ -n "$PID" ] && ps -p $PID > /dev/null; then
-                  echo "Stopping existing application (PID: $PID)..."
-                  kill -15 $PID
-                  sleep 5
-                else
-                  echo "No running process found for PID: $PID. Skipping kill."
-                fi
-                rm -f "$PID_FILE"
-              fi
+            echo "Switching to $NEW_PROFILE profile..."
+            echo "$NEW_PROFILE" > "$PROFILE_FILE"
 
-              # 🔹 JAR 파일이 존재하는지 확인
-              if [ ! -f "$JAR_NAME" ]; then
-                echo "ERROR: $JAR_NAME not found!"
-                exit 1
-              fi
-
-              # 🔹 JAR 파일 실행 가능하도록 권한 부여
-              chmod +x "$JAR_NAME"
-
-              # 🔹 새로운 애플리케이션 실행
-              nohup java -jar -Dspring.profiles.active="$NEW_PROFILE" "$JAR_NAME" > "$DEPLOY_PATH/output.log" 2>&1 & echo $! > "$PID_FILE"
-
-              # 🔹 실행 확인
-              if [ ! -f "$PID_FILE" ]; then
-                echo "ERROR: Application failed to start!"
-                exit 1
-              fi
-
-              # 🔹 Health Check (최대 60초 대기)
-              echo "Waiting for application to start on port $NEW_PORT..."
-              for i in {1..12}; do
-                if curl -s "http://127.0.0.1:$NEW_PORT/actuator/health" | grep -q "UP"; then
-                  echo "Application started successfully on port $NEW_PORT."
-                  break
-                fi
-                echo "Retrying in 5 seconds..."
+            # 기존 애플리케이션 종료 (PID 존재 여부 확인)
+            if [ -f "$PID_FILE" ]; then
+              PID=$(cat "$PID_FILE")
+              if [ -n "$PID" ] && ps -p $PID > /dev/null; then
+                echo "Stopping existing application (PID: $PID)..."
+                kill -15 $PID
                 sleep 5
-              done
+              else
+                echo "No running process found for PID: $PID. Skipping kill."
+              fi
+              rm -f "$PID_FILE"
+            fi
 
-              # 🔹 Nginx 리로드
-              echo "Reloading Nginx..."
-              sudo nginx -s reload
+            # JAR 파일 실행 가능하도록 권한 부여
+            chmod +x "$JAR_NAME"
 
-              echo "Deployment completed! Current profile: $NEW_PROFILE"
+            # 애플리케이션 실행
+            nohup java -jar -Dspring.profiles.active="$NEW_PROFILE" "$JAR_NAME" > "$DEPLOY_PATH/output.log" 2>&1 & echo $! > "$PID_FILE"
+
+            # 실행 확인
+            if [ ! -f "$PID_FILE" ]; then
+              echo "ERROR: Application failed to start!"
+              exit 1
+            fi
+
+            # Health check
+            echo "Waiting for application to start on port $NEW_PORT..."
+            for i in {1..12}; do
+              if curl -s "http://127.0.0.1:$NEW_PORT/actuator/health" | grep -q "UP"; then
+                echo "Application started successfully on port $NEW_PORT."
+                break
+              fi
+              echo "Retrying in 5 seconds..."
+              sleep 5
+            done
+
+            # Nginx 리로드
+            echo "Reloading Nginx..."
+            sudo nginx -s reload
+
+            echo "Deployment completed! Current profile: $NEW_PROFILE"
