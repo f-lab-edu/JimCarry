@@ -3,7 +3,7 @@ name: JimCarry CI
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때 실행
+      - main  # main 브랜치에 푸시될 때 실행!
 
 jobs:
   build:
@@ -41,7 +41,7 @@ jobs:
         working-directory: ./JimCarry
 
       # 7. 서버 접속 테스트
-      - name: Test Server Connecting
+      - name: Test Server Connection
         uses: appleboy/ssh-action@v0.1.9
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -49,7 +49,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
           script: |
-            echo "Connected Server"
+            echo "Connected to Server"
 
       # 8. 빌드된 .jar 파일을 서버로 전송 (SCP 사용)
       - name: Copy jar file to server using SCP
@@ -129,10 +129,13 @@ jobs:
               exit 1
             fi
 
-            # Health check
+            # Health check (업데이트된 방식)
             echo "Waiting for application to start on port $NEW_PORT..."
             for i in {1..12}; do
-              if curl -s "http://127.0.0.1:$NEW_PORT/actuator/health" | grep -q "UP"; then
+              RESPONSE=$(curl "http://127.0.0.1:$NEW_PORT/actuator/health")
+              echo "Response: $RESPONSE"
+              
+              if echo "$RESPONSE" | grep -q '"status":"UP"'; then
                 echo "Application started successfully on port $NEW_PORT."
                 break
               fi
