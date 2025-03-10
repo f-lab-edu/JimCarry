@@ -4,10 +4,7 @@ on:
   push:
     branches:
       - main  # main 브랜치에 푸시될 때 실행
-  pull_request:
-    branches:
-      - main  # main 브랜치로 PR이 생성될 때 실행
-
+      
 jobs:
   build:
     runs-on: ubuntu-latest
