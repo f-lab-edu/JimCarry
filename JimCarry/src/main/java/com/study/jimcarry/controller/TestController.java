@@ -18,6 +18,6 @@ public class TestController {
         return "CI/CD Deploy Test - Active Profile: " + activeProfile +
                 " | Server Port: " + serverPort +
                 " | Zero-downtime deployment test" +
-                " | Feature/70 Issued";
+                " | Feature/75 Issued";
     }
 }
