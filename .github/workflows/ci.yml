@@ -3,7 +3,7 @@ name: JimCarry CI
 on:
   push:
     branches:
-      - main  # main 브랜치에 푸시될 때 실행
+      - main  # main 브랜치에 푸시될 때 실행!
 
 jobs:
   build:
