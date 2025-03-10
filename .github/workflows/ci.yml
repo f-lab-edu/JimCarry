@@ -60,7 +60,7 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 2223
           source: ./JimCarry/target/*.jar  # 빌드된 .jar 파일 경로
-          target: /home/root/deploy/JimCarry/target/  # 서버의 목적지 경로
+          target: /home/root/deploy  # 서버의 목적지 경로
 
       # 9. 서버에서 Spring Boot 애플리케이션 실행 및 Nginx 재시작
       - name: Restart Spring Boot application on server
