@@ -123,6 +123,17 @@
 			<groupId>io.micrometer</groupId>
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>io.gatling</groupId>
+			<artifactId>gatling-core</artifactId>
+			<version>3.9.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.gatling</groupId>
+			<artifactId>gatling-app</artifactId>
+			<version>3.9.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -161,20 +172,10 @@
 				</executions>
 				<configuration>
 					<failOnError>true</failOnError>
-					<simulationClass>src/test/scala/QuotationApiTestSimulation</simulationClass>
+					<simulationClass>com.study.jimcarry.QuotationApiTestSimulation</simulationClass>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
 
-	<repositories>
-		<repository>
-			<id>central</id>
-			<url>https://repo.maven.apache.org/maven2</url>
-		</repository>
-		<repository>
-			<id>gatling</id>
-			<url>https://repository.gatling.io</url>
-		</repository>
-	</repositories>
 </project>
