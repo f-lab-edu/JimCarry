@@ -27,6 +27,7 @@ public class WebSecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         //.cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(authorize -> authorize
+				//.requestMatchers("/favicon.ico").permitAll()  // favicon.ico 요청을 예외 처리
         	    .requestMatchers("/api/auth/**").permitAll()
 				.requestMatchers("/actuator/**").permitAll()
         	    //.requestMatchers("/static/**").permitAll()
