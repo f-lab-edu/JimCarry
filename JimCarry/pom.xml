@@ -18,13 +18,18 @@
 
 	<properties>
 		<java.version>17</java.version>
-
+		<maven.compiler.release>11</maven.compiler.release>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<gatling.version>3.13.5</gatling.version>
+		<gatling-maven-plugin.version>4.16.1</gatling-maven-plugin.version>
+		<maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
+		<maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
 		<!-- SonarCloud 설정 -->
 		<sonar.organization>hongseokwoo1991</sonar.organization>
 		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
 		<sonar.exclusions>src/test/**/*</sonar.exclusions>
 		<sonar.projectKey>50d87cc2d3d5d66531757193750a1e9b8146fb84</sonar.projectKey>
-		<gatling.simulationsDirectory>src/test/scala</gatling.simulationsDirectory>
 	</properties>
 
 	<dependencies>
@@ -124,15 +129,10 @@
 			<artifactId>micrometer-registry-prometheus</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>io.gatling</groupId>
-			<artifactId>gatling-core</artifactId>
-			<version>3.9.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.gatling</groupId>
-			<artifactId>gatling-app</artifactId>
-			<version>3.9.0</version>
+			<groupId>io.gatling.highcharts</groupId>
+			<artifactId>gatling-charts-highcharts</artifactId>
+			<version>${gatling.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
@@ -158,21 +158,24 @@
 				<version>3.9.1.2184</version>
 			</plugin>
 
-			<!-- Gatling Maven Plugin (버전 3.9.0 적용) -->
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
+			</plugin>
 			<plugin>
 				<groupId>io.gatling</groupId>
 				<artifactId>gatling-maven-plugin</artifactId>
-				<version>3.9.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
+				<version>${gatling-maven-plugin.version}</version>
 				<configuration>
-					<failOnError>true</failOnError>
-					<simulationClass>com.study.jimcarry.QuotationApiTestSimulation</simulationClass>
+					<!-- Enterprise Cloud (https://cloud.gatling.io/) configuration reference: https://docs.gatling.io/reference/integrations/build-tools/maven-plugin/#running-your-simulations-on-gatling-enterprise-cloud -->
 				</configuration>
 			</plugin>
 		</plugins>
