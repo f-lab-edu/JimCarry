@@ -10,7 +10,7 @@ public class QuotationApiTestSimulation extends Simulation {
 
     // HTTP 프로토콜 설정
     private HttpProtocolBuilder httpProtocol = http
-            .baseUrl("http://localhost:8090")
+            .baseUrl("http://211.188.56.168:8090")
             .acceptHeader("application/json")
             .contentTypeHeader("application/json");
 
@@ -24,7 +24,7 @@ public class QuotationApiTestSimulation extends Simulation {
     {
         setUp(
                 scn.injectOpen(
-                        atOnceUsers(10),  // 한 번에 10명의 사용자가 동시에 요청
+                        atOnceUsers(50),  // 한 번에 10명의 사용자가 동시에 요청
                         rampUsers(50).during(Duration.ofSeconds(30))  // 50명의 사용자가 30초 동안 점진적으로 요청
                 ).protocols(httpProtocol) // HTTP 프로토콜 설정 적용
         );
