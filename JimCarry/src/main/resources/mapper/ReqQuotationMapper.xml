@@ -13,7 +13,7 @@
 	    <result column="MOVE_DT" property="moveDt" />
 	    <result column="QUOTATION_AMOUNT" property="quotationAmount" />
 	    <result column="BUILDING_TYPE" property="buildingType" />
-	    <result column="ROOM_STRUCTURE" property="roomStructure" />
+	    <result column="ROOM_STRUCTURE" property="roomStructure" jdbcType="VARCHAR" />
 	    <result column="HOUSE_SIZE" property="houseSize" />
 	    <result column="HAS_ELEVATOR" property="hasElevator" />
 	    <result column="BOX_COUNT" property="boxCount" />
